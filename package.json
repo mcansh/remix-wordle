@@ -1,0 +1,42 @@
+{
+  "name": "remix-wordle",
+  "private": true,
+  "description": "a wordle game made with Remix",
+  "license": "MIT",
+  "sideEffects": false,
+  "scripts": {
+    "postinstall": "remix setup node",
+    "build:remix": "remix build",
+    "build:css": "tailwindcss -o ./app/styles/global.css --minify",
+    "build": "cross-env NODE_ENV=production build:*",
+    "dev:css": "tailwindcss -o app/styles/global.css --watch",
+    "dev:remix": "remix dev",
+    "dev": "cross-env NODE_ENV=development run-p dev:*",
+    "start": "cross-env NODE_ENV=production remix-serve build"
+  },
+  "dependencies": {
+    "@remix-run/react": "1.3.2",
+    "@remix-run/serve": "1.3.2",
+    "clsx": "1.1.1",
+    "cross-env": "7.0.3",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "remix": "1.3.2",
+    "tiny-invariant": "1.2.0",
+    "type-fest": "2.12.1"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "1.3.2",
+    "@types/jest": "27.4.1",
+    "@types/react": "17.0.41",
+    "@types/react-dom": "17.0.14",
+    "jest": "27.5.1",
+    "jest-esbuild": "0.2.6",
+    "npm-run-all": "4.1.5",
+    "tailwindcss": "3.0.23",
+    "typescript": "4.6.2"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
