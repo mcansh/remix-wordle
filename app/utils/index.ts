@@ -86,13 +86,11 @@ export function getRandomWord(): string {
   return wordBank.valid[Math.floor(Math.random() * wordBank.valid.length)];
 }
 
-export function isValidWord(word: string): boolean {
-  return wordBank.valid.concat(wordBank.invalid).includes(word);
+export function isValidWord(guess: string): boolean {
+  return wordBank.valid.concat(wordBank.invalid).includes(guess);
 }
 
 export function isValidGuess(guess: unknown): guess is ComputedGuess {
-  console.log(guess);
-
   return (
     Array.isArray(guess) &&
     guess.every(

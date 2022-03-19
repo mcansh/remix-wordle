@@ -1,3 +1,4 @@
+import * as React from "react";
 import clsx from "clsx";
 import {
   ActionFunction,
@@ -16,6 +17,7 @@ import {
   createEmptyGuess,
   getRandomWord,
   isValidGuess,
+  isValidWord,
   LetterState,
 } from "~/utils";
 
@@ -70,7 +72,16 @@ export let action: ActionFunction = async ({ request }) => {
     );
   }
 
-  let computed = computeGuess(letters.join(""), word);
+  let guess = letters.join("");
+
+  if (!isValidWord(guess)) {
+    return json<ActionData>(
+      { error: `${guess} is not a valid word` },
+      { status: 400 }
+    );
+  }
+
+  let computed = computeGuess(guess, word);
 
   let guesses = (session.get("guesses") || []) as Array<Array<ComputedGuess>>;
 
@@ -96,7 +107,6 @@ export let loader: LoaderFunction = async ({ request }) => {
     let word = getRandomWord();
     session.set("word", word);
   }
-  console.log({ word: session.get("word") });
 
   let guesses = session.get("guesses") || [];
   let validGuesses = guesses.filter(isValidGuess);
@@ -147,8 +157,6 @@ export default function IndexPage() {
   let data = useLoaderData<LoaderData>();
   let actionData = useActionData<ActionData>();
 
-  console.log(data);
-
   return (
     <div className="max-w-sm mx-auto">
       <header>
@@ -159,7 +167,9 @@ export default function IndexPage() {
 
       <main>
         {actionData?.error && (
-          <div className="text-red-500 text-center">{actionData.error}</div>
+          <div className="text-red-500 text-center mb-4">
+            {actionData.error}
+          </div>
         )}
 
         {"winner" in data && (
@@ -200,22 +210,24 @@ export default function IndexPage() {
                   replace
                   method="post"
                   className="grid grid-cols-5 gap-4"
+                  id="current-guess"
                 >
                   {inputs.map((index) => (
-                    <div key={`input-number-${index}`}>
-                      <input
-                        className="border-4 text-center uppercase border-gray-400 w-full aspect-square inline-block text-xl"
-                        type="text"
-                        pattern="[a-zA-Z]{1}"
-                        maxLength={1}
-                        name="letter"
-                        aria-label={`letter ${index + 1}`}
-                      />
-                    </div>
+                    <input
+                      key={`input-number-${index}`}
+                      className={clsx(
+                        "border-4 text-center uppercase w-full aspect-square inline-block text-xl",
+                        actionData?.error
+                          ? "border-red-500"
+                          : "empty:border-gray-400 border-gray-900"
+                      )}
+                      type="text"
+                      pattern="[a-zA-Z]{1}"
+                      maxLength={1}
+                      name="letter"
+                      aria-label={`letter ${index + 1}`}
+                    />
                   ))}
-                  <button enterKeyHint="enter" type="submit">
-                    Enter
-                  </button>
                 </Form>
               );
             }
@@ -227,30 +239,44 @@ export default function IndexPage() {
               >
                 {guess.map((letter) => {
                   return (
-                    <div key={`guess-${guessIndex}-letter-${letter.id}`}>
-                      <input
-                        readOnly
-                        className={clsx(
-                          "border-4 text-center uppercase w-full aspect-square inline-block text-xl",
-                          {
-                            "bg-green-500 border-green-500 text-white":
-                              letter.state === LetterState.Match,
-                            "bg-red-500 border-red-500 text-white":
-                              letter.state === LetterState.Miss,
-                            "bg-yellow-500 border-yellow-500 text-white":
-                              letter.state === LetterState.Present,
-                            "border-gray-400 text-white":
-                              letter.state === LetterState.Blank,
-                          }
-                        )}
-                        value={letter.letter}
-                      />
-                    </div>
+                    <input
+                      key={`guess-${guessIndex}-letter-${letter.id}`}
+                      readOnly
+                      className={clsx(
+                        "border-4 text-center uppercase w-full aspect-square inline-block text-xl",
+                        {
+                          "bg-green-500 border-green-500 text-white":
+                            letter.state === LetterState.Match,
+                          "bg-red-500 border-red-500 text-white":
+                            letter.state === LetterState.Miss,
+                          "bg-yellow-500 border-yellow-500 text-white":
+                            letter.state === LetterState.Present,
+                          "border-gray-400 text-white":
+                            letter.state === LetterState.Blank,
+                        }
+                      )}
+                      value={letter.letter}
+                      type="text"
+                      pattern="[a-zA-Z]{1}"
+                      maxLength={1}
+                      name="letter"
+                      aria-label={`letter ${guessIndex + 1}`}
+                    />
                   );
                 })}
               </div>
             );
           })}
+
+          <button
+            form="current-guess"
+            enterKeyHint="enter"
+            type="submit"
+            disabled={"winner" in data || data.currentGuess === TOTAL_GUESSES}
+            className="bg-purple-500 text-white rounded-md px-4 py-2 text-xl mt-2"
+          >
+            Submit Guess
+          </button>
         </div>
       </main>
     </div>
