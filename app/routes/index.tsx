@@ -70,7 +70,7 @@ export let action: ActionFunction = async ({ request }) => {
     );
   }
 
-  let guess = letters.join("");
+  let guess = letters.join("").toLowerCase();
 
   if (!isValidWord(guess)) {
     return json<ActionData>(
