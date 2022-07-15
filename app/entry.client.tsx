@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { RemixBrowser } from "@remix-run/react";
+import { requestIdleCallback } from "./request-idle-callback.client";
 
 requestIdleCallback(() => {
   React.startTransition(() => {
