@@ -235,6 +235,7 @@ export default function IndexPage() {
                       name="letter"
                       aria-label={`letter ${index + 1}`}
                       placeholder=" "
+                      onClick={(event) => event.currentTarget.select()}
                     />
                   ))}
                 </Form>
