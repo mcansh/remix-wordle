@@ -2,14 +2,12 @@ import * as React from "react";
 import clsx from "clsx";
 import {
   ActionFunction,
-  Form,
   json,
   LoaderFunction,
   MetaFunction,
   redirect,
-  useActionData,
-  useLoaderData,
-} from "remix";
+} from "@remix-run/node";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { getSession, sessionStorage } from "~/session.server";
 import {
   ComputedGuess,

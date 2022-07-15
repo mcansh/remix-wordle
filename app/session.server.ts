@@ -1,5 +1,5 @@
 import invariant from "tiny-invariant";
-import { createCookieSessionStorage } from "remix";
+import { createCookieSessionStorage } from "@remix-run/node";
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 
