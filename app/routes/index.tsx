@@ -209,6 +209,15 @@ export default function IndexPage() {
                   method="post"
                   className="grid grid-cols-5 gap-4"
                   id="current-guess"
+                  onChange={(event) => {
+                    let element = event.currentTarget.querySelector(
+                      "input:placeholder-shown"
+                    );
+
+                    if (element && element instanceof HTMLInputElement) {
+                      element.focus();
+                    }
+                  }}
                 >
                   {inputs.map((index) => (
                     <input
@@ -224,6 +233,7 @@ export default function IndexPage() {
                       maxLength={1}
                       name="letter"
                       aria-label={`letter ${index + 1}`}
+                      placeholder=" "
                     />
                   ))}
                 </Form>
