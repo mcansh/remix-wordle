@@ -210,12 +210,13 @@ export default function IndexPage() {
                   className="grid grid-cols-5 gap-4"
                   id="current-guess"
                   onChange={(event) => {
-                    let element = event.currentTarget.querySelector(
-                      "input:placeholder-shown"
-                    );
-
-                    if (element && element instanceof HTMLInputElement) {
-                      element.focus();
+                    // prettier-ignore
+                    let currentInput = event.nativeEvent.target as Element | null;
+                    if (currentInput?.nextElementSibling) {
+                      let nextInput = currentInput.nextElementSibling;
+                      if (nextInput instanceof HTMLInputElement) {
+                        nextInput.focus();
+                      }
                     }
                   }}
                 >
