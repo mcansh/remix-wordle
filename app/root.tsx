@@ -1,12 +1,12 @@
+import { LinksFunction } from "@remix-run/node";
 import {
   Links,
-  LinksFunction,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-} from "remix";
+} from "@remix-run/react";
 import globalStylesHref from "./styles/global.css";
 
 export let links: LinksFunction = () => {
