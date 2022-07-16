@@ -1,6 +1,7 @@
 import invariant from "tiny-invariant";
 import { createCookieSessionStorage } from "@remix-run/node";
 import { ComputedGuess, getRandomWord } from "./utils";
+import { format, startOfDay } from "date-fns";
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 
@@ -21,9 +22,11 @@ export interface Game {
   guesses: Array<Array<ComputedGuess>>;
 }
 
-export async function getSession(request: Request, gameId: string) {
+export async function getSession(request: Request) {
   let cookie = request.headers.get("Cookie");
   let session = await sessionStorage.getSession(cookie);
+
+  let gameId = format(startOfDay(new Date()), "yyyy-MM-dd");
   let game = await session.get(gameId);
 
   if (!game) {

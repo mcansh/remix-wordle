@@ -20,7 +20,7 @@ import {
 } from "~/utils";
 import checkIconUrl from "~/icons/check.svg";
 import xIconUrl from "~/icons/x.svg";
-import { format, startOfDay } from "date-fns";
+import { addDays, format, startOfDay } from "date-fns";
 
 let WORD_LENGTH = 5;
 let TOTAL_GUESSES = 6;
@@ -34,8 +34,7 @@ interface ActionData {
 }
 
 export let action: ActionFunction = async ({ request }) => {
-  let gameId = format(startOfDay(new Date()), "yyyy-MM-dd");
-  let session = await getSession(request, gameId);
+  let session = await getSession(request);
 
   let formData = await request.formData();
   let letters = formData.getAll("letter");
@@ -120,16 +119,29 @@ export let action: ActionFunction = async ({ request }) => {
   });
 };
 
-interface LoaderData {
-  guesses: Array<Array<ComputedGuess>>;
-  currentGuess: number;
-  winner?: boolean;
-  done: boolean;
-}
+type LoaderData =
+  | {
+      guesses: Array<Array<ComputedGuess>>;
+      currentGuess: number;
+      done: false;
+    }
+  | {
+      guesses: Array<Array<ComputedGuess>>;
+      currentGuess: number;
+      winner: true;
+      done: true;
+      word: string;
+    }
+  | {
+      guesses: Array<Array<ComputedGuess>>;
+      currentGuess: number;
+      winner: false;
+      done: true;
+      word: string;
+    };
 
 export let loader: LoaderFunction = async ({ request }) => {
-  let gameId = format(startOfDay(new Date()), "yyyy-MM-dd");
-  let session = await getSession(request, gameId);
+  let session = await getSession(request);
   let game = await session.getGame();
 
   let validGuesses = game.guesses.filter(isValidGuess);
@@ -159,6 +171,7 @@ export let loader: LoaderFunction = async ({ request }) => {
         currentGuess,
         winner: true,
         done: true,
+        word: game.word,
       },
       {
         headers: {
@@ -192,6 +205,7 @@ export let loader: LoaderFunction = async ({ request }) => {
     currentGuess,
     winner: false,
     done: true,
+    word: game.word,
   });
 };
 
@@ -251,7 +265,8 @@ export default function IndexPage() {
                       </h3>
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
-                          Come back and try again tomorrow
+                          The word was <strong>{data.word}</strong>. Come back
+                          and try again tomorrow
                         </p>
                       </div>
                     </div>
