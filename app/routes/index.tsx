@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import * as React from "react";
 import {
   ActionFunction,
   json,
@@ -7,6 +7,7 @@ import {
   redirect,
 } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import clsx from "clsx";
 import { getSession, sessionStorage } from "~/session.server";
 import {
   ComputedGuess,
@@ -18,6 +19,7 @@ import {
 } from "~/utils";
 import checkIconUrl from "~/icons/check.svg";
 import xIconUrl from "~/icons/x.svg";
+import { boardToEmoji } from "~/utils/board-to-emoji";
 
 let WORD_LENGTH = 5;
 let TOTAL_GUESSES = 6;
@@ -258,10 +260,38 @@ export default function IndexPage() {
                     </div>
                     <div className="mt-3 text-center sm:mt-5">
                       <h3 className="text-lg leading-6 font-medium text-gray-900">
-                        You {data.winner ? "won" : "lost"}!
+                        Game Summary
                       </h3>
                       <div className="mt-2">
-                        <p className="text-sm text-gray-500">
+                        <div className="whitespace-pre">
+                          {boardToEmoji(data.guesses)}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            let text = `Remix Wordle - ${
+                              "winner" in data && data.winner
+                                ? data.currentGuess
+                                : "X"
+                            }/${TOTAL_GUESSES} \n
+                            ${boardToEmoji(data.guesses)}
+                            `
+                              .split("\n")
+                              .map((line) => line.trim())
+                              .join("\n");
+                            try {
+                              const type = "text/plain";
+                              const blob = new Blob([text], { type });
+                              let write = [new ClipboardItem({ [type]: blob })];
+                              await window.navigator.clipboard.write(write);
+                            } catch (error) {
+                              // browser doesn't support clipboard api
+                            }
+                          }}
+                        >
+                          Copy to clipboard 📋
+                        </button>
+                        <p className="text-sm text-gray-500 mt-2">
                           The word was <strong>{data.word}</strong>. Come back
                           and try again tomorrow
                         </p>
