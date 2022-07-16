@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" id="check">
+    <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" />
+  </symbol>
+</svg>

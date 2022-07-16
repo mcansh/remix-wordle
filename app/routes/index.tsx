@@ -18,6 +18,8 @@ import {
   isValidWord,
   LetterState,
 } from "~/utils";
+import checkIconUrl from "~/icons/check.svg";
+import xIconUrl from "~/icons/x.svg";
 
 let WORD_LENGTH = 5;
 let TOTAL_GUESSES = 6;
@@ -33,14 +35,6 @@ interface ActionData {
 export let action: ActionFunction = async ({ request }) => {
   let formData = await request.formData();
   let session = await getSession(request);
-
-  if (formData.has("reset")) {
-    return redirect("/", {
-      headers: {
-        "Set-Cookie": await sessionStorage.destroySession(session),
-      },
-    });
-  }
 
   let word = session.get("word");
 
@@ -173,30 +167,47 @@ export default function IndexPage() {
         )}
 
         {data.done ? (
-          <div className="fixed top-1/2 left-1/2 bg-black bg-opacity-70 w-full h-screen -translate-x-1/2 -translate-y-1/2 grid place-items-center">
-            <div>
-              <div
-                className={clsx(
-                  "text-center text-2xl",
-                  data.winner ? "text-green-500" : "text-red-500"
-                )}
-              >
-                You {data.winner ? "won!" : "lost"} The word was "
-                {data.guesses[data.currentGuess - 1]
-                  .map((space) => space.letter)
-                  .join("")}
-                "
+          <div className="relative z-10" role="dialog" aria-modal="true">
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            <div className="fixed z-10 inset-0 overflow-y-auto">
+              <div className="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
+                <div className="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-sm sm:w-full sm:p-6">
+                  <div>
+                    <div
+                      className={clsx(
+                        "mx-auto flex items-center justify-center h-12 w-12 rounded-full",
+                        data.winner ? "bg-green-100" : "bg-red-100"
+                      )}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        className={clsx(
+                          "h-6 w-6",
+                          data.winner ? "text-green-600" : "text-red-600"
+                        )}
+                      >
+                        <use
+                          href={
+                            data.winner
+                              ? `${checkIconUrl}#check`
+                              : `${xIconUrl}#x`
+                          }
+                        />
+                      </svg>
+                    </div>
+                    <div className="mt-3 text-center sm:mt-5">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        You {data.winner ? "won" : "lost"}!
+                      </h3>
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-500">
+                          Come back and try again tomorrow
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <Form reloadDocument method="post">
-                <button
-                  name="reset"
-                  value="true"
-                  type="submit"
-                  className="text-purple-500 bg-white rounded-md px-4 py-2 text-xl mt-2"
-                >
-                  Play Again
-                </button>
-              </Form>
             </div>
           </div>
         ) : null}
@@ -219,7 +230,7 @@ export default function IndexPage() {
                       if (target.nextElementSibling) {
                         let nextInput = target.nextElementSibling;
                         if (nextInput instanceof HTMLInputElement) {
-                          nextInput.focus();
+                          nextInput.select();
                         }
                       }
                     }
@@ -289,7 +300,7 @@ export default function IndexPage() {
             enterKeyHint="enter"
             type="submit"
             disabled={"winner" in data || data.currentGuess === TOTAL_GUESSES}
-            className="bg-purple-500 text-white rounded-md px-4 py-2 text-xl mt-2"
+            className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
           >
             Submit Guess
           </button>
