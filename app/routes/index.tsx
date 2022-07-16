@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   ActionFunction,
   json,
@@ -6,7 +5,12 @@ import {
   MetaFunction,
   redirect,
 } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useLocation,
+} from "@remix-run/react";
 import clsx from "clsx";
 import { getSession, sessionStorage } from "~/session.server";
 import {
@@ -111,7 +115,9 @@ export let action: ActionFunction = async ({ request }) => {
 
   session.setGame(guesses);
 
-  return redirect("/", {
+  let url = new URL(request.url);
+
+  return redirect(url.pathname + url.search, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session.getSession()),
     },
@@ -123,6 +129,7 @@ type LoaderData =
       guesses: Array<Array<ComputedGuess>>;
       currentGuess: number;
       done: false;
+      word?: string; // only if 'cheat' query param is set
     }
   | {
       guesses: Array<Array<ComputedGuess>>;
@@ -183,20 +190,22 @@ export let loader: LoaderFunction = async ({ request }) => {
   }
 
   if (TOTAL_GUESSES > currentGuess) {
-    return json<LoaderData>(
-      {
-        guesses: games,
-        currentGuess,
-        done: false,
+    let url = new URL(request.url);
+    let data: LoaderData = {
+      guesses: games,
+      currentGuess,
+      done: false,
+    };
+
+    if (url.searchParams.has("cheat")) {
+      data.word = game.word;
+    }
+
+    return json<LoaderData>(data, {
+      headers: {
+        "Set-Cookie": await sessionStorage.commitSession(session.getSession()),
       },
-      {
-        headers: {
-          "Set-Cookie": await sessionStorage.commitSession(
-            session.getSession()
-          ),
-        },
-      }
-    );
+    });
   }
 
   return json<LoaderData>({
@@ -213,6 +222,7 @@ let inputs = [...Array(WORD_LENGTH).keys()];
 export default function IndexPage() {
   let data = useLoaderData<LoaderData>();
   let actionData = useActionData<ActionData>();
+  let location = useLocation();
 
   return (
     <div className="max-w-sm mx-auto">
@@ -220,6 +230,11 @@ export default function IndexPage() {
         <h1 className="text-4xl font-semibold text-center py-4">
           Remix Wordle
         </h1>
+        {data.done === false && data.word ? (
+          <h2 className="text-sm text-center mb-4 text-gray-700">
+            Your word is {data.word}
+          </h2>
+        ) : null}
       </header>
 
       <main>
@@ -309,9 +324,14 @@ export default function IndexPage() {
             if (data.currentGuess === guessIndex) {
               return (
                 <Form
+                  method="post"
+                  action={
+                    location.pathname + location.search
+                      ? location.search + "&index"
+                      : location.search + "?index"
+                  }
                   key={`current-guess-${data.currentGuess}`}
                   replace
-                  method="post"
                   className="grid grid-cols-5 gap-4"
                   id="current-guess"
                   autoComplete="off"
