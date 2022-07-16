@@ -89,6 +89,24 @@ export let action: ActionFunction = async ({ request }) => {
     );
   }
 
+  let fullGuesses = guesses.flatMap((letters) => {
+    return letters.map((letter) => letter.letter).join("");
+  });
+
+  if (fullGuesses.includes(guess)) {
+    return json<ActionData>(
+      { error: `You have already guessed ${guess}` },
+      {
+        status: 400,
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(
+            session.getSession()
+          ),
+        },
+      }
+    );
+  }
+
   let computed = computeGuess(guess, word);
 
   guesses.push(computed);
