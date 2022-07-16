@@ -96,6 +96,7 @@ interface LoaderData {
   guesses: Array<Array<ComputedGuess>>;
   currentGuess: number;
   winner?: boolean;
+  done: boolean;
 }
 
 export let loader: LoaderFunction = async ({ request }) => {
@@ -115,38 +116,39 @@ export let loader: LoaderFunction = async ({ request }) => {
     return Array.from({ length: WORD_LENGTH }).map(createEmptyGuess);
   });
   let games: Array<Array<ComputedGuess>> = [...validGuesses, ...fakeGames];
-  let currentGuessIndex = validGuesses.length;
-  let previousGuessIndex = currentGuessIndex - 1;
+  let currentGuess = validGuesses.length;
+  let currentGuessLetters = games.at(currentGuess - 1);
 
-  if (
-    currentGuessIndex === TOTAL_GUESSES &&
-    games[currentGuessIndex] &&
-    games[currentGuessIndex].every((space) => space.state !== LetterState.Match)
-  ) {
-    return json<LoaderData>({
-      guesses: games,
-      currentGuess: currentGuessIndex,
-      winner: false,
-    });
+  if (!currentGuessLetters) {
+    throw new Response("No current guess???", { status: 422 });
   }
 
-  if (
-    previousGuessIndex >= 0 &&
-    games[previousGuessIndex].every(
-      (space) => space.state === LetterState.Match
-    )
-  ) {
+  if (currentGuessLetters.every((space) => space.state === LetterState.Match)) {
     return json<LoaderData>({
       guesses: games,
-      currentGuess: currentGuessIndex,
+      currentGuess,
       winner: true,
+      done: true,
     });
   }
 
-  return json<LoaderData>(
-    { guesses: games, currentGuess: currentGuessIndex },
-    { headers: { "Set-Cookie": await sessionStorage.commitSession(session) } }
-  );
+  if (TOTAL_GUESSES > currentGuess) {
+    return json<LoaderData>(
+      {
+        guesses: games,
+        currentGuess,
+        done: false,
+      },
+      { headers: { "Set-Cookie": await sessionStorage.commitSession(session) } }
+    );
+  }
+
+  return json<LoaderData>({
+    guesses: games,
+    currentGuess,
+    winner: false,
+    done: true,
+  });
 };
 
 let inputs = [...Array(WORD_LENGTH).keys()];
@@ -170,7 +172,7 @@ export default function IndexPage() {
           </div>
         )}
 
-        {"winner" in data && (
+        {data.done ? (
           <div className="fixed top-1/2 left-1/2 bg-black bg-opacity-70 w-full h-screen -translate-x-1/2 -translate-y-1/2 grid place-items-center">
             <div>
               <div
@@ -179,7 +181,7 @@ export default function IndexPage() {
                   data.winner ? "text-green-500" : "text-red-500"
                 )}
               >
-                You {data.winner ? "win!" : "lost"} The word was "
+                You {data.winner ? "won!" : "lost"} The word was "
                 {data.guesses[data.currentGuess - 1]
                   .map((space) => space.letter)
                   .join("")}
@@ -197,7 +199,7 @@ export default function IndexPage() {
               </Form>
             </div>
           </div>
-        )}
+        ) : null}
 
         <div className="space-y-4">
           {data.guesses.map((guess, guessIndex) => {
