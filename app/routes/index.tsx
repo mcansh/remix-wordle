@@ -1,4 +1,3 @@
-import * as React from "react";
 import clsx from "clsx";
 import {
   ActionFunction,
@@ -13,14 +12,12 @@ import {
   ComputedGuess,
   computeGuess,
   createEmptyGuess,
-  getRandomWord,
   isValidGuess,
   isValidWord,
   LetterState,
 } from "~/utils";
 import checkIconUrl from "~/icons/check.svg";
 import xIconUrl from "~/icons/x.svg";
-import { addDays, format, startOfDay } from "date-fns";
 
 let WORD_LENGTH = 5;
 let TOTAL_GUESSES = 6;
