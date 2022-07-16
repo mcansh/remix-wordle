@@ -9,6 +9,8 @@ function emojiRow(row: Array<ComputedGuess>) {
         return "🟨";
       case LetterState.Miss:
         return "🟥";
+      case LetterState.Blank:
+        return "⬜️";
       default:
         throw new Error("Unknown letter state");
     }
