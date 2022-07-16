@@ -5,6 +5,5 @@
 /app/styles/global.css
 
 /node_modules/
-/.vercel/
 .env
 .DS_Store

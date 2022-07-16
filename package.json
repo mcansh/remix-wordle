@@ -5,8 +5,8 @@
   "license": "MIT",
   "sideEffects": false,
   "scripts": {
-    "build:remix": "remix build",
     "build:css": "tailwindcss -o ./app/styles/global.css --minify",
+    "build:remix": "remix build",
     "build": "cross-env NODE_ENV=production run-s build:*",
     "dev:css": "tailwindcss -o app/styles/global.css --watch",
     "dev:remix": "remix dev",
