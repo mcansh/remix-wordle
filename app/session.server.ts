@@ -31,6 +31,7 @@ export async function getSession(request: Request) {
 
   if (!game) {
     game = { word: getRandomWord(), guesses: [], done: false };
+    session.set(gameId, game);
   }
 
   return {
