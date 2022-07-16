@@ -209,13 +209,16 @@ export default function IndexPage() {
                   method="post"
                   className="grid grid-cols-5 gap-4"
                   id="current-guess"
+                  autoComplete="off"
                   onChange={(event) => {
-                    // prettier-ignore
-                    let currentInput = event.nativeEvent.target as Element | null;
-                    if (currentInput?.nextElementSibling) {
-                      let nextInput = currentInput.nextElementSibling;
-                      if (nextInput instanceof HTMLInputElement) {
-                        nextInput.focus();
+                    let target = event.nativeEvent.target;
+                    if (target instanceof HTMLInputElement) {
+                      if (target.value === "") return;
+                      if (target.nextElementSibling) {
+                        let nextInput = target.nextElementSibling;
+                        if (nextInput instanceof HTMLInputElement) {
+                          nextInput.focus();
+                        }
                       }
                     }
                   }}
@@ -236,6 +239,7 @@ export default function IndexPage() {
                       aria-label={`letter ${index + 1}`}
                       placeholder=" "
                       onClick={(event) => event.currentTarget.select()}
+                      autoFocus={index === 0}
                     />
                   ))}
                 </Form>
