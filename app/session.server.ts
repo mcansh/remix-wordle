@@ -1,5 +1,6 @@
 import invariant from "tiny-invariant";
 import { createCookieSessionStorage } from "@remix-run/node";
+import { ComputedGuess, getRandomWord } from "./utils";
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 
@@ -15,7 +16,27 @@ export let sessionStorage = createCookieSessionStorage({
   },
 });
 
-export function getSession(input: Request | string | undefined | null) {
-  let cookie = input instanceof Request ? input.headers.get("Cookie") : input;
-  return sessionStorage.getSession(cookie);
+export interface Game {
+  word: string;
+  guesses: Array<Array<ComputedGuess>>;
+}
+
+export async function getSession(request: Request, gameId: string) {
+  let cookie = request.headers.get("Cookie");
+  let session = await sessionStorage.getSession(cookie);
+  let game = await session.get(gameId);
+
+  if (!game) {
+    game = { word: getRandomWord(), guesses: [], done: false };
+  }
+
+  return {
+    getSession: () => session,
+    getGame: async (): Promise<Game> => {
+      return game;
+    },
+    setGame: async (guesses: Game["guesses"]) => {
+      session.set(gameId, { ...game, guesses });
+    },
+  };
 }

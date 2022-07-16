@@ -20,6 +20,7 @@ import {
 } from "~/utils";
 import checkIconUrl from "~/icons/check.svg";
 import xIconUrl from "~/icons/x.svg";
+import { format, startOfDay } from "date-fns";
 
 let WORD_LENGTH = 5;
 let TOTAL_GUESSES = 6;
@@ -33,19 +34,13 @@ interface ActionData {
 }
 
 export let action: ActionFunction = async ({ request }) => {
+  let gameId = format(startOfDay(new Date()), "yyyy-MM-dd");
+  let session = await getSession(request, gameId);
+
   let formData = await request.formData();
-  let session = await getSession(request);
-
-  let word = session.get("word");
-
-  if (!word) {
-    return json<ActionData>(
-      { error: "No word has been set." },
-      { status: 500 }
-    );
-  }
-
   let letters = formData.getAll("letter");
+
+  let { word, guesses } = await session.getGame();
 
   if (
     letters.length !== WORD_LENGTH ||
@@ -53,14 +48,28 @@ export let action: ActionFunction = async ({ request }) => {
   ) {
     return json<ActionData>(
       { error: "You must guess a word of length " + WORD_LENGTH },
-      { status: 400 }
+      {
+        status: 400,
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(
+            session.getSession()
+          ),
+        },
+      }
     );
   }
 
   if (!letters.every((letter) => typeof letter === "string")) {
     return json<ActionData>(
       { error: "You must guess a word of length " + WORD_LENGTH },
-      { status: 400 }
+      {
+        status: 400,
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(
+            session.getSession()
+          ),
+        },
+      }
     );
   }
 
@@ -69,20 +78,27 @@ export let action: ActionFunction = async ({ request }) => {
   if (!isValidWord(guess)) {
     return json<ActionData>(
       { error: `${guess} is not a valid word` },
-      { status: 400 }
+      {
+        status: 400,
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(
+            session.getSession()
+          ),
+        },
+      }
     );
   }
 
   let computed = computeGuess(guess, word);
 
-  let guesses = (session.get("guesses") || []) as Array<Array<ComputedGuess>>;
-
   guesses.push(computed);
 
-  session.set("guesses", guesses);
+  session.setGame(guesses);
 
   return redirect("/", {
-    headers: { "Set-Cookie": await sessionStorage.commitSession(session) },
+    headers: {
+      "Set-Cookie": await sessionStorage.commitSession(session.getSession()),
+    },
   });
 };
 
@@ -94,15 +110,11 @@ interface LoaderData {
 }
 
 export let loader: LoaderFunction = async ({ request }) => {
-  let session = await getSession(request);
+  let gameId = format(startOfDay(new Date()), "yyyy-MM-dd");
+  let session = await getSession(request, gameId);
+  let game = await session.getGame();
 
-  if (!session.has("word")) {
-    let word = getRandomWord();
-    session.set("word", word);
-  }
-
-  let guesses = session.get("guesses") || [];
-  let validGuesses = guesses.filter(isValidGuess);
+  let validGuesses = game.guesses.filter(isValidGuess);
   let fakeGamesToMake = TOTAL_GUESSES - validGuesses.length;
   let fakeGames: Array<Array<ComputedGuess>> = Array.from({
     length: fakeGamesToMake,
@@ -114,16 +126,30 @@ export let loader: LoaderFunction = async ({ request }) => {
   let currentGuessLetters = games.at(currentGuess - 1);
 
   if (!currentGuessLetters) {
-    throw new Response("No current guess???", { status: 422 });
+    throw new Response("No current guess???", {
+      status: 422,
+      headers: {
+        "Set-Cookie": await sessionStorage.commitSession(session.getSession()),
+      },
+    });
   }
 
   if (currentGuessLetters.every((space) => space.state === LetterState.Match)) {
-    return json<LoaderData>({
-      guesses: games,
-      currentGuess,
-      winner: true,
-      done: true,
-    });
+    return json<LoaderData>(
+      {
+        guesses: games,
+        currentGuess,
+        winner: true,
+        done: true,
+      },
+      {
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(
+            session.getSession()
+          ),
+        },
+      }
+    );
   }
 
   if (TOTAL_GUESSES > currentGuess) {
@@ -133,7 +159,13 @@ export let loader: LoaderFunction = async ({ request }) => {
         currentGuess,
         done: false,
       },
-      { headers: { "Set-Cookie": await sessionStorage.commitSession(session) } }
+      {
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(
+            session.getSession()
+          ),
+        },
+      }
     );
   }
 
