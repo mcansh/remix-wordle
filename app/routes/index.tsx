@@ -326,9 +326,10 @@ export default function IndexPage() {
                 <Form
                   method="post"
                   action={
-                    location.pathname + location.search.length
+                    location.pathname +
+                    (location.search.length > 0
                       ? location.search + "&index"
-                      : "?index"
+                      : "?index")
                   }
                   key={`current-guess-${data.currentGuess}`}
                   replace
