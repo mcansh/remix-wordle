@@ -1,57 +1,34 @@
+import { Guess, Prisma, LetterState } from "@prisma/client";
 import wordBank from "./word-bank.json";
 
-export enum LetterState {
-  Blank, // The letter is blank
-  Miss, // Letter doesn't exist at all
-  Present, // Letter exists but wrong location
-  Match, // Letter exists and is in the right location
-}
-
-export interface ComputedGuess {
-  letter: string;
-  state: LetterState;
-  id: string;
-}
-
-function genId() {
-  return Math.random().toString(16).slice(2);
-}
-
-export function createEmptyGuess() {
-  return { letter: "", state: LetterState.Blank, id: genId() };
-}
+type LetterNoId = Omit<Prisma.LetterUncheckedCreateInput, "guessId">;
 
 export function computeGuess(
   guess: string,
   answerString: string
-): Array<ComputedGuess> {
-  const result: Array<ComputedGuess> = [];
+): Array<LetterNoId> {
+  let result: Array<LetterNoId> = [];
 
   if (guess.length !== answerString.length) {
     return result;
   }
 
-  const answer = answerString.split("");
+  let answer = answerString.split("");
+  let guessAsArray = guess.split("");
 
-  const guessAsArray = guess.split("");
-
-  const answerLetterCount: Record<string, number> = {};
+  let answerLetterCount: Record<string, number> = {};
 
   guessAsArray.forEach((letter, index) => {
-    const currentAnswerLetter = answer[index];
-
-    answerLetterCount[currentAnswerLetter] = answerLetterCount[
-      currentAnswerLetter
-    ]
-      ? answerLetterCount[currentAnswerLetter] + 1
-      : 1;
+    let currentAnswerLetter = answer[index];
+    let count = answerLetterCount[currentAnswerLetter];
+    answerLetterCount[currentAnswerLetter] = count ? count + 1 : 1;
 
     if (currentAnswerLetter === letter) {
-      result.push({ letter: letter, state: LetterState.Match, id: genId() });
+      result.push({ letter: letter, state: LetterState.Match });
     } else if (answer.includes(letter)) {
-      result.push({ letter: letter, state: LetterState.Present, id: genId() });
+      result.push({ letter: letter, state: LetterState.Present });
     } else {
-      result.push({ letter: letter, state: LetterState.Miss, id: genId() });
+      result.push({ letter: letter, state: LetterState.Miss });
     }
   });
 
@@ -60,7 +37,7 @@ export function computeGuess(
       return;
     }
 
-    const guessLetter = guessAsArray[resultIndex];
+    let guessLetter = guessAsArray[resultIndex];
 
     answer.forEach((currentAnswerLetter, answerIndex) => {
       if (currentAnswerLetter !== guessLetter) {
@@ -87,18 +64,5 @@ export function getRandomWord(): string {
 }
 
 export function isValidWord(guess: string): boolean {
-  return wordBank.valid.concat(wordBank.invalid).includes(guess);
-}
-
-export function isValidGuess(guess: unknown): guess is ComputedGuess {
-  return (
-    Array.isArray(guess) &&
-    guess.every(
-      (letter) =>
-        typeof letter === "object" &&
-        typeof letter.letter === "string" &&
-        typeof letter.state === "number" &&
-        typeof letter.id === "string"
-    )
-  );
+  return [...wordBank.valid, ...wordBank.invalid].includes(guess);
 }

@@ -1,6 +1,8 @@
-import { ComputedGuess, LetterState } from ".";
+import { Letter, LetterState } from "@prisma/client";
 
-function emojiRow(row: Array<ComputedGuess>) {
+type SmallLetter = Pick<Letter, "letter" | "state">;
+
+function emojiRow(row: Array<SmallLetter>) {
   let emoji = row.map((letter) => {
     switch (letter.state) {
       case LetterState.Match:
@@ -19,6 +21,8 @@ function emojiRow(row: Array<ComputedGuess>) {
   return emoji.join(" ");
 }
 
-export function boardToEmoji(board: Array<Array<ComputedGuess>>) {
-  return board.flatMap((row) => emojiRow(row)).join("\n");
+export function boardToEmoji(
+  guesses: Array<{ letters: Array<SmallLetter> }>
+): string {
+  return guesses.flatMap((row) => emojiRow(row.letters)).join("\n");
 }
