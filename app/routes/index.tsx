@@ -11,14 +11,11 @@ import {
   useLoaderData,
   useLocation,
 } from "@remix-run/react";
-import { Letter, LetterState } from "@prisma/client";
+import { Guess, Letter, LetterState } from "@prisma/client";
 import clsx from "clsx";
-
-import checkIconUrl from "~/icons/check.svg";
-import xIconUrl from "~/icons/x.svg";
-import { boardToEmoji } from "~/utils/board-to-emoji";
 import { requireUserId } from "~/session.server";
 import { createGuess, getTodaysGame } from "~/models/game.server";
+import { GameOverModal } from "~/components/game-over-modal";
 
 export let WORD_LENGTH = 5;
 export let LETTER_INPUTS = [...Array(WORD_LENGTH).keys()];
@@ -28,28 +25,26 @@ export let meta: MetaFunction = () => {
   return { title: "Remix Wordle" };
 };
 
+type BasicLetter = Pick<Letter, "id" | "state" | "letter">;
+
 export let loader = async ({ request }: LoaderArgs) => {
   let userId = await requireUserId(request);
   let game = await getTodaysGame(userId);
 
   let fillerGuessesToMake = TOTAL_GUESSES - game.guesses.length;
-  let fillerGuesses: Array<{ letters: Array<Letter> }> = Array.from({
+  let fillerGuesses = Array.from({
     length: fillerGuessesToMake,
-  }).map(() => {
+  }).map((): { letters: Array<BasicLetter> } => {
     return {
-      letters: Array.from({ length: WORD_LENGTH }).map((): Letter => {
-        return {
-          id: "",
-          updatedAt: new Date(),
-          createdAt: new Date(),
-          state: LetterState.Blank,
-          letter: "",
-          guessId: "",
-        };
+      letters: Array.from({ length: WORD_LENGTH }).map(() => {
+        return { id: "", state: LetterState.Blank, letter: "" };
       }),
     };
   });
-  let guesses = [...game.guesses, ...fillerGuesses];
+  let guesses: Array<{ letters: Array<BasicLetter> }> = [
+    ...game.guesses,
+    ...fillerGuesses,
+  ];
   let currentGuess = game.guesses.length;
 
   let url = new URL(request.url);
@@ -112,8 +107,9 @@ export default function IndexPage() {
         <h1 className="text-4xl font-semibold text-center py-4">
           Remix Wordle
         </h1>
-        {data.status === "IN_PROGRESS" && data.word ? (
+        {data.status === "IN_PROGRESS" && "word" in data ? (
           <h2 className="text-sm text-center mb-4 text-gray-700">
+            {/* @ts-ignore */}
             Your word is {data.word}
           </h2>
         ) : null}
@@ -127,7 +123,14 @@ export default function IndexPage() {
         )}
 
         {data.status === "COMPLETE" || data.status === "WON" ? (
-          <GameCompleteModal />
+          <GameOverModal
+            currentGuess={data.currentGuess}
+            guesses={data.guesses}
+            totalGuesses={TOTAL_GUESSES}
+            winner={data.status === "WON"}
+            // @ts-ignore
+            word={data.word}
+          />
         ) : null}
 
         <div className="space-y-4">
@@ -223,80 +226,6 @@ export default function IndexPage() {
           />
         </div>
       </main>
-    </div>
-  );
-}
-
-function GameCompleteModal() {
-  let data = useLoaderData<typeof loader>();
-  let winner = data.status === "WON";
-  let emojiBoard = boardToEmoji(data.guesses);
-  let attempts = winner ? data.currentGuess : "X";
-
-  return (
-    <div className="relative z-10" role="dialog" aria-modal="true">
-      <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-      <div className="fixed z-10 inset-0 overflow-y-auto">
-        <div className="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
-          <div className="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-sm sm:w-full sm:p-6">
-            <div>
-              <div
-                className={clsx(
-                  "mx-auto flex items-center justify-center h-12 w-12 rounded-full",
-                  winner ? "bg-green-100" : "bg-red-100"
-                )}
-              >
-                <svg
-                  aria-hidden="true"
-                  className={clsx(
-                    "h-6 w-6",
-                    winner ? "text-green-600" : "text-red-600"
-                  )}
-                >
-                  <use
-                    href={winner ? `${checkIconUrl}#check` : `${xIconUrl}#x`}
-                  />
-                </svg>
-              </div>
-              <div className="mt-3 text-center sm:mt-5">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  Game Summary
-                </h3>
-                <div className="mt-2">
-                  <div className="whitespace-pre">{emojiBoard}</div>
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      let text = `
-                        Remix Wordle - ${attempts}/${TOTAL_GUESSES}
-                        ${emojiBoard}
-                      `
-                        .split("\n")
-                        .map((line) => line.trim())
-                        .join("\n");
-
-                      try {
-                        const type = "text/plain";
-                        const blob = new Blob([text], { type });
-                        let write = [new ClipboardItem({ [type]: blob })];
-                        await window.navigator.clipboard.write(write);
-                      } catch (error) {
-                        // browser doesn't support clipboard api
-                      }
-                    }}
-                  >
-                    Copy to clipboard 📋
-                  </button>
-                  <p className="text-sm text-gray-500 mt-2">
-                    The word was <strong>{data.word}</strong>. Come back and try
-                    again tomorrow
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
