@@ -1,4 +1,4 @@
-import { ComputedGuess, LetterState } from ".";
+import { ComputedGuess, LetterState } from "./game";
 
 function emojiRow(row: Array<ComputedGuess>) {
   let emoji = row.map((letter) => {

@@ -7,10 +7,10 @@ import type {
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 
-import { createUserSession, getUserId } from "~/session.server";
-import { loginSchema, verifyLogin } from "~/models/user.server";
+import { getUserId, createUserSession } from "~/session.server";
+
+import { createUser, getUserByEmail, joinSchema } from "~/models/user.server";
 import { safeRedirect } from "~/utils";
-import { z } from "zod";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await getUserId(request);
@@ -19,17 +19,17 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 interface ActionData {
-  errors: z.inferFlattenedErrors<typeof loginSchema>["fieldErrors"];
+  errors: z.inferFlattenedErrors<typeof joinSchema>["fieldErrors"];
 }
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const email = formData.get("email");
+  const username = formData.get("username");
   const password = formData.get("password");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
-  const remember = formData.get("remember");
 
-  let result = loginSchema.safeParse({ email, password });
+  let result = joinSchema.safeParse({ email, password, username });
 
   if (!result.success) {
     return json<ActionData>(
@@ -38,39 +38,43 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const user = await verifyLogin(result.data.email, result.data.password);
-
-  if (!user) {
+  const existingUser = await getUserByEmail(result.data.email);
+  if (existingUser) {
     return json<ActionData>(
-      { errors: { email: ["Invalid email or password"] } },
+      { errors: { email: "A user already exists with this email" } },
       { status: 400 }
     );
   }
 
+  const user = await createUser(result.data);
+
   return createUserSession({
     request,
     userId: user.id,
-    remember: remember === "on" ? true : false,
+    remember: false,
     redirectTo,
   });
 };
 
 export const meta: MetaFunction = () => {
   return {
-    title: "Login",
+    title: "Sign Up",
   };
 };
 
-export default function LoginPage() {
+export default function Join() {
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/notes";
-  const actionData = useActionData<ActionData>();
+  const redirectTo = searchParams.get("redirectTo") ?? undefined;
+  const actionData = useActionData() as ActionData;
   const emailRef = React.useRef<HTMLInputElement>(null);
+  const usernameRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (actionData?.errors.email) {
       emailRef.current?.focus();
+    } else if (actionData?.errors.username) {
+      usernameRef.current?.focus();
     } else if (actionData?.errors.password) {
       passwordRef.current?.focus();
     }
@@ -110,6 +114,32 @@ export default function LoginPage() {
 
           <div>
             <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Username
+            </label>
+            <div className="mt-1">
+              <input
+                id="username"
+                ref={usernameRef}
+                name="username"
+                type="text"
+                autoComplete="username"
+                aria-invalid={actionData?.errors?.username ? true : undefined}
+                aria-describedby="username-error"
+                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+              />
+              {actionData?.errors?.username && (
+                <div className="pt-1 text-red-700" id="username-error">
+                  {actionData.errors.username}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
               htmlFor="password"
               className="block text-sm font-medium text-gray-700"
             >
@@ -121,7 +151,7 @@ export default function LoginPage() {
                 ref={passwordRef}
                 name="password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete="new-password"
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
@@ -139,33 +169,19 @@ export default function LoginPage() {
             type="submit"
             className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
           >
-            Log in
+            Create Account
           </button>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember"
-                name="remember"
-                type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <label
-                htmlFor="remember"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Remember me
-              </label>
-            </div>
+          <div className="flex items-center justify-center">
             <div className="text-center text-sm text-gray-500">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <Link
                 className="text-blue-500 underline"
                 to={{
-                  pathname: "/join",
+                  pathname: "/login",
                   search: searchParams.toString(),
                 }}
               >
-                Sign up
+                Log in
               </Link>
             </div>
           </div>

@@ -1,7 +1,19 @@
 import type { User } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { z } from "zod";
 
 import { db } from "~/db.server";
+
+export let joinSchema = z.object({
+  email: z.string().email(),
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(10, "Password must be at least 10 characters"),
+});
+
+export let loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(10, "Password must be at least 10 characters"),
+});
 
 export async function getUserById(id: User["id"]) {
   return db.user.findUnique({ where: { id } });

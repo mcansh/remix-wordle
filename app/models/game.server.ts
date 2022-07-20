@@ -8,7 +8,7 @@ import {
   getRandomWord,
   isValidWord,
   LetterState,
-} from "~/utils";
+} from "~/utils/game";
 
 let TOTAL_GUESSES = 6;
 

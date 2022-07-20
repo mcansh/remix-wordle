@@ -1,4 +1,4 @@
-import { computeGuess, isValidWord, LetterState } from "./index";
+import { computeGuess, isValidWord, LetterState } from "./game";
 
 describe("computeGuess", () => {
   test("works with match and presents", () => {

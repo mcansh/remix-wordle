@@ -15,8 +15,8 @@ import clsx from "clsx";
 import { requireUserId } from "~/session.server";
 import { createGuess, getFullBoard, getTodaysGame } from "~/models/game.server";
 import { GameOverModal } from "~/components/game-over-modal";
-import { LetterState } from "~/utils";
-import { LETTER_INPUTS, TOTAL_GUESSES, WORD_LENGTH } from "~/constants";
+import { LetterState } from "~/utils/game";
+import { LETTER_INPUTS, TOTAL_GUESSES } from "~/constants";
 
 export let meta: MetaFunction = () => {
   return { title: "Remix Wordle" };
