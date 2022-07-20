@@ -13,11 +13,12 @@ ARG RAILWAY_ENVIRONMENT
 ARG RAILWAY=false
 ENV NODE_ENV=production
 
-RUN apt-get update
+# install openssl for Prisma
+RUN apt-get update && apt-get install -y openssl
 
 ##################################################################
 
-# install all node_modules, including dev
+# install all node_modules, including devDependencies
 FROM base as deps
 
 WORKDIR /workdir/
@@ -38,20 +39,22 @@ RUN npm prune --production
 
 ##################################################################
 
-# build workdir
+# build the app
 FROM base as build
 
 WORKDIR /workdir/
 
 COPY --from=deps /workdir/node_modules /workdir/node_modules
 
-# our app code changes all the time
+ADD prisma .
+RUN npx prisma generate
+
 ADD . .
 RUN npm run build
 
 ##################################################################
 
-# build smaller image for running
+# finally, build the production image with minimal footprint
 FROM base
 
 WORKDIR /workdir/
