@@ -11,56 +11,34 @@ import {
   useLoaderData,
   useLocation,
 } from "@remix-run/react";
-import { Guess, Letter, LetterState } from "@prisma/client";
 import clsx from "clsx";
 import { requireUserId } from "~/session.server";
-import { createGuess, getTodaysGame } from "~/models/game.server";
+import { createGuess, getFullBoard, getTodaysGame } from "~/models/game.server";
 import { GameOverModal } from "~/components/game-over-modal";
-
-export let WORD_LENGTH = 5;
-export let LETTER_INPUTS = [...Array(WORD_LENGTH).keys()];
-export let TOTAL_GUESSES = 6;
+import { LetterState } from "~/utils";
+import { LETTER_INPUTS, TOTAL_GUESSES, WORD_LENGTH } from "~/constants";
 
 export let meta: MetaFunction = () => {
   return { title: "Remix Wordle" };
 };
 
-type BasicLetter = Pick<Letter, "id" | "state" | "letter">;
-
 export let loader = async ({ request }: LoaderArgs) => {
   let userId = await requireUserId(request);
   let game = await getTodaysGame(userId);
-
-  let fillerGuessesToMake = TOTAL_GUESSES - game.guesses.length;
-  let fillerGuesses = Array.from({
-    length: fillerGuessesToMake,
-  }).map((): { letters: Array<BasicLetter> } => {
-    return {
-      letters: Array.from({ length: WORD_LENGTH }).map(() => {
-        return { id: "", state: LetterState.Blank, letter: "" };
-      }),
-    };
-  });
-  let guesses: Array<{ letters: Array<BasicLetter> }> = [
-    ...game.guesses,
-    ...fillerGuesses,
-  ];
-  let currentGuess = game.guesses.length;
+  let board = getFullBoard(game);
 
   let url = new URL(request.url);
   if (!url.searchParams.has("cheat")) {
-    let { word, ...rest } = game;
+    let { word, ...rest } = board.game;
     return json({
       ...rest,
-      guesses,
-      currentGuess,
+      currentGuess: board.currentGuess,
     });
   }
 
   return json({
-    ...game,
-    guesses,
-    currentGuess,
+    currentGuess: board.currentGuess,
+    ...board.game,
   });
 };
 
@@ -69,28 +47,16 @@ export let action = async ({ request }: ActionArgs) => {
   let formData = await request.formData();
   let letters = formData.getAll("letter");
 
-  if (!letters.every((letter) => typeof letter === "string")) {
-    return json(
-      { error: "You must guess a word of length " + WORD_LENGTH },
-      { status: 400 }
-    );
+  let guessedWord = letters.join("");
+  let [_guess, error] = await createGuess(userId, guessedWord);
+
+  if (error) {
+    return json({ error }, { status: 400 });
   }
 
-  if (
-    letters.length !== WORD_LENGTH ||
-    letters.some((letter) => letter === "")
-  ) {
-    return json(
-      { error: "You must guess a word of length " + WORD_LENGTH },
-      { status: 400 }
-    );
-  }
+  let url = new URL(request.url);
 
-  let guess = await createGuess(userId, letters.join(""));
-
-  console.log({ guess });
-
-  return redirect("/");
+  return redirect(url.pathname + url.search);
 };
 
 export default function IndexPage() {
@@ -138,6 +104,7 @@ export default function IndexPage() {
             if (data.currentGuess === guessIndex) {
               return (
                 <Form
+                  reloadDocument
                   method="post"
                   action={actionUrl}
                   key={`current-guess-${data.currentGuess}`}

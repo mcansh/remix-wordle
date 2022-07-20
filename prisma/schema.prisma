@@ -42,22 +42,5 @@ model Guess {
   updatedAt DateTime @updatedAt
   game      Game     @relation(fields: [gameId], references: [id])
   gameId    String
-  letters   Letter[]
-}
-
-enum LetterState {
-  Blank // The letter is blank
-  Miss // Letter doesn't exist at all
-  Present // Letter exists but wrong location
-  Match // Letter exists and is in the right location
-}
-
-model Letter {
-  id        String      @id @default(cuid())
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  guess     Guess       @relation(fields: [guessId], references: [id])
-  guessId   String
-  letter    String
-  state     LetterState
+  guess     String
 }

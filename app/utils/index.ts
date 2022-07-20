@@ -1,34 +1,50 @@
-import { Guess, Prisma, LetterState } from "@prisma/client";
 import wordBank from "./word-bank.json";
 
-type LetterNoId = Omit<Prisma.LetterUncheckedCreateInput, "guessId">;
+export enum LetterState {
+  Blank, // The letter is blank
+  Miss, // Letter doesn't exist at all
+  Present, // Letter exists but wrong location
+  Match, // Letter exists and is in the right location
+}
+
+export interface ComputedGuess {
+  id: string;
+  letter: string;
+  state: LetterState;
+}
+
+function genId() {
+  return Math.random().toString(36).substring(2, 15);
+}
 
 export function computeGuess(
   guess: string,
-  answerString: string
-): Array<LetterNoId> {
-  let result: Array<LetterNoId> = [];
+  answer: string
+): Array<ComputedGuess> {
+  let result: Array<ComputedGuess> = [];
 
-  if (guess.length !== answerString.length) {
-    return result;
+  if (guess.length !== answer.length) {
+    return [];
   }
 
-  let answer = answerString.split("");
-  let guessAsArray = guess.split("");
+  let answerLetters = answer.split("");
+  let guessLetters = guess.split("");
 
   let answerLetterCount: Record<string, number> = {};
 
-  guessAsArray.forEach((letter, index) => {
-    let currentAnswerLetter = answer[index];
+  guessLetters.forEach((letter, index) => {
+    let currentAnswerLetter = answerLetters[index];
     let count = answerLetterCount[currentAnswerLetter];
     answerLetterCount[currentAnswerLetter] = count ? count + 1 : 1;
 
+    let id = genId();
+
     if (currentAnswerLetter === letter) {
-      result.push({ letter: letter, state: LetterState.Match });
+      result.push({ id, letter, state: LetterState.Match });
     } else if (answer.includes(letter)) {
-      result.push({ letter: letter, state: LetterState.Present });
+      result.push({ id, letter, state: LetterState.Present });
     } else {
-      result.push({ letter: letter, state: LetterState.Miss });
+      result.push({ id, letter, state: LetterState.Miss });
     }
   });
 
@@ -37,9 +53,9 @@ export function computeGuess(
       return;
     }
 
-    let guessLetter = guessAsArray[resultIndex];
+    let guessLetter = guessLetters[resultIndex];
 
-    answer.forEach((currentAnswerLetter, answerIndex) => {
+    answerLetters.forEach((currentAnswerLetter, answerIndex) => {
       if (currentAnswerLetter !== guessLetter) {
         return;
       }
