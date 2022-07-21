@@ -50,6 +50,7 @@ export function GameOverModal({
                   <div className="whitespace-pre">{boardToEmoji(guesses)}</div>
                   <button
                     type="button"
+                    className="mx-auto my-4 flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
                     onClick={async () => {
                       let guessString = winner
                         ? currentGuess
