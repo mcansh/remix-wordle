@@ -5,6 +5,7 @@ import { db } from "~/db.server";
 import {
   ComputedGuess,
   computeGuess,
+  createEmptyLetter,
   getRandomWord,
   isValidWord,
   LetterState,
@@ -60,7 +61,7 @@ export function getFullBoard(game: FullGame) {
   }).map((): { letters: Array<ComputedGuess> } => {
     return {
       letters: Array.from({ length: WORD_LENGTH }).map(() => {
-        return { id: "", state: LetterState.Blank, letter: "" };
+        return createEmptyLetter();
       }),
     };
   });
@@ -81,10 +82,8 @@ export function getFullBoard(game: FullGame) {
 
   return {
     currentGuess,
-    game: {
-      ...game,
-      guesses,
-    },
+    ...game,
+    guesses,
   };
 }
 

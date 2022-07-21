@@ -28,18 +28,17 @@ export let loader = async ({ request }: LoaderArgs) => {
   let board = getFullBoard(game);
 
   let url = new URL(request.url);
-  if (!url.searchParams.has("cheat")) {
-    let { word, ...rest } = board.game;
-    return json({
-      ...rest,
-      currentGuess: board.currentGuess,
-    });
+
+  if (
+    url.searchParams.has("cheat") ||
+    ["COMPLETE", "WON"].includes(game.status)
+  ) {
+    return json(board);
   }
 
-  return json({
-    currentGuess: board.currentGuess,
-    ...board.game,
-  });
+  let { word, ...rest } = board;
+
+  return json({ ...rest, word: undefined });
 };
 
 export let action = async ({ request }: ActionArgs) => {
@@ -75,7 +74,6 @@ export default function IndexPage() {
         </h1>
         {data.status === "IN_PROGRESS" && "word" in data ? (
           <h2 className="text-sm text-center mb-4 text-gray-700">
-            {/* @ts-ignore */}
             Your word is {data.word}
           </h2>
         ) : null}
@@ -88,14 +86,13 @@ export default function IndexPage() {
           </div>
         )}
 
-        {data.status === "COMPLETE" || data.status === "WON" ? (
+        {["COMPLETE", "WON"].includes(data.status) ? (
           <GameOverModal
             currentGuess={data.currentGuess}
             guesses={data.guesses}
             totalGuesses={TOTAL_GUESSES}
             winner={data.status === "WON"}
-            // @ts-ignore
-            word={data.word}
+            word={"word" in data ? data.word : ""}
           />
         ) : null}
 

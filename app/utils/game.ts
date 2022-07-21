@@ -17,6 +17,10 @@ function genId() {
   return Math.random().toString(36).substring(2, 15);
 }
 
+export function createEmptyLetter() {
+  return { id: genId(), state: LetterState.Blank, letter: "" };
+}
+
 export function computeGuess(
   guess: string,
   answer: string
