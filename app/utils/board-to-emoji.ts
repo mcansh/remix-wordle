@@ -1,4 +1,4 @@
-import { ComputedGuess, LetterState } from ".";
+import { ComputedGuess, LetterState } from "./game";
 
 function emojiRow(row: Array<ComputedGuess>) {
   let emoji = row.map((letter) => {
@@ -19,6 +19,8 @@ function emojiRow(row: Array<ComputedGuess>) {
   return emoji.join(" ");
 }
 
-export function boardToEmoji(board: Array<Array<ComputedGuess>>) {
-  return board.flatMap((row) => emojiRow(row)).join("\n");
+export function boardToEmoji(
+  guesses: Array<{ letters: Array<ComputedGuess> }>
+): string {
+  return guesses.flatMap((row) => emojiRow(row.letters)).join("\n");
 }

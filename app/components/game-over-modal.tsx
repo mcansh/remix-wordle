@@ -1,8 +1,8 @@
 import clsx from "clsx";
-import { ComputedGuess } from "~/utils";
 import { boardToEmoji } from "~/utils/board-to-emoji";
 import checkIconUrl from "~/icons/check.svg";
 import xIconUrl from "~/icons/x.svg";
+import { ComputedGuess } from "~/utils/game";
 
 export function GameOverModal({
   currentGuess,
@@ -12,7 +12,9 @@ export function GameOverModal({
   word,
 }: {
   currentGuess: number;
-  guesses: Array<Array<ComputedGuess>>;
+  guesses: Array<{
+    letters: Array<Pick<ComputedGuess, "id" | "state" | "letter">>;
+  }>;
   totalGuesses: number;
   winner: boolean;
   word: string;
@@ -50,10 +52,11 @@ export function GameOverModal({
                   <div className="whitespace-pre">{boardToEmoji(guesses)}</div>
                   <button
                     type="button"
+                    className="mx-auto my-4 flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
                     onClick={async () => {
-                      let guessString = winner
-                        ? currentGuess
-                        : "X" + "/" + totalGuesses;
+                      let guessString =
+                        (winner ? currentGuess : "X") + "/" + totalGuesses;
+
                       let text =
                         `Remix Wordle - ${guessString} \n` +
                         boardToEmoji(guesses)

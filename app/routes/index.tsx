@@ -1,7 +1,7 @@
 import {
-  ActionFunction,
+  ActionArgs,
   json,
-  LoaderFunction,
+  LoaderArgs,
   MetaFunction,
   redirect,
 } from "@remix-run/node";
@@ -12,215 +12,59 @@ import {
   useLocation,
 } from "@remix-run/react";
 import clsx from "clsx";
+import { requireUserId } from "~/session.server";
+import { createGuess, getFullBoard, getTodaysGame } from "~/models/game.server";
 import { GameOverModal } from "~/components/game-over-modal";
-import { getSession, sessionStorage } from "~/session.server";
-import {
-  ComputedGuess,
-  computeGuess,
-  createEmptyGuess,
-  isValidGuess,
-  isValidWord,
-  LetterState,
-} from "~/utils";
-
-let WORD_LENGTH = 5;
-let TOTAL_GUESSES = 6;
+import { LetterState } from "~/utils/game";
+import { LETTER_INPUTS, TOTAL_GUESSES } from "~/constants";
 
 export let meta: MetaFunction = () => {
   return { title: "Remix Wordle" };
 };
 
-interface ActionData {
-  error?: string;
-}
-
-export let action: ActionFunction = async ({ request }) => {
-  let session = await getSession(request);
-
-  let formData = await request.formData();
-  let letters = formData.getAll("letter");
-
-  let { word, guesses } = await session.getGame();
-
-  if (
-    letters.length !== WORD_LENGTH ||
-    letters.some((letter) => letter === "")
-  ) {
-    return json<ActionData>(
-      { error: "You must guess a word of length " + WORD_LENGTH },
-      {
-        status: 400,
-        headers: {
-          "Set-Cookie": await sessionStorage.commitSession(
-            session.getSession()
-          ),
-        },
-      }
-    );
-  }
-
-  if (!letters.every((letter) => typeof letter === "string")) {
-    return json<ActionData>(
-      { error: "You must guess a word of length " + WORD_LENGTH },
-      {
-        status: 400,
-        headers: {
-          "Set-Cookie": await sessionStorage.commitSession(
-            session.getSession()
-          ),
-        },
-      }
-    );
-  }
-
-  let guess = letters.join("").toLowerCase();
-
-  if (!isValidWord(guess)) {
-    return json<ActionData>(
-      { error: `${guess} is not a valid word` },
-      {
-        status: 400,
-        headers: {
-          "Set-Cookie": await sessionStorage.commitSession(
-            session.getSession()
-          ),
-        },
-      }
-    );
-  }
-
-  let fullGuesses = guesses.flatMap((letters) => {
-    return letters.map((letter) => letter.letter).join("");
-  });
-
-  if (fullGuesses.includes(guess)) {
-    return json<ActionData>(
-      { error: `You have already guessed ${guess}` },
-      {
-        status: 400,
-        headers: {
-          "Set-Cookie": await sessionStorage.commitSession(
-            session.getSession()
-          ),
-        },
-      }
-    );
-  }
-
-  let computed = computeGuess(guess, word);
-
-  guesses.push(computed);
-
-  session.setGame(guesses);
+export let loader = async ({ request }: LoaderArgs) => {
+  let userId = await requireUserId(request);
+  let game = await getTodaysGame(userId);
+  let board = getFullBoard(game);
 
   let url = new URL(request.url);
 
-  return redirect(url.pathname + url.search, {
-    headers: {
-      "Set-Cookie": await sessionStorage.commitSession(session.getSession()),
-    },
-  });
+  if (
+    url.searchParams.has("cheat") ||
+    ["COMPLETE", "WON"].includes(game.status)
+  ) {
+    return json(board);
+  }
+
+  let { word, ...rest } = board;
+
+  return json({ ...rest, word: undefined });
 };
 
-type LoaderData =
-  | {
-      guesses: Array<Array<ComputedGuess>>;
-      currentGuess: number;
-      done: false;
-      word?: string; // only if 'cheat' query param is set
-    }
-  | {
-      guesses: Array<Array<ComputedGuess>>;
-      currentGuess: number;
-      winner: true;
-      done: true;
-      word: string;
-    }
-  | {
-      guesses: Array<Array<ComputedGuess>>;
-      currentGuess: number;
-      winner: false;
-      done: true;
-      word: string;
-    };
+export let action = async ({ request }: ActionArgs) => {
+  let userId = await requireUserId(request);
+  let formData = await request.formData();
+  let letters = formData.getAll("letter");
 
-export let loader: LoaderFunction = async ({ request }) => {
-  let session = await getSession(request);
-  let game = await session.getGame();
+  let guessedWord = letters.join("");
+  let [_guess, error] = await createGuess(userId, guessedWord);
 
-  let validGuesses = game.guesses.filter(isValidGuess);
-  let fakeGamesToMake = TOTAL_GUESSES - validGuesses.length;
-  let fakeGames: Array<Array<ComputedGuess>> = Array.from({
-    length: fakeGamesToMake,
-  }).map(() => {
-    return Array.from({ length: WORD_LENGTH }).map(createEmptyGuess);
-  });
-  let games: Array<Array<ComputedGuess>> = [...validGuesses, ...fakeGames];
-  let currentGuess = validGuesses.length;
-  let currentGuessLetters = games.at(currentGuess - 1);
-
-  if (!currentGuessLetters) {
-    throw new Response("No current guess???", {
-      status: 422,
-      headers: {
-        "Set-Cookie": await sessionStorage.commitSession(session.getSession()),
-      },
-    });
+  if (error) {
+    return json({ error }, { status: 400 });
   }
 
-  if (currentGuessLetters.every((space) => space.state === LetterState.Match)) {
-    return json<LoaderData>(
-      {
-        guesses: games,
-        currentGuess,
-        winner: true,
-        done: true,
-        word: game.word,
-      },
-      {
-        headers: {
-          "Set-Cookie": await sessionStorage.commitSession(
-            session.getSession()
-          ),
-        },
-      }
-    );
-  }
+  let url = new URL(request.url);
 
-  if (TOTAL_GUESSES > currentGuess) {
-    let url = new URL(request.url);
-    let data: LoaderData = {
-      guesses: games,
-      currentGuess,
-      done: false,
-    };
-
-    if (url.searchParams.has("cheat")) {
-      data.word = game.word;
-    }
-
-    return json<LoaderData>(data, {
-      headers: {
-        "Set-Cookie": await sessionStorage.commitSession(session.getSession()),
-      },
-    });
-  }
-
-  return json<LoaderData>({
-    guesses: games,
-    currentGuess,
-    winner: false,
-    done: true,
-    word: game.word,
-  });
+  return redirect(url.pathname + url.search);
 };
-
-let inputs = [...Array(WORD_LENGTH).keys()];
 
 export default function IndexPage() {
-  let data = useLoaderData<LoaderData>();
-  let actionData = useActionData<ActionData>();
+  let data = useLoaderData<typeof loader>();
+  let actionData = useActionData<typeof action>();
   let location = useLocation();
+  let actionUrl =
+    location.pathname +
+    (location.search.length > 0 ? location.search + "&index" : "?index");
 
   return (
     <div className="max-w-sm mx-auto">
@@ -228,7 +72,7 @@ export default function IndexPage() {
         <h1 className="text-4xl font-semibold text-center py-4">
           Remix Wordle
         </h1>
-        {data.done === false && data.word ? (
+        {data.status === "IN_PROGRESS" && "word" in data ? (
           <h2 className="text-sm text-center mb-4 text-gray-700">
             Your word is {data.word}
           </h2>
@@ -242,26 +86,22 @@ export default function IndexPage() {
           </div>
         )}
 
-        {data.done ? (
+        {["COMPLETE", "WON"].includes(data.status) ? (
           <GameOverModal
             currentGuess={data.currentGuess}
             guesses={data.guesses}
             totalGuesses={TOTAL_GUESSES}
-            winner={data.winner}
-            word={data.word}
+            winner={data.status === "WON"}
+            word={"word" in data ? data.word : ""}
           />
         ) : null}
 
         <div className="space-y-4">
           {data.guesses.map((guess, guessIndex) => {
             if (data.currentGuess === guessIndex) {
-              let actionUrl =
-                location.pathname +
-                (location.search.length > 0
-                  ? location.search + "&index"
-                  : "?index");
               return (
                 <Form
+                  reloadDocument
                   method="post"
                   action={actionUrl}
                   key={`current-guess-${data.currentGuess}`}
@@ -282,7 +122,7 @@ export default function IndexPage() {
                     }
                   }}
                 >
-                  {inputs.map((index) => (
+                  {LETTER_INPUTS.map((index) => (
                     <input
                       key={`input-number-${index}`}
                       className={clsx(
@@ -310,7 +150,7 @@ export default function IndexPage() {
                 key={`guess-number-${guessIndex}`}
                 className="grid grid-cols-5 gap-4"
               >
-                {guess.map((letter) => {
+                {guess.letters.map((letter) => {
                   return (
                     <input
                       key={`guess-${guessIndex}-letter-${letter.id}`}

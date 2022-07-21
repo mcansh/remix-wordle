@@ -1,46 +1,92 @@
-import invariant from "tiny-invariant";
-import { createCookieSessionStorage } from "@remix-run/node";
-import { ComputedGuess, getRandomWord } from "./utils";
-import { format, startOfDay } from "date-fns";
-
-invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
+import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import { User } from "@prisma/client";
+import { getUserById } from "./models/user.server";
+import { NODE_ENV, SESSION_SECRET } from "./constants.server";
 
 export let sessionStorage = createCookieSessionStorage({
   cookie: {
     name: "__session",
-    secrets: [process.env.SESSION_SECRET],
+    secrets: [SESSION_SECRET],
     sameSite: "strict",
     httpOnly: true,
     path: "/",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    secure: NODE_ENV === "production",
   },
 });
 
-export interface Game {
-  word: string;
-  guesses: Array<Array<ComputedGuess>>;
-}
+let USER_SESSION_KEY = "userId";
 
 export async function getSession(request: Request) {
   let cookie = request.headers.get("Cookie");
-  let session = await sessionStorage.getSession(cookie);
+  return sessionStorage.getSession(cookie);
+}
 
-  let gameId = format(startOfDay(new Date()), "yyyy-MM-dd");
-  let game = await session.get(gameId);
+export async function getUserId(
+  request: Request
+): Promise<User["id"] | undefined> {
+  let session = await getSession(request);
+  let userId = session.get(USER_SESSION_KEY);
+  return userId;
+}
 
-  if (!game) {
-    game = { word: getRandomWord(), guesses: [], done: false };
-    session.set(gameId, game);
+export async function getUser(request: Request) {
+  let userId = await getUserId(request);
+  if (userId === undefined) return null;
+
+  let user = await getUserById(userId);
+  if (user) return user;
+
+  throw await logout(request);
+}
+
+export async function requireUserId(
+  request: Request,
+  redirectTo: string = new URL(request.url).pathname
+) {
+  let userId = await getUserId(request);
+  if (!userId) {
+    let searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+    throw redirect(`/login?${searchParams}`);
   }
+  return userId;
+}
 
-  return {
-    getSession: () => session,
-    getGame: async (): Promise<Game> => {
-      return game;
+export async function requireUser(request: Request) {
+  let userId = await requireUserId(request);
+
+  let user = await getUserById(userId);
+  if (user) return user;
+
+  throw await logout(request);
+}
+
+export async function createUserSession({
+  request,
+  userId,
+  remember,
+  redirectTo,
+}: {
+  request: Request;
+  userId: string;
+  remember: boolean;
+  redirectTo: string;
+}) {
+  let session = await getSession(request);
+  session.set(USER_SESSION_KEY, userId);
+  // 1 year or until the window is closed
+  let maxAge = remember ? 60 * 60 * 24 * 365 : undefined;
+  return redirect(redirectTo, {
+    headers: {
+      "Set-Cookie": await sessionStorage.commitSession(session, { maxAge }),
     },
-    setGame: async (guesses: Game["guesses"]) => {
-      session.set(gameId, { ...game, guesses });
+  });
+}
+
+export async function logout(request: Request) {
+  let session = await getSession(request);
+  return redirect("/", {
+    headers: {
+      "Set-Cookie": await sessionStorage.destroySession(session),
     },
-  };
+  });
 }

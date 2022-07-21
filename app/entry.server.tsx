@@ -28,6 +28,7 @@ export default function handleRequest(
           let body = new PassThrough();
 
           responseHeaders.set("Content-Type", "text/html");
+          responseHeaders.set("Vary", "Cookie");
 
           resolve(
             new Response(body, {

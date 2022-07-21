@@ -13,14 +13,15 @@ ARG RAILWAY_ENVIRONMENT
 ARG RAILWAY=false
 ENV NODE_ENV=production
 
-RUN apt-get update
+# install openssl for Prisma
+RUN apt-get update && apt-get install -y openssl
 
 ##################################################################
 
-# install all node_modules, including dev
+# install all node_modules, including devDependencies
 FROM base as deps
 
-WORKDIR /remixapp/
+WORKDIR /workdir/
 
 ADD package.json package-lock.json ./
 RUN npm install --production=false
@@ -30,35 +31,41 @@ RUN npm install --production=false
 # setup production node_modules
 FROM base as production-deps
 
-WORKDIR /remixapp/
+WORKDIR /workdir/
 
-COPY --from=deps /remixapp/node_modules /remixapp/node_modules
+COPY --from=deps /workdir/node_modules /workdir/node_modules
 ADD package.json package-lock.json ./
 RUN npm prune --production
 
 ##################################################################
 
-# build remixapp
+# build the app
 FROM base as build
 
-WORKDIR /remixapp/
+WORKDIR /workdir/
 
-COPY --from=deps /remixapp/node_modules /remixapp/node_modules
+COPY --from=deps /workdir/node_modules /workdir/node_modules
 
-# our app code changes all the time
+ADD prisma .
+RUN npx prisma generate
+
 ADD . .
 RUN npm run build
 
 ##################################################################
 
-# build smaller image for running
+# finally, build the production image with minimal footprint
 FROM base
 
-WORKDIR /remixapp/
+WORKDIR /workdir/
 
-COPY --from=production-deps /remixapp/node_modules /remixapp/node_modules
-COPY --from=build /remixapp/build /remixapp/build
-COPY --from=build /remixapp/public /remixapp/public
-ADD . .
+COPY --from=production-deps /workdir/node_modules /workdir/node_modules
+COPY --from=build /workdir/node_modules/.prisma /workdir/node_modules/.prisma
+COPY --from=build /workdir/build /workdir/build
+COPY --from=build /workdir/public /workdir/public
+COPY --from=build /workdir/prisma /workdir/prisma
+COPY --from=build /workdir/package.json /workdir/package.json
+COPY --from=build /workdir/remix.config.js /workdir/remix.config.js
+COPY ./scripts/start_with_migrations.sh ./scripts/start_with_migrations.sh
 
-CMD ["npm", "run", "start"]
+ENTRYPOINT [ "./scripts/start_with_migrations.sh" ]
