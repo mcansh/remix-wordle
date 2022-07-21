@@ -1,18 +1,16 @@
-import invariant from "tiny-invariant";
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import { User } from "@prisma/client";
 import { getUserById } from "./models/user.server";
-
-invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
+import { NODE_ENV, SESSION_SECRET } from "./constants.server";
 
 export let sessionStorage = createCookieSessionStorage({
   cookie: {
     name: "__session",
-    secrets: [process.env.SESSION_SECRET],
+    secrets: [SESSION_SECRET],
     sameSite: "strict",
     httpOnly: true,
     path: "/",
-    secure: process.env.NODE_ENV === "production",
+    secure: NODE_ENV === "production",
   },
 });
 

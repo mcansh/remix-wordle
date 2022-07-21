@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { NODE_ENV } from "./constants.server";
 
 // PrismaClient is attached to the `global` object in development to prevent
 // exhausting your database connection limit.
@@ -16,6 +17,6 @@ declare global {
 // create a new connection to the DB with every change either.
 // in production we'll have a single connection to the DB.
 export let db =
-  process.env.NODE_ENV === "production"
+  NODE_ENV === "production"
     ? new PrismaClient()
     : global.prismaClient ?? (global.prismaClient = new PrismaClient());
