@@ -105,47 +105,52 @@ export async function createGuess(
   let game = await getTodaysGame(userId);
 
   let gameOver = game.guesses.length > TOTAL_GUESSES;
-  let computedGuess = computeGuess(guessedWord, game.word);
-  let won = computedGuess.every((letter) => letter.state === LetterState.Match);
 
   if (guessedWord.length !== WORD_LENGTH) {
     return [null, "You must guess a word of length " + WORD_LENGTH];
   }
 
   if (!isValidWord(guessedWord)) {
-    return [null, `${guessedWord} is not a valid word`];
+    return [null, `${guessedWord.toUpperCase()} is not a valid word`];
   }
 
-  let guesses = await db.guess.findMany({
-    where: { gameId: game.id },
-    select: { guess: true },
-  });
+  let computedGuess = computeGuess(guessedWord, game.word);
+  let won = computedGuess.every((letter) => letter.state === LetterState.Match);
 
-  if (guesses.some((guess) => guess.guess === guessedWord)) {
-    return [null, `You already guessed ${guessedWord}`];
+  try {
+    let guess = await db.$transaction(async (trx) => {
+      let newGuess = await trx.guess.create({
+        data: {
+          gameId: game.id,
+          guess: guessedWord,
+        },
+      });
+
+      await trx.game.update({
+        where: { id: game.id },
+        data: {
+          status: won
+            ? GameStatus.WON
+            : gameOver
+            ? GameStatus.COMPLETE
+            : GameStatus.IN_PROGRESS,
+        },
+      });
+
+      return newGuess;
+    });
+
+    return [guess, null];
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return [null, `You already guessed "${guessedWord.toUpperCase()}"`];
+    }
+
+    console.log(error);
+    if (error instanceof Error) {
+      return [null, error.message];
+    }
+
+    return [null, "Something went wrong"];
   }
-
-  let guess = await db.$transaction(async (trx) => {
-    let newGuess = await trx.guess.create({
-      data: {
-        gameId: game.id,
-        guess: guessedWord,
-      },
-    });
-
-    await trx.game.update({
-      where: { id: game.id },
-      data: {
-        status: won
-          ? GameStatus.WON
-          : gameOver
-          ? GameStatus.COMPLETE
-          : GameStatus.IN_PROGRESS,
-      },
-    });
-
-    return newGuess;
-  });
-
-  return [guess, null];
 }
