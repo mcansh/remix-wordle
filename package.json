@@ -10,8 +10,8 @@
     "build": "cross-env NODE_ENV=production run-s build:*",
     "dev:css": "tailwindcss -o app/styles/global.css --watch",
     "dev:remix": "remix dev",
-    "dev": "cross-env NODE_ENV=development run-p dev:*",
-    "start": "cross-env NODE_ENV=production remix-serve build"
+    "dev": "cross-env TZ=UTC NODE_ENV=development run-p dev:*",
+    "start": "cross-env TZ=UTC NODE_ENV=production remix-serve build"
   },
   "dependencies": {
     "@prisma/client": "4.0.0",
