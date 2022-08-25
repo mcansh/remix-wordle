@@ -104,7 +104,7 @@ export async function createGuess(
 ): Promise<[Guess, null] | [null, string]> {
   let game = await getTodaysGame(userId);
 
-  let gameOver = game.guesses.length > TOTAL_GUESSES;
+  let gameOver = game.guesses.length >= TOTAL_GUESSES;
 
   if (guessedWord.length !== WORD_LENGTH) {
     return [null, "You must guess a word of length " + WORD_LENGTH];
