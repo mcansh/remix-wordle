@@ -22,7 +22,7 @@
     "clsx": "1.2.1",
     "cross-env": "7.0.3",
     "date-fns": "2.29.3",
-    "isbot": "3.5.4",
+    "isbot": "3.6.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "type-fest": "3.0.0",
