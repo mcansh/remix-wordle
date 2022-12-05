@@ -1,5 +1,4 @@
 import { PassThrough } from "node:stream";
-
 import { renderToPipeableStream } from "react-dom/server";
 import { RemixServer } from "@remix-run/react";
 import { Response } from "@remix-run/node";

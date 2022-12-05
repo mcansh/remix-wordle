@@ -28,7 +28,7 @@ export async function createUser(user: {
   email: User["email"];
   password: User["password"];
 }) {
-  const hashedPassword = await bcrypt.hash(user.password, 10);
+  let hashedPassword = await bcrypt.hash(user.password, 10);
 
   return db.user.create({
     data: {
@@ -47,17 +47,17 @@ export async function verifyLogin(
   email: User["email"],
   password: User["password"]
 ) {
-  const user = await db.user.findUnique({
+  let user = await db.user.findUnique({
     where: { email },
   });
 
   if (!user || !user.password) return null;
 
-  const isValid = await bcrypt.compare(password, user.password);
+  let isValid = await bcrypt.compare(password, user.password);
 
   if (!isValid) return null;
 
-  const { password: _password, ...userWithoutPassword } = user;
+  let { password: _password, ...userWithoutPassword } = user;
 
   return userWithoutPassword;
 }

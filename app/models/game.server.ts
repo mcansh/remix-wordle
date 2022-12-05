@@ -1,9 +1,11 @@
-import { GameStatus, Guess, Prisma, User } from "@prisma/client";
+import type { Guess, User } from "@prisma/client";
+import { GameStatus, Prisma } from "@prisma/client";
 import { endOfDay, startOfDay } from "date-fns";
+
 import { WORD_LENGTH } from "~/constants";
 import { db } from "~/db.server";
+import type { ComputedGuess } from "~/utils/game";
 import {
-  ComputedGuess,
   computeGuess,
   createEmptyLetter,
   getRandomWord,

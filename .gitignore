@@ -8,3 +8,4 @@
 /.vercel/
 .env
 .DS_Store
+.eslintcache

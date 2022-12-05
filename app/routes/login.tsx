@@ -6,14 +6,14 @@ import type {
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+import type { z } from "zod";
 
 import { createUserSession, getUserId } from "~/session.server";
 import { loginSchema, verifyLogin } from "~/models/user.server";
 import { safeRedirect } from "~/utils";
-import { z } from "zod";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const userId = await getUserId(request);
+  let userId = await getUserId(request);
   if (userId) return redirect("/");
   return json({});
 };
@@ -23,11 +23,11 @@ interface ActionData {
 }
 
 export const action: ActionFunction = async ({ request }) => {
-  const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
-  const remember = formData.get("remember");
+  let formData = await request.formData();
+  let email = formData.get("email");
+  let password = formData.get("password");
+  let redirectTo = safeRedirect(formData.get("redirectTo"), "/");
+  let remember = formData.get("remember");
 
   let result = loginSchema.safeParse({ email, password });
 
@@ -38,7 +38,7 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const user = await verifyLogin(result.data.email, result.data.password);
+  let user = await verifyLogin(result.data.email, result.data.password);
 
   if (!user) {
     return json<ActionData>(
@@ -62,11 +62,11 @@ export const meta: MetaFunction = () => {
 };
 
 export default function LoginPage() {
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/";
-  const actionData = useActionData<ActionData>();
-  const emailRef = React.useRef<HTMLInputElement>(null);
-  const passwordRef = React.useRef<HTMLInputElement>(null);
+  let [searchParams] = useSearchParams();
+  let redirectTo = searchParams.get("redirectTo") || "/";
+  let actionData = useActionData<ActionData>();
+  let emailRef = React.useRef<HTMLInputElement>(null);
+  let passwordRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (actionData?.errors.email) {

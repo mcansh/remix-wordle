@@ -8,12 +8,11 @@ import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 
 import { getUserId, createUserSession } from "~/session.server";
-
 import { createUser, getUserByEmail, joinSchema } from "~/models/user.server";
 import { safeRedirect } from "~/utils";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const userId = await getUserId(request);
+  let userId = await getUserId(request);
   if (userId) return redirect("/");
   return json({});
 };
@@ -23,11 +22,11 @@ interface ActionData {
 }
 
 export const action: ActionFunction = async ({ request }) => {
-  const formData = await request.formData();
-  const email = formData.get("email");
-  const username = formData.get("username");
-  const password = formData.get("password");
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
+  let formData = await request.formData();
+  let email = formData.get("email");
+  let username = formData.get("username");
+  let password = formData.get("password");
+  let redirectTo = safeRedirect(formData.get("redirectTo"), "/");
 
   let result = joinSchema.safeParse({ email, password, username });
 
@@ -38,7 +37,7 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const existingUser = await getUserByEmail(result.data.email);
+  let existingUser = await getUserByEmail(result.data.email);
   if (existingUser) {
     return json<ActionData>(
       { errors: { email: "A user already exists with this email" } },
@@ -46,7 +45,7 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const user = await createUser(result.data);
+  let user = await createUser(result.data);
 
   return createUserSession({
     request,
@@ -63,12 +62,12 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Join() {
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") ?? undefined;
-  const actionData = useActionData() as ActionData;
-  const emailRef = React.useRef<HTMLInputElement>(null);
-  const usernameRef = React.useRef<HTMLInputElement>(null);
-  const passwordRef = React.useRef<HTMLInputElement>(null);
+  let [searchParams] = useSearchParams();
+  let redirectTo = searchParams.get("redirectTo") ?? undefined;
+  let actionData = useActionData() as ActionData;
+  let emailRef = React.useRef<HTMLInputElement>(null);
+  let usernameRef = React.useRef<HTMLInputElement>(null);
+  let passwordRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (actionData?.errors.email) {

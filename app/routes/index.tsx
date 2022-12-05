@@ -1,12 +1,8 @@
-import {
-  ActionArgs,
-  json,
-  LoaderArgs,
-  MetaFunction,
-  redirect,
-} from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
+
 import { requireUserId } from "~/session.server";
 import { createGuess, getFullBoard, getTodaysGame } from "~/models/game.server";
 import { GameOverModal } from "~/components/game-over-modal";
@@ -42,7 +38,7 @@ export let action = async ({ request }: ActionArgs) => {
   let letters = formData.getAll("letter");
 
   let guessedWord = letters.join("");
-  let [_guess, error] = await createGuess(userId, guessedWord);
+  let [, error] = await createGuess(userId, guessedWord);
 
   if (error) {
     return json({ error }, { status: 422, statusText: "Unprocessable Entity" });
@@ -71,15 +67,15 @@ export default function IndexPage() {
         />
       ) : null}
       <div
-        className="max-w-sm mx-auto h-full"
+        className="mx-auto h-full max-w-sm"
         aria-hidden={showModal ? "true" : undefined}
       >
         <header>
-          <h1 className="text-4xl font-semibold text-center py-4">
+          <h1 className="py-4 text-center text-4xl font-semibold">
             Remix Wordle
           </h1>
           {data.status === "IN_PROGRESS" && "word" in data ? (
-            <h2 className="text-sm text-center mb-4 text-gray-700">
+            <h2 className="mb-4 text-center text-sm text-gray-700">
               Your word is {data.word}
             </h2>
           ) : null}
@@ -87,7 +83,7 @@ export default function IndexPage() {
 
         <main>
           {fetcher.data?.error && (
-            <div className="text-red-500 text-center mb-4">
+            <div className="mb-4 text-center text-red-500">
               {fetcher.data.error}
             </div>
           )}
@@ -120,10 +116,10 @@ export default function IndexPage() {
                       <input
                         key={`input-number-${index}`}
                         className={clsx(
-                          "border-4 text-center uppercase w-full aspect-square inline-block text-xl",
+                          "inline-block aspect-square w-full border-4 text-center text-xl uppercase",
                           fetcher.data?.error
                             ? "border-red-500"
-                            : "empty:border-gray-400 border-gray-900"
+                            : "border-gray-900 empty:border-gray-400"
                         )}
                         type="text"
                         pattern="[a-zA-Z]{1}"
@@ -150,13 +146,13 @@ export default function IndexPage() {
                         key={`guess-${guessIndex}-letter-${letter.id}`}
                         readOnly
                         className={clsx(
-                          "border-4 text-center uppercase w-full aspect-square inline-block text-xl",
+                          "inline-block aspect-square w-full border-4 text-center text-xl uppercase",
                           {
-                            "bg-green-500 border-green-500 text-white":
+                            "border-green-500 bg-green-500 text-white":
                               letter.state === LetterState.Match,
-                            "bg-red-500 border-red-500 text-white":
+                            "border-red-500 bg-red-500 text-white":
                               letter.state === LetterState.Miss,
-                            "bg-yellow-500 border-yellow-500 text-white":
+                            "border-yellow-500 bg-yellow-500 text-white":
                               letter.state === LetterState.Present,
                             "border-gray-400 text-white":
                               letter.state === LetterState.Blank,
@@ -179,7 +175,7 @@ export default function IndexPage() {
               form="current-guess"
               enterKeyHint="send"
               type="submit"
-              className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+              className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
               value="Submit Guess"
             />
           </div>

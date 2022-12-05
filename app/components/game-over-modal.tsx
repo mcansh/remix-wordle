@@ -1,8 +1,9 @@
 import clsx from "clsx";
+
 import { boardToEmoji } from "~/utils/board-to-emoji";
 import checkIconUrl from "~/icons/check.svg";
 import xIconUrl from "~/icons/x.svg";
-import { ComputedGuess } from "~/utils/game";
+import type { ComputedGuess } from "~/utils/game";
 
 export function GameOverModal({
   currentGuess,
@@ -22,13 +23,13 @@ export function GameOverModal({
   return (
     <div className="relative z-10" role="dialog" aria-modal="true">
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-      <div className="fixed z-10 inset-0 overflow-y-auto">
-        <div className="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
-          <div className="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-sm sm:w-full sm:p-6">
+      <div className="fixed inset-0 z-10 overflow-y-auto">
+        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
             <div>
               <div
                 className={clsx(
-                  "mx-auto flex items-center justify-center h-12 w-12 rounded-full",
+                  "mx-auto flex h-12 w-12 items-center justify-center rounded-full",
                   winner ? "bg-green-100" : "bg-red-100"
                 )}
               >
@@ -45,14 +46,14 @@ export function GameOverModal({
                 </svg>
               </div>
               <div className="mt-3 text-center sm:mt-5">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
                   Game Summary
                 </h3>
                 <div className="mt-2">
                   <div className="whitespace-pre">{boardToEmoji(guesses)}</div>
                   <button
                     type="button"
-                    className="mx-auto my-4 flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                    className="mx-auto my-4 flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
                     onClick={async () => {
                       let guessString =
                         (winner ? currentGuess : "X") + "/" + totalGuesses;
@@ -64,8 +65,8 @@ export function GameOverModal({
                           .map((line) => line.trim())
                           .join("\n");
                       try {
-                        const type = "text/plain";
-                        const blob = new Blob([text], { type });
+                        let type = "text/plain";
+                        let blob = new Blob([text], { type });
                         let write = [new ClipboardItem({ [type]: blob })];
                         await window.navigator.clipboard.write(write);
                       } catch (error) {
@@ -75,7 +76,7 @@ export function GameOverModal({
                   >
                     Copy to clipboard 📋
                   </button>
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="mt-2 text-sm text-gray-500">
                     The word was <strong>{word}</strong>. Come back and try
                     again tomorrow
                   </p>

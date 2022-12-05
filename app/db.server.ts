@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+
 import { NODE_ENV } from "./constants.server";
 
 // PrismaClient is attached to the `global` object in development to prevent
