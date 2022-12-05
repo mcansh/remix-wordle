@@ -5,12 +5,7 @@ import {
   MetaFunction,
   redirect,
 } from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useLocation,
-} from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { requireUserId } from "~/session.server";
 import { createGuess, getFullBoard, getTodaysGame } from "~/models/game.server";
@@ -50,7 +45,7 @@ export let action = async ({ request }: ActionArgs) => {
   let [_guess, error] = await createGuess(userId, guessedWord);
 
   if (error) {
-    return json({ error }, { status: 400 });
+    return json({ error }, { status: 422, statusText: "Unprocessable Entity" });
   }
 
   let url = new URL(request.url);
@@ -60,11 +55,7 @@ export let action = async ({ request }: ActionArgs) => {
 
 export default function IndexPage() {
   let data = useLoaderData<typeof loader>();
-  let actionData = useActionData<typeof action>();
-  let location = useLocation();
-  let actionUrl =
-    location.pathname +
-    (location.search.length > 0 ? location.search + "&index" : "?index");
+  let fetcher = useFetcher<typeof action>();
 
   let showModal = ["COMPLETE", "WON"].includes(data.status);
 
@@ -95,9 +86,9 @@ export default function IndexPage() {
         </header>
 
         <main>
-          {actionData?.error && (
+          {fetcher.data?.error && (
             <div className="text-red-500 text-center mb-4">
-              {actionData.error}
+              {fetcher.data.error}
             </div>
           )}
 
@@ -105,10 +96,8 @@ export default function IndexPage() {
             {data.guesses.map((guess, guessIndex) => {
               if (data.currentGuess === guessIndex) {
                 return (
-                  <Form
-                    reloadDocument
+                  <fetcher.Form
                     method="post"
-                    action={actionUrl}
                     key={`current-guess-${data.currentGuess}`}
                     replace
                     className="grid grid-cols-5 gap-4"
@@ -132,7 +121,7 @@ export default function IndexPage() {
                         key={`input-number-${index}`}
                         className={clsx(
                           "border-4 text-center uppercase w-full aspect-square inline-block text-xl",
-                          actionData?.error
+                          fetcher.data?.error
                             ? "border-red-500"
                             : "empty:border-gray-400 border-gray-900"
                         )}
@@ -146,7 +135,7 @@ export default function IndexPage() {
                         autoFocus={index === 0}
                       />
                     ))}
-                  </Form>
+                  </fetcher.Form>
                 );
               }
 
