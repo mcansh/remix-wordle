@@ -1,4 +1,4 @@
-import type { Guess, User } from "@prisma/client";
+import type { User } from "@prisma/client";
 import { GameStatus, Prisma } from "@prisma/client";
 import { endOfDay, startOfDay } from "date-fns";
 
@@ -103,28 +103,29 @@ export async function createGame(userId: User["id"]): Promise<FullGame> {
 export async function createGuess(
   userId: User["id"],
   guessedWord: string
-): Promise<[Guess, null] | [null, string]> {
+): Promise<string | null> {
+  let normalized = guessedWord.toLowerCase();
   let game = await getTodaysGame(userId);
 
   let gameOver = game.guesses.length >= TOTAL_GUESSES;
 
-  if (guessedWord.length !== WORD_LENGTH) {
-    return [null, "You must guess a word of length " + WORD_LENGTH];
+  if (normalized.length !== WORD_LENGTH) {
+    return `You must guess a word of length ${WORD_LENGTH}`;
   }
 
-  if (!isValidWord(guessedWord)) {
-    return [null, `${guessedWord.toUpperCase()} is not a valid word`];
+  if (!isValidWord(normalized)) {
+    return `${normalized.toUpperCase()} is not a valid word`;
   }
 
-  let computedGuess = computeGuess(guessedWord, game.word);
+  let computedGuess = computeGuess(normalized, game.word);
   let won = computedGuess.every((letter) => letter.state === LetterState.Match);
 
   try {
-    let guess = await db.$transaction(async (trx) => {
+    await db.$transaction(async (trx) => {
       let newGuess = await trx.guess.create({
         data: {
           gameId: game.id,
-          guess: guessedWord,
+          guess: normalized,
         },
       });
 
@@ -142,17 +143,17 @@ export async function createGuess(
       return newGuess;
     });
 
-    return [guess, null];
+    return null;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      return [null, `You already guessed "${guessedWord.toUpperCase()}"`];
+      return `You already guessed "${normalized.toUpperCase()}"`;
     }
 
     console.log(error);
     if (error instanceof Error) {
-      return [null, error.message];
+      return error.message;
     }
 
-    return [null, "Something went wrong"];
+    return "Something went wrong";
   }
 }
