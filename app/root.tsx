@@ -7,11 +7,13 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-
-import globalStylesHref from "./styles/global.css";
+import appStylesHref from "tailwindcss/tailwind.css";
 
 export let links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: globalStylesHref }];
+  return [
+    { rel: "preload", href: appStylesHref, as: "style" },
+    { rel: "stylesheet", href: appStylesHref },
+  ];
 };
 
 export default function App() {

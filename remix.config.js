@@ -5,4 +5,7 @@ module.exports = {
   publicPath: "/build/",
   serverBuildPath: "build/index.js",
   ignoredRouteFiles: ["**/.*"],
+  future: {
+    unstable_tailwind: true,
+  },
 };
