@@ -2,6 +2,7 @@ import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
+import { ClientOnly } from "remix-utils";
 
 import { requireUserId } from "~/session.server";
 import { createGuess, getFullBoard, getTodaysGame } from "~/models/game.server";
@@ -36,22 +37,43 @@ export let action = async ({ request }: ActionArgs) => {
   let userId = await requireUserId(request);
   let formData = await request.formData();
   let letters = formData.getAll("letter");
+  let has_js = formData.get("has_js");
+  let url = new URL(request.url);
 
   let guessedWord = letters.join("");
-  let [, error] = await createGuess(userId, guessedWord);
+  let error = await createGuess(userId, guessedWord);
 
   if (error) {
     return json({ error }, { status: 422, statusText: "Unprocessable Entity" });
   }
 
-  let url = new URL(request.url);
+  if (!has_js) {
+    return redirect(url.pathname + url.search);
+  }
 
-  return redirect(url.pathname + url.search);
+  let game = await getTodaysGame(userId);
+  let board = getFullBoard(game);
+
+  if (
+    url.searchParams.has("cheat") ||
+    ["COMPLETE", "WON"].includes(game.status)
+  ) {
+    return json(board);
+  }
+
+  let { word, ...rest } = board;
+
+  return json({ ...rest, word: undefined });
 };
 
 export default function IndexPage() {
   let data = useLoaderData<typeof loader>();
   let fetcher = useFetcher<typeof action>();
+
+  let errorMessage =
+    fetcher.data && "error" in fetcher.data && fetcher.data.error
+      ? fetcher.data.error
+      : null;
 
   let showModal = ["COMPLETE", "WON"].includes(data.status);
 
@@ -68,13 +90,13 @@ export default function IndexPage() {
       ) : null}
       <div
         className="mx-auto h-full max-w-sm"
-        aria-hidden={showModal ? "true" : undefined}
+        aria-hidden={showModal ? true : undefined}
       >
         <header>
           <h1 className="py-4 text-center text-4xl font-semibold">
             Remix Wordle
           </h1>
-          {data.status === "IN_PROGRESS" && "word" in data ? (
+          {!showModal && "word" in data ? (
             <h2 className="mb-4 text-center text-sm text-gray-700">
               Your word is {data.word}
             </h2>
@@ -82,10 +104,8 @@ export default function IndexPage() {
         </header>
 
         <main>
-          {fetcher.data?.error && (
-            <div className="mb-4 text-center text-red-500">
-              {fetcher.data.error}
-            </div>
+          {errorMessage && (
+            <div className="mb-4 text-center text-red-500">{errorMessage}</div>
           )}
 
           <div className="space-y-4">
@@ -117,7 +137,7 @@ export default function IndexPage() {
                         key={`input-number-${index}`}
                         className={clsx(
                           "inline-block aspect-square w-full border-4 text-center text-xl uppercase",
-                          fetcher.data?.error
+                          errorMessage
                             ? "border-red-500"
                             : "border-gray-900 empty:border-gray-400"
                         )}
@@ -131,6 +151,9 @@ export default function IndexPage() {
                         autoFocus={index === 0}
                       />
                     ))}
+                    <ClientOnly>
+                      {() => <input type="hidden" name="has_js" value="true" />}
+                    </ClientOnly>
                   </fetcher.Form>
                 );
               }
