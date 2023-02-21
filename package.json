@@ -4,17 +4,15 @@
   "description": "a wordle game made with Remix",
   "license": "MIT",
   "sideEffects": false,
+  "packageManager": "pnpm@7.27.1",
   "scripts": {
-    "prepare": "husky install",
-    "build:css": "tailwindcss -o ./app/styles/global.css --minify",
-    "build:remix": "remix build",
-    "build": "cross-env NODE_ENV=production run-s build:*",
-    "dev:css": "tailwindcss -o app/styles/global.css --watch",
-    "dev:remix": "remix dev",
-    "dev": "cross-env TZ=UTC NODE_ENV=development run-p dev:*",
+    "prepare": "is-ci || husky install",
+    "build": "cross-env NODE_ENV=production remix build",
+    "dev": "cross-env TZ=UTC NODE_ENV=development remix dev",
     "start": "cross-env TZ=UTC NODE_ENV=production remix-serve build",
     "lint": "eslint --fix --cache --ignore-path .gitignore .",
-    "format": "prettier --write --ignore-path .gitignore ."
+    "format": "prettier --write --ignore-path .gitignore .",
+    "validate": "run-p lint format"
   },
   "dependencies": {
     "@prisma/client": "4.10.1",
@@ -25,6 +23,7 @@
     "clsx": "1.2.1",
     "cross-env": "7.0.3",
     "date-fns": "2.29.3",
+    "is-ci": "^3.0.1",
     "isbot": "3.6.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",

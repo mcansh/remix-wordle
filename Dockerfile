@@ -11,10 +11,13 @@ ARG RAILWAY_GIT_REPO_OWNER
 ARG RAILWAY_GIT_COMMIT_MESSAGE
 ARG RAILWAY_ENVIRONMENT
 ARG RAILWAY=false
-ENV NODE_ENV=production
 
 # install openssl for Prisma
 RUN apt-get update && apt-get install -y openssl
+
+# set up corepack and pnpm
+RUN corepack enable
+RUN pnpm -v
 
 ##################################################################
 
@@ -23,8 +26,10 @@ FROM base as deps
 
 WORKDIR /workdir/
 
-ADD package.json package-lock.json ./
-RUN npm install --production=false
+ADD package.json pnpm-lock.yaml ./
+RUN npm pkg delete scripts.prepare
+RUN pnpm fetch
+RUN pnpm install --recursive --offline
 
 ##################################################################
 
@@ -34,8 +39,9 @@ FROM base as production-deps
 WORKDIR /workdir/
 
 COPY --from=deps /workdir/node_modules /workdir/node_modules
-ADD package.json package-lock.json ./
-RUN npm prune --production
+ADD package.json pnpm-lock.yaml ./
+RUN npm pkg delete scripts.prepare
+RUN pnpm prune --prod
 
 ##################################################################
 
@@ -47,6 +53,7 @@ WORKDIR /workdir/
 COPY --from=deps /workdir/node_modules /workdir/node_modules
 
 ADD prisma .
+RUN mkdir -p node_modules/.prisma
 RUN npx prisma generate
 
 ADD . .
@@ -56,6 +63,8 @@ RUN npm run build
 
 # finally, build the production image with minimal footprint
 FROM base
+
+ENV NODE_ENV=production
 
 WORKDIR /workdir/
 
