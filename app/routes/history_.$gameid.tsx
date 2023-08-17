@@ -46,7 +46,7 @@ export default function HistoricalGamePage() {
           guesses={data.game.guesses}
           totalGuesses={TOTAL_GUESSES}
           winner={data.game.status === "WON"}
-          word={"word" in data.game ? data.game.word : ""}
+          word={"word" in data.game ? data.game.word.word : ""}
         />
       ) : null}
 

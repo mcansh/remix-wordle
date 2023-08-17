@@ -8,7 +8,7 @@ import { requireUserId } from "~/session.server";
 import {
   createGuess,
   getFullBoard,
-  getTodaysGame,
+  getTodaysGameForUser,
   isGameComplete,
 } from "~/models/game.server";
 import { GameOverModal } from "~/components/game-over-modal";
@@ -21,7 +21,7 @@ export let meta: V2_MetaFunction = () => {
 
 export let loader = async ({ request }: LoaderArgs) => {
   let userId = await requireUserId(request);
-  let game = await getTodaysGame(userId);
+  let game = await getTodaysGameForUser(userId);
   let board = getFullBoard(game);
 
   let url = new URL(request.url);
@@ -55,7 +55,7 @@ export let action = async ({ request }: ActionArgs) => {
     return redirect(url.pathname + url.search);
   }
 
-  let game = await getTodaysGame(userId);
+  let game = await getTodaysGameForUser(userId);
   let board = getFullBoard(game);
 
   let showModal = isGameComplete(game.status);
@@ -89,7 +89,7 @@ export default function IndexPage() {
           guesses={data.guesses}
           totalGuesses={TOTAL_GUESSES}
           winner={data.status === "WON"}
-          word={"word" in data ? data.word : ""}
+          word={"word" in data ? data.word.word : ""}
         />
       ) : null}
 
@@ -103,7 +103,7 @@ export default function IndexPage() {
           </h1>
           {!data.showModal && "word" in data ? (
             <h2 className="mb-4 text-center text-sm text-gray-700">
-              Your word is {data.word}
+              Your word is {data.word.word}
             </h2>
           ) : null}
         </header>
