@@ -1,9 +1,10 @@
 import type { Game, User } from "@prisma/client";
 import { GameStatus, Prisma } from "@prisma/client";
-import { endOfDay, startOfDay } from "date-fns";
+import { differenceInMilliseconds, endOfDay, startOfDay } from "date-fns";
 
 import { WORD_LENGTH } from "~/constants";
 import { db } from "~/db.server";
+import { gameQueue } from "~/queue.server";
 import type { ComputedGuess } from "~/utils/game";
 import {
   computeGuess,
@@ -90,7 +91,7 @@ export function getFullBoard(game: FullGame) {
 }
 
 export async function createGame(userId: User["id"]): Promise<FullGame> {
-  return db.game.create({
+  let game = await db.game.create({
     data: {
       userId,
       word: getRandomWord(),
@@ -98,6 +99,15 @@ export async function createGame(userId: User["id"]): Promise<FullGame> {
     },
     ...FULL_GAME_OPTIONS,
   });
+
+  let timeUntilEndOfDay = differenceInMilliseconds(
+    endOfDay(game.createdAt),
+    new Date(game.createdAt),
+  );
+
+  gameQueue.add(game.id, { gameId: game.id }, { delay: timeUntilEndOfDay });
+
+  return game;
 }
 
 export async function createGuess(
@@ -171,4 +181,8 @@ export async function getGameById(
   }
 
   return getFullBoard(game);
+}
+
+export function isGameComplete(status: GameStatus) {
+  return ["WON", "COMPLETE"].includes(status);
 }

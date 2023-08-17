@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 import { GameOverModal } from "~/components/game-over-modal";
 import { TOTAL_GUESSES } from "~/constants";
-import { getGameById } from "~/models/game.server";
+import { getGameById, isGameComplete } from "~/models/game.server";
 import { requireUserId } from "~/session.server";
 import { LetterState } from "~/utils/game";
 
@@ -18,14 +18,9 @@ export async function loader({ request, params }: DataFunctionArgs) {
 
   let game = await getGameById(gameId);
 
-  return json({
-    game: {
-      ...game,
-      status: ["COMPLETE", "WON"].includes(game.status)
-        ? game.status
-        : "COMPLETE",
-    },
-  });
+  let showModal = isGameComplete(game.status);
+
+  return json({ game, showModal });
 }
 
 export let meta: V2_MetaFunction<typeof loader> = ({ data }) => {
@@ -42,11 +37,10 @@ export let meta: V2_MetaFunction<typeof loader> = ({ data }) => {
 
 export default function HistoricalGamePage() {
   let data = useLoaderData<typeof loader>();
-  let showModal = ["COMPLETE", "WON"].includes(data.game.status);
 
   return (
     <>
-      {showModal ? (
+      {data.showModal ? (
         <GameOverModal
           currentGuess={data.game.currentGuess}
           guesses={data.game.guesses}

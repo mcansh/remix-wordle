@@ -2,7 +2,6 @@ import type { DataFunctionArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import { isSameDay } from "date-fns";
 
 import { db } from "~/db.server";
 import { requireUserId } from "~/session.server";
@@ -28,23 +27,16 @@ export let loader = async ({ request }: DataFunctionArgs) => {
     timeStyle: "short",
   });
 
-  let now = new Date();
-
   return json({
     games: games.map((game) => {
       let createdAt = new Date(game.createdAt);
       let updatedAt = new Date(game.updatedAt);
       let date = updatedAt > createdAt ? updatedAt : createdAt;
-      let sameDay = isSameDay(date, now);
       return {
         id: game.id,
         date: formatter.format(date),
         guesses: game._count.guesses,
-        status: sameDay
-          ? game.status
-          : ["COMPLETE", "WON"].includes(game.status)
-          ? game.status
-          : "COMPLETE",
+        status: game.status,
         word: game.word,
       };
     }),
