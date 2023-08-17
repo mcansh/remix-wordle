@@ -7,19 +7,20 @@
   "scripts": {
     "prepare": "husky install",
     "build": "remix build",
-    "dev": "remix dev --command \"npm run dev:serve\"",
+    "dev": "cross-env TZ=UTC remix dev --command \"npm run dev:serve\"",
     "dev:serve": "binode --require ./mocks -- @remix-run/serve:remix-serve ./build",
     "start": "cross-env TZ=UTC NODE_ENV=production remix-serve build",
     "lint": "eslint --fix --cache --ignore-path .gitignore .",
     "format": "prettier --write --ignore-path .gitignore ."
   },
   "dependencies": {
+    "@mcansh/http-helmet": "^0.8.0",
     "@prisma/client": "^5.1.1",
     "@remix-run/node": "^1.19.3",
     "@remix-run/react": "^1.19.3",
     "@remix-run/serve": "^1.19.3",
     "bcryptjs": "^2.4.3",
-    "bullmq": "^4.7.2",
+    "bullmq": "^4.7.3",
     "clsx": "^2.0.0",
     "cross-env": "^7.0.3",
     "date-fns": "^2.30.0",
