@@ -6,13 +6,7 @@ import checkIconUrl from "~/icons/check.svg";
 import xIconUrl from "~/icons/x.svg";
 import type { ComputedGuess } from "~/utils/game";
 
-export function GameOverModal({
-  currentGuess,
-  guesses,
-  totalGuesses,
-  winner,
-  word,
-}: {
+type GameOverModalProps = {
   currentGuess: number;
   guesses: Array<{
     letters: Array<Pick<ComputedGuess, "id" | "state" | "letter">>;
@@ -20,7 +14,15 @@ export function GameOverModal({
   totalGuesses: number;
   winner: boolean;
   word: string;
-}) {
+};
+
+export function GameOverModal({
+  currentGuess,
+  guesses,
+  totalGuesses,
+  winner,
+  word,
+}: GameOverModalProps) {
   return (
     <div className="relative z-10" role="dialog" aria-modal="true">
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
