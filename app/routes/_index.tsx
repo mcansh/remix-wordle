@@ -88,6 +88,7 @@ export default function IndexPage() {
           word={"word" in data ? data.word : ""}
         />
       ) : null}
+
       <div
         className="mx-auto h-full max-w-sm"
         aria-hidden={showModal ? true : undefined}

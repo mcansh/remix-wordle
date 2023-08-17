@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client";
+import type { Game, User } from "@prisma/client";
 import { GameStatus, Prisma } from "@prisma/client";
 import { endOfDay, startOfDay } from "date-fns";
 
@@ -18,16 +18,14 @@ let TOTAL_GUESSES = 6;
 let FULL_GAME_OPTIONS = Prisma.validator<Prisma.GameArgs>()({
   select: {
     id: true,
-    word: true,
-    status: true,
+    createdAt: true,
+    updatedAt: true,
     guesses: {
-      orderBy: {
-        createdAt: "asc",
-      },
-      select: {
-        guess: true,
-      },
+      orderBy: { createdAt: "asc" },
+      select: { guess: true },
     },
+    status: true,
+    word: true,
   },
 });
 
@@ -55,6 +53,8 @@ export async function getTodaysGame(userId: User["id"]): Promise<FullGame> {
 
   return game;
 }
+
+export type GameBoard = ReturnType<typeof getFullBoard>;
 
 export function getFullBoard(game: FullGame) {
   let fillerGuessesToMake = TOTAL_GUESSES - game.guesses.length;
@@ -156,4 +156,19 @@ export async function createGuess(
 
     return "Something went wrong";
   }
+}
+
+export async function getGameById(
+  id: Game["id"],
+): Promise<ReturnType<typeof getFullBoard>> {
+  let game = await db.game.findUnique({
+    ...FULL_GAME_OPTIONS,
+    where: { id },
+  });
+
+  if (!game) {
+    throw new Response("Not found", { status: 404 });
+  }
+
+  return getFullBoard(game);
 }
