@@ -132,7 +132,7 @@ export async function createGuess(
 
   try {
     await db.$transaction(async (trx) => {
-      let newGuess = await trx.guess.create({
+      await trx.guess.create({
         data: {
           gameId: game.id,
           guess: normalized,
@@ -149,9 +149,12 @@ export async function createGuess(
             : GameStatus.IN_PROGRESS,
         },
       });
-
-      return newGuess;
     });
+
+    if (won || gameOver) {
+      console.log(`Game ${game.id} is complete, removing from queue`);
+      gameQueue.remove(game.id);
+    }
 
     return null;
   } catch (error) {
