@@ -117,7 +117,9 @@ export async function createGuess(
   let normalized = guessedWord.toLowerCase();
   let game = await getTodaysGame(userId);
 
-  let gameOver = game.guesses.length >= TOTAL_GUESSES;
+  if (game.guesses.length >= TOTAL_GUESSES || isGameComplete(game.status)) {
+    return `Game is already complete`;
+  }
 
   if (normalized.length !== WORD_LENGTH) {
     return `You must guess a word of length ${WORD_LENGTH}`;
@@ -127,31 +129,22 @@ export async function createGuess(
     return `${normalized.toUpperCase()} is not a valid word`;
   }
 
-  let computedGuess = computeGuess(normalized, game.word);
-  let won = computedGuess.every((letter) => letter.state === LetterState.Match);
-
   try {
-    await db.$transaction(async (trx) => {
-      await trx.guess.create({
-        data: {
-          gameId: game.id,
-          guess: normalized,
-        },
-      });
-
-      await trx.game.update({
-        where: { id: game.id },
-        data: {
-          status: won
-            ? GameStatus.WON
-            : gameOver
-            ? GameStatus.COMPLETE
-            : GameStatus.IN_PROGRESS,
-        },
-      });
+    let computedGuess = computeGuess(normalized, game.word);
+    let won = computedGuess.every((l) => l.state === LetterState.Match);
+    let updatedGame = await db.game.update({
+      where: { id: game.id },
+      data: {
+        guesses: { create: { guess: normalized } },
+        status: won
+          ? GameStatus.WON
+          : game.guesses.length + 1 >= TOTAL_GUESSES
+          ? GameStatus.COMPLETE
+          : GameStatus.IN_PROGRESS,
+      },
     });
 
-    if (won || gameOver) {
+    if (updatedGame.status === GameStatus.COMPLETE) {
       console.log(`Game ${game.id} is complete, removing from queue`);
       gameQueue.remove(game.id);
     }
@@ -159,7 +152,9 @@ export async function createGuess(
     return null;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      return `You already guessed "${normalized.toUpperCase()}"`;
+      if (error.code === "P2002") {
+        return `You already guessed "${normalized.toUpperCase()}"`;
+      }
     }
 
     console.log(error);
@@ -167,7 +162,7 @@ export async function createGuess(
       return error.message;
     }
 
-    return "Something went wrong";
+    return String(error) || "An unknown error occurred";
   }
 }
 
