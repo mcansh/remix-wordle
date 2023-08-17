@@ -45,7 +45,7 @@ export async function deleteUserByEmail(email: User["email"]) {
 
 export async function verifyLogin(
   email: User["email"],
-  password: User["password"]
+  password: User["password"],
 ) {
   let user = await db.user.findUnique({
     where: { email },

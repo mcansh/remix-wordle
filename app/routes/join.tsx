@@ -2,10 +2,11 @@ import * as React from "react";
 import type {
   ActionFunction,
   LoaderFunction,
-  MetaFunction,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+import type { z } from "zod";
 
 import { getUserId, createUserSession } from "~/session.server";
 import { createUser, getUserByEmail, joinSchema } from "~/models/user.server";
@@ -33,15 +34,15 @@ export const action: ActionFunction = async ({ request }) => {
   if (!result.success) {
     return json<ActionData>(
       { errors: result.error.flatten().fieldErrors },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   let existingUser = await getUserByEmail(result.data.email);
   if (existingUser) {
     return json<ActionData>(
-      { errors: { email: "A user already exists with this email" } },
-      { status: 400 }
+      { errors: { email: ["A user already exists with this email"] } },
+      { status: 400 },
     );
   }
 
@@ -55,10 +56,8 @@ export const action: ActionFunction = async ({ request }) => {
   });
 };
 
-export const meta: MetaFunction = () => {
-  return {
-    title: "Sign Up",
-  };
+export const meta: V2_MetaFunction = () => {
+  return [{ title: "Sign Up" }];
 };
 
 export default function Join() {
@@ -166,7 +165,7 @@ export default function Join() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button
             type="submit"
-            className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+            className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
           >
             Create Account
           </button>

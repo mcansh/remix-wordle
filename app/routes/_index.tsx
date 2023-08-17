@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -10,8 +10,8 @@ import { GameOverModal } from "~/components/game-over-modal";
 import { LetterState } from "~/utils/game";
 import { LETTER_INPUTS, TOTAL_GUESSES } from "~/constants";
 
-export let meta: MetaFunction = () => {
-  return { title: "Remix Wordle" };
+export let meta: V2_MetaFunction = () => {
+  return [{ title: "Remix Wordle" }];
 };
 
 export let loader = async ({ request }: LoaderArgs) => {
@@ -139,7 +139,7 @@ export default function IndexPage() {
                           "inline-block aspect-square w-full border-4 text-center text-xl uppercase",
                           errorMessage
                             ? "border-red-500"
-                            : "border-gray-900 empty:border-gray-400"
+                            : "border-gray-900 empty:border-gray-400",
                         )}
                         type="text"
                         pattern="[a-zA-Z]{1}"
@@ -179,7 +179,7 @@ export default function IndexPage() {
                               letter.state === LetterState.Present,
                             "border-gray-400 text-white":
                               letter.state === LetterState.Blank,
-                          }
+                          },
                         )}
                         value={letter.letter}
                         type="text"

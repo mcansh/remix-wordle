@@ -102,7 +102,7 @@ export async function createGame(userId: User["id"]): Promise<FullGame> {
 
 export async function createGuess(
   userId: User["id"],
-  guessedWord: string
+  guessedWord: string,
 ): Promise<string | null> {
   let normalized = guessedWord.toLowerCase();
   let game = await getTodaysGame(userId);

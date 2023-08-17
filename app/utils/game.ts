@@ -23,7 +23,7 @@ export function createEmptyLetter() {
 
 export function computeGuess(
   guess: string,
-  answer: string
+  answer: string,
 ): Array<ComputedGuess> {
   let result: Array<ComputedGuess> = [];
 

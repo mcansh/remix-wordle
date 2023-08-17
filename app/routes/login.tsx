@@ -2,7 +2,7 @@ import * as React from "react";
 import type {
   ActionFunction,
   LoaderFunction,
-  MetaFunction,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
@@ -34,7 +34,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (!result.success) {
     return json<ActionData>(
       { errors: result.error.flatten().fieldErrors },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -43,7 +43,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (!user) {
     return json<ActionData>(
       { errors: { email: ["Invalid email or password"] } },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -55,10 +55,8 @@ export const action: ActionFunction = async ({ request }) => {
   });
 };
 
-export const meta: MetaFunction = () => {
-  return {
-    title: "Login",
-  };
+export const meta: V2_MetaFunction = () => {
+  return [{ title: "Login" }];
 };
 
 export default function LoginPage() {
@@ -137,7 +135,7 @@ export default function LoginPage() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button
             type="submit"
-            className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+            className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
           >
             Log in
           </button>

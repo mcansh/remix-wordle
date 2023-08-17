@@ -4,7 +4,6 @@
 /public/build/
 
 /node_modules/
-/.vercel/
 .env
 .DS_Store
 .eslintcache

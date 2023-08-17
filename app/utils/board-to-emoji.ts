@@ -21,7 +21,7 @@ function emojiRow(row: Array<ComputedGuess>) {
 }
 
 export function boardToEmoji(
-  guesses: Array<{ letters: Array<ComputedGuess> }>
+  guesses: Array<{ letters: Array<ComputedGuess> }>,
 ): string {
   return guesses.flatMap((row) => emojiRow(row.letters)).join("\n");
 }
