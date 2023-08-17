@@ -5,7 +5,12 @@ import clsx from "clsx";
 import { ClientOnly } from "remix-utils";
 
 import { requireUserId } from "~/session.server";
-import { createGuess, getFullBoard, getTodaysGame } from "~/models/game.server";
+import {
+  createGuess,
+  getFullBoard,
+  getTodaysGame,
+  isGameComplete,
+} from "~/models/game.server";
 import { GameOverModal } from "~/components/game-over-modal";
 import { LetterState } from "~/utils/game";
 import { LETTER_INPUTS, TOTAL_GUESSES } from "~/constants";
@@ -21,16 +26,15 @@ export let loader = async ({ request }: LoaderArgs) => {
 
   let url = new URL(request.url);
 
-  if (
-    url.searchParams.has("cheat") ||
-    ["COMPLETE", "WON"].includes(game.status)
-  ) {
-    return json(board);
+  let showModal = isGameComplete(game.status);
+
+  if (url.searchParams.has("cheat") || showModal) {
+    return json({ ...board, showModal });
   }
 
   let { word, ...rest } = board;
 
-  return json({ ...rest, word: undefined });
+  return json({ ...rest, word: undefined, showModal });
 };
 
 export let action = async ({ request }: ActionArgs) => {
@@ -54,16 +58,18 @@ export let action = async ({ request }: ActionArgs) => {
   let game = await getTodaysGame(userId);
   let board = getFullBoard(game);
 
-  if (
-    url.searchParams.has("cheat") ||
-    ["COMPLETE", "WON"].includes(game.status)
-  ) {
-    return json(board);
+  let showModal = isGameComplete(game.status);
+
+  if (url.searchParams.has("cheat") || showModal) {
+    return json({
+      ...board,
+      showModal,
+    });
   }
 
   let { word, ...rest } = board;
 
-  return json({ ...rest, word: undefined });
+  return json({ ...rest, word: undefined, showModal });
 };
 
 export default function IndexPage() {
@@ -75,11 +81,9 @@ export default function IndexPage() {
       ? fetcher.data.error
       : null;
 
-  let showModal = ["COMPLETE", "WON"].includes(data.status);
-
   return (
     <>
-      {showModal ? (
+      {data.showModal ? (
         <GameOverModal
           currentGuess={data.currentGuess}
           guesses={data.guesses}
@@ -88,15 +92,16 @@ export default function IndexPage() {
           word={"word" in data ? data.word : ""}
         />
       ) : null}
+
       <div
         className="mx-auto h-full max-w-sm"
-        aria-hidden={showModal ? true : undefined}
+        aria-hidden={data.showModal ? true : undefined}
       >
         <header>
           <h1 className="py-4 text-center text-4xl font-semibold">
             Remix Wordle
           </h1>
-          {!showModal && "word" in data ? (
+          {!data.showModal && "word" in data ? (
             <h2 className="mb-4 text-center text-sm text-gray-700">
               Your word is {data.word}
             </h2>

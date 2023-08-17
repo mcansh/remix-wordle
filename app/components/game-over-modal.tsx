@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { Link } from "@remix-run/react";
 
 import { boardToEmoji } from "~/utils/board-to-emoji";
 import checkIconUrl from "~/icons/check.svg";
@@ -76,10 +77,19 @@ export function GameOverModal({
                   >
                     Copy to clipboard 📋
                   </button>
-                  <p className="mt-2 text-sm text-gray-500">
-                    The word was <strong>{word}</strong>. Come back and try
-                    again tomorrow
-                  </p>
+                  <div className="mt-2 space-y-2 text-sm text-gray-500">
+                    <p>
+                      The word was <strong>{word}</strong>. Come back and try
+                      again tomorrow
+                    </p>
+
+                    <p>
+                      View your{" "}
+                      <Link className="text-indigo-600" to="/history">
+                        full game history
+                      </Link>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

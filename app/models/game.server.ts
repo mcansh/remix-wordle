@@ -1,9 +1,10 @@
-import type { User } from "@prisma/client";
+import type { Game, User } from "@prisma/client";
 import { GameStatus, Prisma } from "@prisma/client";
-import { endOfDay, startOfDay } from "date-fns";
+import { differenceInMilliseconds, endOfDay, startOfDay } from "date-fns";
 
 import { WORD_LENGTH } from "~/constants";
 import { db } from "~/db.server";
+import { gameQueue } from "~/queue.server";
 import type { ComputedGuess } from "~/utils/game";
 import {
   computeGuess,
@@ -18,16 +19,14 @@ let TOTAL_GUESSES = 6;
 let FULL_GAME_OPTIONS = Prisma.validator<Prisma.GameArgs>()({
   select: {
     id: true,
-    word: true,
-    status: true,
+    createdAt: true,
+    updatedAt: true,
     guesses: {
-      orderBy: {
-        createdAt: "asc",
-      },
-      select: {
-        guess: true,
-      },
+      orderBy: { createdAt: "asc" },
+      select: { guess: true },
     },
+    status: true,
+    word: true,
   },
 });
 
@@ -55,6 +54,8 @@ export async function getTodaysGame(userId: User["id"]): Promise<FullGame> {
 
   return game;
 }
+
+export type GameBoard = ReturnType<typeof getFullBoard>;
 
 export function getFullBoard(game: FullGame) {
   let fillerGuessesToMake = TOTAL_GUESSES - game.guesses.length;
@@ -90,7 +91,7 @@ export function getFullBoard(game: FullGame) {
 }
 
 export async function createGame(userId: User["id"]): Promise<FullGame> {
-  return db.game.create({
+  let game = await db.game.create({
     data: {
       userId,
       word: getRandomWord(),
@@ -98,6 +99,15 @@ export async function createGame(userId: User["id"]): Promise<FullGame> {
     },
     ...FULL_GAME_OPTIONS,
   });
+
+  let timeUntilEndOfDay = differenceInMilliseconds(
+    endOfDay(game.createdAt),
+    new Date(game.createdAt),
+  );
+
+  gameQueue.add(game.id, { gameId: game.id }, { delay: timeUntilEndOfDay });
+
+  return game;
 }
 
 export async function createGuess(
@@ -122,7 +132,7 @@ export async function createGuess(
 
   try {
     await db.$transaction(async (trx) => {
-      let newGuess = await trx.guess.create({
+      await trx.guess.create({
         data: {
           gameId: game.id,
           guess: normalized,
@@ -139,9 +149,12 @@ export async function createGuess(
             : GameStatus.IN_PROGRESS,
         },
       });
-
-      return newGuess;
     });
+
+    if (won || gameOver) {
+      console.log(`Game ${game.id} is complete, removing from queue`);
+      gameQueue.remove(game.id);
+    }
 
     return null;
   } catch (error) {
@@ -156,4 +169,23 @@ export async function createGuess(
 
     return "Something went wrong";
   }
+}
+
+export async function getGameById(
+  id: Game["id"],
+): Promise<ReturnType<typeof getFullBoard>> {
+  let game = await db.game.findUnique({
+    ...FULL_GAME_OPTIONS,
+    where: { id },
+  });
+
+  if (!game) {
+    throw new Response("Not found", { status: 404 });
+  }
+
+  return getFullBoard(game);
+}
+
+export function isGameComplete(status: GameStatus) {
+  return ["WON", "COMPLETE"].includes(status);
 }
