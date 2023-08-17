@@ -10,6 +10,9 @@ export let joinSchema = z.object({
   password: z.string().min(10, "Password must be at least 10 characters"),
 });
 
+export type JoinData = z.infer<typeof joinSchema>;
+export type LoginData = z.infer<typeof loginSchema>;
+
 export let loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(10, "Password must be at least 10 characters"),

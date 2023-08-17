@@ -1,28 +1,21 @@
 import * as React from "react";
-import type {
-  ActionFunction,
-  LoaderFunction,
-  V2_MetaFunction,
-} from "@remix-run/node";
+import type { DataFunctionArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
-import type { z } from "zod";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 import { getUserId, createUserSession } from "~/session.server";
-import { createUser, getUserByEmail, joinSchema } from "~/models/user.server";
+import type { JoinData } from "~/models/user.server";
+import { createUser, joinSchema } from "~/models/user.server";
 import { safeRedirect } from "~/utils";
 
-export const loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: DataFunctionArgs) {
   let userId = await getUserId(request);
   if (userId) return redirect("/");
   return json({});
-};
-
-interface ActionData {
-  errors: z.inferFlattenedErrors<typeof joinSchema>["fieldErrors"];
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export async function action({ request }: DataFunctionArgs) {
   let formData = await request.formData();
   let email = formData.get("email");
   let username = formData.get("username");
@@ -32,29 +25,39 @@ export const action: ActionFunction = async ({ request }) => {
   let result = joinSchema.safeParse({ email, password, username });
 
   if (!result.success) {
-    return json<ActionData>(
+    return json(
       { errors: result.error.flatten().fieldErrors },
       { status: 400 },
     );
   }
 
-  let existingUser = await getUserByEmail(result.data.email);
-  if (existingUser) {
-    return json<ActionData>(
-      { errors: { email: ["A user already exists with this email"] } },
-      { status: 400 },
-    );
+  try {
+    let user = await createUser(result.data);
+
+    return createUserSession({
+      request,
+      userId: user.id,
+      remember: false,
+      redirectTo,
+    });
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        let targets = error.meta?.target;
+
+        if (Array.isArray(targets) && targets.length > 0) {
+          let errors = targets.reduce<Partial<JoinData>>((acc, cur) => {
+            return { ...acc, [cur]: [`This ${cur} is already in use.`] };
+          }, {});
+
+          return json({ errors }, { status: 400 });
+        }
+
+        throw error;
+      }
+    }
   }
-
-  let user = await createUser(result.data);
-
-  return createUserSession({
-    request,
-    userId: user.id,
-    remember: false,
-    redirectTo,
-  });
-};
+}
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "Sign Up" }];
@@ -63,16 +66,19 @@ export const meta: V2_MetaFunction = () => {
 export default function Join() {
   let [searchParams] = useSearchParams();
   let redirectTo = searchParams.get("redirectTo") ?? undefined;
-  let actionData = useActionData() as ActionData;
+  let actionData = useActionData<typeof action>();
   let emailRef = React.useRef<HTMLInputElement>(null);
   let usernameRef = React.useRef<HTMLInputElement>(null);
   let passwordRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
+    // @ts-expect-error
     if (actionData?.errors.email) {
       emailRef.current?.focus();
+      // @ts-expect-error
     } else if (actionData?.errors.username) {
       usernameRef.current?.focus();
+      // @ts-expect-error
     } else if (actionData?.errors.password) {
       passwordRef.current?.focus();
     }
@@ -98,12 +104,15 @@ export default function Join() {
                 name="email"
                 type="email"
                 autoComplete="email"
+                // @ts-expect-error
                 aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
               />
+              {/* @ts-expect-error */}
               {actionData?.errors?.email && (
                 <div className="pt-1 text-red-700" id="email-error">
+                  {/* @ts-expect-error */}
                   {actionData.errors.email}
                 </div>
               )}
@@ -124,12 +133,15 @@ export default function Join() {
                 name="username"
                 type="text"
                 autoComplete="username"
+                // @ts-expect-error
                 aria-invalid={actionData?.errors?.username ? true : undefined}
                 aria-describedby="username-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
               />
+              {/* @ts-expect-error */}
               {actionData?.errors?.username && (
                 <div className="pt-1 text-red-700" id="username-error">
+                  {/* @ts-expect-error */}
                   {actionData.errors.username}
                 </div>
               )}
@@ -150,12 +162,15 @@ export default function Join() {
                 name="password"
                 type="password"
                 autoComplete="new-password"
+                // @ts-expect-error
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
               />
+              {/* @ts-expect-error */}
               {actionData?.errors?.password && (
                 <div className="pt-1 text-red-700" id="password-error">
+                  {/* @ts-expect-error */}
                   {actionData.errors.password}
                 </div>
               )}
