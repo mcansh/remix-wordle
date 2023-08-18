@@ -46,9 +46,12 @@ export async function action({ request }: DataFunctionArgs) {
         let targets = error.meta?.target;
 
         if (Array.isArray(targets) && targets.length > 0) {
-          let errors = targets.reduce<Partial<JoinData>>((acc, cur) => {
-            return { ...acc, [cur]: [`This ${cur} is already in use.`] };
-          }, {});
+          let errors = targets.reduce<{ [key in keyof JoinData]?: string[] }>(
+            (acc, cur) => {
+              return { ...acc, [cur]: [`This ${cur} is already in use.`] };
+            },
+            {},
+          );
 
           return json({ errors }, { status: 400 });
         }
@@ -71,18 +74,39 @@ export default function Join() {
   let usernameRef = React.useRef<HTMLInputElement>(null);
   let passwordRef = React.useRef<HTMLInputElement>(null);
 
-  React.useEffect(() => {
+  let errors = React.useMemo(() => {
+    return {
+      email:
+        // @ts-expect-error
+        actionData?.errors && "email" in actionData.errors
+          ? // @ts-expect-error
+            actionData.errors.email
+          : undefined,
+      username:
+        // @ts-expect-error
+        actionData?.errors && "username" in actionData.errors
+          ? // @ts-expect-error
+            actionData.errors.username
+          : undefined,
+      password:
+        // @ts-expect-error
+        actionData?.errors && "password" in actionData.errors
+          ? // @ts-expect-error
+            actionData.errors.password
+          : undefined,
+    };
     // @ts-expect-error
-    if (actionData?.errors.email) {
+  }, [actionData?.errors]);
+
+  React.useEffect(() => {
+    if (errors.email) {
       emailRef.current?.focus();
-      // @ts-expect-error
-    } else if (actionData?.errors.username) {
+    } else if (errors.username) {
       usernameRef.current?.focus();
-      // @ts-expect-error
-    } else if (actionData?.errors.password) {
+    } else if (errors.password) {
       passwordRef.current?.focus();
     }
-  }, [actionData]);
+  }, [errors]);
 
   return (
     <div className="flex min-h-full flex-col justify-center">
@@ -104,16 +128,13 @@ export default function Join() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                // @ts-expect-error
-                aria-invalid={actionData?.errors?.email ? true : undefined}
+                aria-invalid={errors.email ? true : undefined}
                 aria-describedby="email-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
               />
-              {/* @ts-expect-error */}
-              {actionData?.errors?.email && (
+              {errors.email && (
                 <div className="pt-1 text-red-700" id="email-error">
-                  {/* @ts-expect-error */}
-                  {actionData.errors.email}
+                  {errors.email}
                 </div>
               )}
             </div>
@@ -133,16 +154,13 @@ export default function Join() {
                 name="username"
                 type="text"
                 autoComplete="username"
-                // @ts-expect-error
-                aria-invalid={actionData?.errors?.username ? true : undefined}
+                aria-invalid={errors.username ? true : undefined}
                 aria-describedby="username-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
               />
-              {/* @ts-expect-error */}
-              {actionData?.errors?.username && (
+              {errors.username && (
                 <div className="pt-1 text-red-700" id="username-error">
-                  {/* @ts-expect-error */}
-                  {actionData.errors.username}
+                  {errors.username}
                 </div>
               )}
             </div>
@@ -162,16 +180,13 @@ export default function Join() {
                 name="password"
                 type="password"
                 autoComplete="new-password"
-                // @ts-expect-error
-                aria-invalid={actionData?.errors?.password ? true : undefined}
+                aria-invalid={errors.password ? true : undefined}
                 aria-describedby="password-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
               />
-              {/* @ts-expect-error */}
-              {actionData?.errors?.password && (
+              {errors.password && (
                 <div className="pt-1 text-red-700" id="password-error">
-                  {/* @ts-expect-error */}
-                  {actionData.errors.password}
+                  {errors.password}
                 </div>
               )}
             </div>

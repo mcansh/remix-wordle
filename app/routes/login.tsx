@@ -1,28 +1,19 @@
 import * as React from "react";
-import type {
-  ActionFunction,
-  LoaderFunction,
-  V2_MetaFunction,
-} from "@remix-run/node";
+import type { DataFunctionArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
-import type { z } from "zod";
 
 import { createUserSession, getUserId } from "~/session.server";
 import { loginSchema, verifyLogin } from "~/models/user.server";
 import { safeRedirect } from "~/utils";
 
-export const loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: DataFunctionArgs) {
   let userId = await getUserId(request);
   if (userId) return redirect("/");
   return json({});
-};
-
-interface ActionData {
-  errors: z.inferFlattenedErrors<typeof loginSchema>["fieldErrors"];
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export async function action({ request }: DataFunctionArgs) {
   let formData = await request.formData();
   let email = formData.get("email");
   let password = formData.get("password");
@@ -32,7 +23,7 @@ export const action: ActionFunction = async ({ request }) => {
   let result = loginSchema.safeParse({ email, password });
 
   if (!result.success) {
-    return json<ActionData>(
+    return json(
       { errors: result.error.flatten().fieldErrors },
       { status: 400 },
     );
@@ -41,7 +32,7 @@ export const action: ActionFunction = async ({ request }) => {
   let user = await verifyLogin(result.data.email, result.data.password);
 
   if (!user) {
-    return json<ActionData>(
+    return json(
       { errors: { email: ["Invalid email or password"] } },
       { status: 400 },
     );
@@ -53,7 +44,7 @@ export const action: ActionFunction = async ({ request }) => {
     remember: remember === "on" ? true : false,
     redirectTo,
   });
-};
+}
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "Login" }];
@@ -62,17 +53,30 @@ export const meta: V2_MetaFunction = () => {
 export default function LoginPage() {
   let [searchParams] = useSearchParams();
   let redirectTo = searchParams.get("redirectTo") || "/";
-  let actionData = useActionData<ActionData>();
+  let actionData = useActionData<typeof action>();
   let emailRef = React.useRef<HTMLInputElement>(null);
   let passwordRef = React.useRef<HTMLInputElement>(null);
 
+  let errors = React.useMemo(() => {
+    return {
+      email:
+        actionData?.errors && "email" in actionData.errors
+          ? actionData.errors.email
+          : undefined,
+      password:
+        actionData?.errors && "password" in actionData.errors
+          ? actionData.errors.password
+          : undefined,
+    };
+  }, [actionData?.errors]);
+
   React.useEffect(() => {
-    if (actionData?.errors.email) {
+    if (errors.email) {
       emailRef.current?.focus();
-    } else if (actionData?.errors.password) {
+    } else if (errors.password) {
       passwordRef.current?.focus();
     }
-  }, [actionData]);
+  }, [errors]);
 
   return (
     <div className="flex min-h-full flex-col justify-center">
@@ -94,13 +98,13 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                aria-invalid={actionData?.errors?.email ? true : undefined}
+                aria-invalid={errors.email ? true : undefined}
                 aria-describedby="email-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
               />
-              {actionData?.errors?.email && (
+              {errors.email && (
                 <div className="pt-1 text-red-700" id="email-error">
-                  {actionData.errors.email}
+                  {errors.email}
                 </div>
               )}
             </div>
@@ -120,15 +124,15 @@ export default function LoginPage() {
                 name="password"
                 type="password"
                 autoComplete="current-password"
-                aria-invalid={actionData?.errors?.password ? true : undefined}
+                aria-invalid={errors.password ? true : undefined}
                 aria-describedby="password-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
               />
-              {actionData?.errors?.password && (
+              {errors.password ? (
                 <div className="pt-1 text-red-700" id="password-error">
-                  {actionData.errors.password}
+                  {errors.password}
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
 

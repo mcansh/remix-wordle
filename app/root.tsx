@@ -9,6 +9,8 @@ import {
 } from "@remix-run/react";
 import appStylesHref from "tailwindcss/tailwind.css";
 
+import { useNonce } from "./components/nonce";
+
 export let links: LinksFunction = () => {
   return [
     { rel: "preload", href: appStylesHref, as: "style" },
@@ -17,6 +19,8 @@ export let links: LinksFunction = () => {
 };
 
 export default function App() {
+  let nonce = useNonce();
+
   return (
     <html lang="en">
       <head>
@@ -27,9 +31,9 @@ export default function App() {
       </head>
       <body>
         <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce} />
+        <LiveReload nonce={nonce} />
       </body>
     </html>
   );
