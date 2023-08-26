@@ -109,112 +109,112 @@ export default function Join() {
   }, [errors]);
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
-      <div className="mx-auto w-full max-w-md px-8">
-        <Form method="post" className="space-y-6" noValidate>
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email address
-            </label>
-            <div className="mt-1">
-              <input
-                ref={emailRef}
-                id="email"
-                required
-                autoFocus={true}
-                name="email"
-                type="email"
-                autoComplete="email"
-                aria-invalid={errors.email ? true : undefined}
-                aria-describedby="email-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-              />
-              {errors.email && (
-                <div className="pt-1 text-red-700" id="email-error">
-                  {errors.email}
-                </div>
-              )}
+    <Form
+      method="post"
+      className="mx-auto flex min-h-full w-full max-w-md flex-col justify-center space-y-6 px-8"
+      noValidate
+    >
+      <div>
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Email address
+        </label>
+        <div className="mt-1">
+          <input
+            ref={emailRef}
+            id="email"
+            required
+            autoFocus={true}
+            name="email"
+            type="email"
+            autoComplete="email"
+            aria-invalid={errors.email ? true : undefined}
+            aria-describedby="email-error"
+            className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+          />
+          {errors.email && (
+            <div className="pt-1 text-red-700" id="email-error">
+              {errors.email}
             </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Username
-            </label>
-            <div className="mt-1">
-              <input
-                id="username"
-                ref={usernameRef}
-                name="username"
-                type="text"
-                autoComplete="username"
-                aria-invalid={errors.username ? true : undefined}
-                aria-describedby="username-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-              />
-              {errors.username && (
-                <div className="pt-1 text-red-700" id="username-error">
-                  {errors.username}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <div className="mt-1">
-              <input
-                id="password"
-                ref={passwordRef}
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                aria-invalid={errors.password ? true : undefined}
-                aria-describedby="password-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-              />
-              {errors.password && (
-                <div className="pt-1 text-red-700" id="password-error">
-                  {errors.password}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <input type="hidden" name="redirectTo" value={redirectTo} />
-          <button
-            type="submit"
-            className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
-          >
-            Create Account
-          </button>
-          <div className="flex items-center justify-center">
-            <div className="text-center text-sm text-gray-500">
-              Already have an account?{" "}
-              <Link
-                className="text-blue-500 underline"
-                to={{
-                  pathname: "/login",
-                  search: searchParams.toString(),
-                }}
-              >
-                Log in
-              </Link>
-            </div>
-          </div>
-        </Form>
+          )}
+        </div>
       </div>
-    </div>
+
+      <div>
+        <label
+          htmlFor="username"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Username
+        </label>
+        <div className="mt-1">
+          <input
+            id="username"
+            ref={usernameRef}
+            name="username"
+            type="text"
+            autoComplete="username"
+            aria-invalid={errors.username ? true : undefined}
+            aria-describedby="username-error"
+            className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+          />
+          {errors.username && (
+            <div className="pt-1 text-red-700" id="username-error">
+              {errors.username}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Password
+        </label>
+        <div className="mt-1">
+          <input
+            id="password"
+            ref={passwordRef}
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            aria-invalid={errors.password ? true : undefined}
+            aria-describedby="password-error"
+            className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+          />
+          {errors.password && (
+            <div className="pt-1 text-red-700" id="password-error">
+              {errors.password}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <input type="hidden" name="redirectTo" value={redirectTo} />
+      <button
+        type="submit"
+        className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
+      >
+        Create Account
+      </button>
+      <div className="flex items-center justify-center">
+        <div className="text-center text-sm text-gray-500">
+          Already have an account?{" "}
+          <Link
+            className="text-blue-500 underline"
+            to={{
+              pathname: "/login",
+              search: searchParams.toString(),
+            }}
+          >
+            Log in
+          </Link>
+        </div>
+      </div>
+    </Form>
   );
 }
