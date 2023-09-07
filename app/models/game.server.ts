@@ -157,7 +157,7 @@ export async function createGuess(
       }
     }
 
-    console.log(error);
+    console.error(error);
     if (error instanceof Error) {
       return error.message;
     }

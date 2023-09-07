@@ -1,11 +1,13 @@
 import wordBank from "./word-bank.json";
 
-export enum LetterState {
-  Blank, // The letter is blank
-  Miss, // Letter doesn't exist at all
-  Present, // Letter exists but wrong location
-  Match, // Letter exists and is in the right location
-}
+export const LetterState = {
+  Blank: "Blank", // The letter is blank
+  Miss: "Miss", // Letter doesn't exist at all
+  Present: "Present", // Letter exists but wrong location
+  Match: "Match", // Letter exists and is in the right location
+} as const;
+
+type LetterState = (typeof LetterState)[keyof typeof LetterState];
 
 export interface ComputedGuess {
   id: string;
