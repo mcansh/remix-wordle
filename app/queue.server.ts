@@ -1,5 +1,6 @@
 import type { Processor } from "bullmq";
 import { Queue as BullQueue, Worker } from "bullmq";
+import { GameStatus } from "@prisma/client";
 
 import { db, redis } from "./db.server";
 import { singleton } from "./utils/singleton.server";
@@ -39,7 +40,7 @@ type QueueData = {
 export let gameQueue = Queue<QueueData>(
   "mark_game_as_complete",
   async (job) => {
-    let game = await db.game.findUnique({
+    let game = await db.userGame.findUnique({
       where: { id: job.data.gameId },
     });
 
@@ -51,9 +52,9 @@ export let gameQueue = Queue<QueueData>(
     if (!isGameComplete(game.status)) {
       console.log(`Game ${job.data.gameId} not complete, marking as complete`);
 
-      await db.game.update({
+      await db.userGame.update({
         where: { id: job.data.gameId },
-        data: { status: "COMPLETE" },
+        data: { status: GameStatus.COMPLETE },
       });
 
       console.log(`Game ${job.data.gameId} marked as complete`);

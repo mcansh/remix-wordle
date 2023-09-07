@@ -9,7 +9,7 @@ import { requireUserId } from "~/session.server";
 export let loader = async ({ request }: DataFunctionArgs) => {
   let userId = await requireUserId(request);
 
-  let games = await db.game.findMany({
+  let games = await db.userGame.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
     select: {
@@ -121,7 +121,7 @@ export default function HistoryPage() {
                         "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
                       )}
                     >
-                      {game.word}
+                      {game.word.word}
                     </td>
                     <td
                       className={clsx(
@@ -155,7 +155,7 @@ export default function HistoryPage() {
                         to={`/history/${game.id}`}
                         className="text-indigo-600 hover:text-indigo-900"
                       >
-                        View<span className="sr-only">, {game.word}</span>
+                        View<span className="sr-only">, {game.word.word}</span>
                       </Link>
                     </td>
                   </tr>

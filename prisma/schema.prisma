@@ -8,38 +8,55 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  email     String   @unique
+  id        String     @id @default(cuid())
+  username  String     @unique
+  email     String     @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  games     Game[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  games     UserGame[]
 }
 
 enum GameStatus {
-  EMPTY
   IN_PROGRESS
   COMPLETE
   WON
 }
 
-model Game {
+model Word {
   id        String     @id @default(cuid())
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  word      String // @unique - should be unique, but...
+  games     Game[]
+  UserGame  UserGame[]
+}
+
+model Game {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  word      Word     @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  wordId    String
+}
+
+model UserGame {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  guesses   Guess[]
+  status    GameStatus
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  guesses   Guess[]
-  word      String
-  status    GameStatus
+  word      Word       @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  wordId    String
 }
 
 model Guess {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  game      UserGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
   gameId    String
   guess     String
 

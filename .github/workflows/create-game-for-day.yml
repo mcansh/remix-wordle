@@ -1,0 +1,17 @@
+name: Create Game For Day
+
+on:
+  schedule:
+    # daily at midnight
+    - cron: "0 0 * * *"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Game For Day
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: ${{ secrets.APP_URL }}/api/cron
+          method: "POST"
+          bearerToken: ${{ secrets.APP_TOKEN }}
