@@ -1,28 +1,31 @@
 import * as React from "react";
-import type { DataFunctionArgs, V2_MetaFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import {
+  json,
+  redirect,
+  unstable_defineAction,
+  unstable_defineLoader,
+} from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-
 import { getUserId, createUserSession } from "~/session.server";
 import type { JoinData } from "~/models/user.server";
 import { createUser, joinSchema } from "~/models/user.server";
 import { safeRedirect } from "~/utils";
 
-export async function loader({ request }: DataFunctionArgs) {
-  let userId = await getUserId(request);
+export const loader = unstable_defineLoader(async ({ request }) => {
+  const userId = await getUserId(request);
   if (userId) return redirect("/");
   return json({});
-}
+});
 
-export async function action({ request }: DataFunctionArgs) {
-  let formData = await request.formData();
-  let email = formData.get("email");
-  let username = formData.get("username");
-  let password = formData.get("password");
-  let redirectTo = safeRedirect(formData.get("redirectTo"), "/");
+export const action = unstable_defineAction(async ({ request }) => {
+  const formData = await request.formData();
+  const email = formData.get("email");
+  const username = formData.get("username");
+  const password = formData.get("password");
+  const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
 
-  let result = joinSchema.safeParse({ email, password, username });
+  const result = joinSchema.safeParse({ email, password, username });
 
   if (!result.success) {
     return json(
@@ -32,7 +35,7 @@ export async function action({ request }: DataFunctionArgs) {
   }
 
   try {
-    let user = await createUser(result.data);
+    const user = await createUser(result.data);
 
     return createUserSession({
       request,
@@ -43,10 +46,10 @@ export async function action({ request }: DataFunctionArgs) {
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
-        let targets = error.meta?.target;
+        const targets = error.meta?.target;
 
         if (Array.isArray(targets) && targets.length > 0) {
-          let errors = targets.reduce<{ [key in keyof JoinData]?: string[] }>(
+          const errors = targets.reduce<{ [key in keyof JoinData]?: string[] }>(
             (acc, cur) => {
               return { ...acc, [cur]: [`This ${cur} is already in use.`] };
             },
@@ -60,42 +63,35 @@ export async function action({ request }: DataFunctionArgs) {
       }
     }
   }
-}
+});
 
-export const meta: V2_MetaFunction = () => {
+export const meta = () => {
   return [{ title: "Sign Up" }];
 };
 
 export default function Join() {
-  let [searchParams] = useSearchParams();
-  let redirectTo = searchParams.get("redirectTo") ?? undefined;
-  let actionData = useActionData<typeof action>();
-  let emailRef = React.useRef<HTMLInputElement>(null);
-  let usernameRef = React.useRef<HTMLInputElement>(null);
-  let passwordRef = React.useRef<HTMLInputElement>(null);
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") ?? undefined;
+  const actionData = useActionData<typeof action>();
+  const emailRef = React.useRef<HTMLInputElement>(null);
+  const usernameRef = React.useRef<HTMLInputElement>(null);
+  const passwordRef = React.useRef<HTMLInputElement>(null);
 
-  let errors = React.useMemo(() => {
+  const errors = React.useMemo(() => {
     return {
       email:
-        // @ts-expect-error
         actionData?.errors && "email" in actionData.errors
-          ? // @ts-expect-error
-            actionData.errors.email
+          ? actionData.errors.email
           : undefined,
       username:
-        // @ts-expect-error
         actionData?.errors && "username" in actionData.errors
-          ? // @ts-expect-error
-            actionData.errors.username
+          ? actionData.errors.username
           : undefined,
       password:
-        // @ts-expect-error
         actionData?.errors && "password" in actionData.errors
-          ? // @ts-expect-error
-            actionData.errors.password
+          ? actionData.errors.password
           : undefined,
     };
-    // @ts-expect-error
   }, [actionData?.errors]);
 
   React.useEffect(() => {
@@ -126,6 +122,7 @@ export default function Join() {
             ref={emailRef}
             id="email"
             required
+            // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus={true}
             name="email"
             type="email"

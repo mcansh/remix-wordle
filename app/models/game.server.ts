@@ -14,9 +14,9 @@ import {
   LetterState,
 } from "~/utils/game";
 
-let TOTAL_GUESSES = 6;
+const TOTAL_GUESSES = 6;
 
-let FULL_GAME_OPTIONS = Prisma.validator<Prisma.GameArgs>()({
+const FULL_GAME_OPTIONS = Prisma.validator<Prisma.GameArgs>()({
   select: {
     id: true,
     createdAt: true,
@@ -33,9 +33,9 @@ let FULL_GAME_OPTIONS = Prisma.validator<Prisma.GameArgs>()({
 export type FullGame = Prisma.GameGetPayload<typeof FULL_GAME_OPTIONS>;
 
 export async function getTodaysGame(userId: User["id"]): Promise<FullGame> {
-  let now = new Date();
-  let start = startOfDay(now);
-  let end = endOfDay(now);
+  const now = new Date();
+  const start = startOfDay(now);
+  const end = endOfDay(now);
 
   let game = await db.game.findFirst({
     ...FULL_GAME_OPTIONS,
@@ -58,8 +58,8 @@ export async function getTodaysGame(userId: User["id"]): Promise<FullGame> {
 export type GameBoard = ReturnType<typeof getFullBoard>;
 
 export function getFullBoard(game: FullGame) {
-  let fillerGuessesToMake = TOTAL_GUESSES - game.guesses.length;
-  let fillerGuesses = Array.from({
+  const fillerGuessesToMake = TOTAL_GUESSES - game.guesses.length;
+  const fillerGuesses = Array.from({
     length: fillerGuessesToMake,
   }).map((): { letters: Array<ComputedGuess> } => {
     return {
@@ -69,19 +69,19 @@ export function getFullBoard(game: FullGame) {
     };
   });
 
-  let computedGuesses: Array<{ letters: Array<ComputedGuess> }> =
+  const computedGuesses: Array<{ letters: Array<ComputedGuess> }> =
     game.guesses.flatMap((guess) => {
-      let computed = computeGuess(guess.guess, game.word);
+      const computed = computeGuess(guess.guess, game.word);
       return {
         letters: computed,
       };
     });
 
-  let guesses: Array<{ letters: Array<ComputedGuess> }> = [
+  const guesses: Array<{ letters: Array<ComputedGuess> }> = [
     ...computedGuesses,
     ...fillerGuesses,
   ];
-  let currentGuess = game.guesses.length;
+  const currentGuess = game.guesses.length;
 
   return {
     currentGuess,
@@ -91,7 +91,7 @@ export function getFullBoard(game: FullGame) {
 }
 
 export async function createGame(userId: User["id"]): Promise<FullGame> {
-  let game = await db.game.create({
+  const game = await db.game.create({
     data: {
       userId,
       word: getRandomWord(),
@@ -100,7 +100,7 @@ export async function createGame(userId: User["id"]): Promise<FullGame> {
     ...FULL_GAME_OPTIONS,
   });
 
-  let timeUntilEndOfDay = differenceInMilliseconds(
+  const timeUntilEndOfDay = differenceInMilliseconds(
     endOfDay(game.createdAt),
     new Date(game.createdAt),
   );
@@ -114,8 +114,8 @@ export async function createGuess(
   userId: User["id"],
   guessedWord: string,
 ): Promise<string | null> {
-  let normalized = guessedWord.toLowerCase();
-  let game = await getTodaysGame(userId);
+  const normalized = guessedWord.toLowerCase();
+  const game = await getTodaysGame(userId);
 
   if (game.guesses.length >= TOTAL_GUESSES || isGameComplete(game.status)) {
     return `Game is already complete`;
@@ -130,9 +130,9 @@ export async function createGuess(
   }
 
   try {
-    let computedGuess = computeGuess(normalized, game.word);
-    let won = computedGuess.every((l) => l.state === LetterState.Match);
-    let updatedGame = await db.game.update({
+    const computedGuess = computeGuess(normalized, game.word);
+    const won = computedGuess.every((l) => l.state === LetterState.Match);
+    const updatedGame = await db.game.update({
       where: { id: game.id },
       data: {
         guesses: { create: { guess: normalized } },
@@ -169,7 +169,7 @@ export async function createGuess(
 export async function getGameById(
   id: Game["id"],
 ): Promise<ReturnType<typeof getFullBoard>> {
-  let game = await db.game.findUnique({
+  const game = await db.game.findUnique({
     ...FULL_GAME_OPTIONS,
     where: { id },
   });

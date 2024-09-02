@@ -1,4 +1,4 @@
-let DEFAULT_REDIRECT = "/";
+const DEFAULT_REDIRECT = "/";
 
 /**
  * This should be used any time the redirect path is user-provided

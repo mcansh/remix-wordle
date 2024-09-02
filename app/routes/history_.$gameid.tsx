@@ -1,42 +1,34 @@
-import { json } from "@remix-run/node";
-import type { V2_MetaFunction, DataFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { json, unstable_defineLoader } from "@remix-run/node";
+import { MetaArgs_SingleFetch, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-
 import { GameOverModal } from "~/components/game-over-modal";
 import { TOTAL_GUESSES } from "~/constants";
 import { getGameById, isGameComplete } from "~/models/game.server";
 import { requireUserId } from "~/session.server";
 import { LetterState } from "~/utils/game";
 
-export async function loader({ request, params }: DataFunctionArgs) {
+export const loader = unstable_defineLoader(async ({ request, params }) => {
   await requireUserId(request);
-  let gameId = params.gameid;
+  const gameId = params.gameid;
   if (!gameId) {
     throw new Response("Not found", { status: 404 });
   }
 
-  let game = await getGameById(gameId);
+  const game = await getGameById(gameId);
 
-  let showModal = isGameComplete(game.status);
+  const showModal = isGameComplete(game.status);
 
   return json({ game, showModal });
-}
+});
 
-export let meta: V2_MetaFunction<typeof loader> = ({ data }) => {
-  if (!data) {
-    return [{ title: "Remix Wordle" }];
-  }
+export const meta = ({ data }: MetaArgs_SingleFetch<typeof loader>) => {
+  if (!data) return [{ title: "Remix Wordle" }];
 
-  return [
-    {
-      title: `Remix Wordle - ${data.game.status} - ${data.game.word}`,
-    },
-  ];
+  return [{ title: `Remix Wordle - ${data.game.status} - ${data.game.word}` }];
 };
 
 export default function HistoricalGamePage() {
-  let data = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
 
   return (
     <>

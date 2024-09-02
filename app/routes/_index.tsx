@@ -1,9 +1,13 @@
-import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import type {} from "@remix-run/node";
+import {
+  json,
+  redirect,
+  unstable_defineAction,
+  unstable_defineLoader,
+} from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import { ClientOnly } from "remix-utils";
-
+import { ClientOnly } from "remix-utils/client-only";
 import { requireUserId } from "~/session.server";
 import {
   createGuess,
@@ -15,37 +19,37 @@ import { GameOverModal } from "~/components/game-over-modal";
 import { LetterState } from "~/utils/game";
 import { LETTER_INPUTS, TOTAL_GUESSES } from "~/constants";
 
-export let meta: V2_MetaFunction = () => {
+export const meta = () => {
   return [{ title: "Remix Wordle" }];
 };
 
-export let loader = async ({ request }: LoaderArgs) => {
-  let userId = await requireUserId(request);
-  let game = await getTodaysGame(userId);
-  let board = getFullBoard(game);
+export const loader = unstable_defineLoader(async ({ request }) => {
+  const userId = await requireUserId(request);
+  const game = await getTodaysGame(userId);
+  const board = getFullBoard(game);
 
-  let url = new URL(request.url);
+  const url = new URL(request.url);
 
-  let showModal = isGameComplete(game.status);
+  const showModal = isGameComplete(game.status);
 
-  if (url.searchParams.has("cheat") || showModal) {
-    return json({ ...board, showModal });
-  }
+  const { word, ...rest } = board;
 
-  let { word, ...rest } = board;
+  return json({
+    ...rest,
+    word: showModal || url.searchParams.has("cheat") ? word : undefined,
+    showModal,
+  });
+});
 
-  return json({ ...rest, word: undefined, showModal });
-};
+export const action = unstable_defineAction(async ({ request }) => {
+  const userId = await requireUserId(request);
+  const formData = await request.formData();
+  const letters = formData.getAll("letter");
+  const has_js = formData.get("has_js");
+  const url = new URL(request.url);
 
-export let action = async ({ request }: ActionArgs) => {
-  let userId = await requireUserId(request);
-  let formData = await request.formData();
-  let letters = formData.getAll("letter");
-  let has_js = formData.get("has_js");
-  let url = new URL(request.url);
-
-  let guessedWord = letters.join("");
-  let error = await createGuess(userId, guessedWord);
+  const guessedWord = letters.join("");
+  const error = await createGuess(userId, guessedWord);
 
   if (error) {
     return json({ error }, { status: 422, statusText: "Unprocessable Entity" });
@@ -55,28 +59,25 @@ export let action = async ({ request }: ActionArgs) => {
     return redirect(url.pathname + url.search);
   }
 
-  let game = await getTodaysGame(userId);
-  let board = getFullBoard(game);
+  const game = await getTodaysGame(userId);
+  const board = getFullBoard(game);
 
-  let showModal = isGameComplete(game.status);
+  const showModal = isGameComplete(game.status);
 
-  if (url.searchParams.has("cheat") || showModal) {
-    return json({
-      ...board,
-      showModal,
-    });
-  }
+  const { word, ...rest } = board;
 
-  let { word, ...rest } = board;
-
-  return json({ ...rest, word: undefined, showModal });
-};
+  return json({
+    ...rest,
+    word: showModal || url.searchParams.has("cheat") ? word : undefined,
+    showModal,
+  });
+});
 
 export default function IndexPage() {
-  let data = useLoaderData<typeof loader>();
-  let fetcher = useFetcher<typeof action>();
+  const data = useLoaderData<typeof loader>();
+  const fetcher = useFetcher<typeof action>();
 
-  let errorMessage =
+  const errorMessage =
     fetcher.data && "error" in fetcher.data && fetcher.data.error
       ? fetcher.data.error
       : null;
@@ -89,7 +90,7 @@ export default function IndexPage() {
           guesses={data.guesses}
           totalGuesses={TOTAL_GUESSES}
           winner={data.status === "WON"}
-          word={"word" in data ? data.word : ""}
+          word={data.word || ""}
         />
       ) : null}
 
@@ -101,7 +102,7 @@ export default function IndexPage() {
           <h1 className="py-4 text-center text-4xl font-semibold">
             Remix Wordle
           </h1>
-          {!data.showModal && "word" in data ? (
+          {!data.showModal && data.word ? (
             <h2 className="mb-4 text-center text-sm text-gray-700">
               Your word is {data.word}
             </h2>
@@ -112,7 +113,6 @@ export default function IndexPage() {
           {errorMessage && (
             <div className="mb-4 text-center text-red-500">{errorMessage}</div>
           )}
-
           <div className="space-y-4">
             {data.guesses.map((guess, guessIndex) => {
               if (data.currentGuess === guessIndex) {
@@ -120,16 +120,15 @@ export default function IndexPage() {
                   <fetcher.Form
                     method="post"
                     key={`current-guess-${data.currentGuess}`}
-                    replace
                     className="grid grid-cols-5 gap-4"
                     id="current-guess"
                     autoComplete="off"
                     onChange={(event) => {
-                      let target = event.nativeEvent.target;
+                      const target = event.nativeEvent.target;
                       if (target instanceof HTMLInputElement) {
                         if (target.value === "") return;
                         if (target.nextElementSibling) {
-                          let nextInput = target.nextElementSibling;
+                          const nextInput = target.nextElementSibling;
                           if (nextInput instanceof HTMLInputElement) {
                             nextInput.select();
                           }
@@ -153,6 +152,7 @@ export default function IndexPage() {
                         aria-label={`letter ${index + 1}`}
                         placeholder=" "
                         onClick={(event) => event.currentTarget.select()}
+                        // eslint-disable-next-line jsx-a11y/no-autofocus
                         autoFocus={index === 0}
                       />
                     ))}

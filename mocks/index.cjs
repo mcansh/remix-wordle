@@ -1,4 +1,4 @@
-const { rest } = require("msw");
+const { http, passthrough } = require("msw");
 const { setupServer } = require("msw/node");
 
 /**
@@ -23,11 +23,11 @@ async function delay(delay) {
 /** @type {import('msw').RestHandler[]} */
 let handlers = [
   // Intercept all HTTP requests.
-  rest.all("*", async (req) => {
+  http.all("*", async () => {
     // Apply random delay to them.
     await delay(randomNumberBetween(100, 3_000));
     // Then resolve them as-is, no mocking.
-    return req.passthrough();
+    return passthrough();
   }),
 ];
 

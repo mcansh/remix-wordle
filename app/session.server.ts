@@ -4,7 +4,7 @@ import type { User } from "@prisma/client";
 import { getUserById } from "./models/user.server";
 import { env } from "./constants.server";
 
-export let sessionStorage = createCookieSessionStorage({
+export const sessionStorage = createCookieSessionStorage({
   cookie: {
     name: "__session",
     secrets: [env.SESSION_SECRET],
@@ -15,26 +15,26 @@ export let sessionStorage = createCookieSessionStorage({
   },
 });
 
-let USER_SESSION_KEY = "userId";
+const USER_SESSION_KEY = "userId";
 
 export async function getSession(request: Request) {
-  let cookie = request.headers.get("Cookie");
+  const cookie = request.headers.get("Cookie");
   return sessionStorage.getSession(cookie);
 }
 
 export async function getUserId(
   request: Request,
 ): Promise<User["id"] | undefined> {
-  let session = await getSession(request);
-  let userId = session.get(USER_SESSION_KEY);
+  const session = await getSession(request);
+  const userId = session.get(USER_SESSION_KEY);
   return userId;
 }
 
 export async function getUser(request: Request) {
-  let userId = await getUserId(request);
+  const userId = await getUserId(request);
   if (userId === undefined) return null;
 
-  let user = await getUserById(userId);
+  const user = await getUserById(userId);
   if (user) return user;
 
   throw await logout(request);
@@ -44,18 +44,18 @@ export async function requireUserId(
   request: Request,
   redirectTo: string = new URL(request.url).pathname,
 ) {
-  let userId = await getUserId(request);
+  const userId = await getUserId(request);
   if (!userId) {
-    let searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+    const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
     throw redirect(`/login?${searchParams}`);
   }
   return userId;
 }
 
 export async function requireUser(request: Request) {
-  let userId = await requireUserId(request);
+  const userId = await requireUserId(request);
 
-  let user = await getUserById(userId);
+  const user = await getUserById(userId);
   if (user) return user;
 
   throw await logout(request);
@@ -72,10 +72,10 @@ export async function createUserSession({
   remember: boolean;
   redirectTo: string;
 }) {
-  let session = await getSession(request);
+  const session = await getSession(request);
   session.set(USER_SESSION_KEY, userId);
   // 1 year or until the window is closed
-  let maxAge = remember ? 60 * 60 * 24 * 365 : undefined;
+  const maxAge = remember ? 60 * 60 * 24 * 365 : undefined;
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, { maxAge }),
@@ -84,7 +84,7 @@ export async function createUserSession({
 }
 
 export async function logout(request: Request) {
-  let session = await getSession(request);
+  const session = await getSession(request);
   return redirect("/", {
     headers: {
       "Set-Cookie": await sessionStorage.destroySession(session),

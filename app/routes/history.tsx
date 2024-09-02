@@ -1,15 +1,13 @@
-import type { DataFunctionArgs, V2_MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { json, unstable_defineLoader } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-
 import { db } from "~/db.server";
 import { requireUserId } from "~/session.server";
 
-export let loader = async ({ request }: DataFunctionArgs) => {
-  let userId = await requireUserId(request);
+export const loader = unstable_defineLoader(async ({ request }) => {
+  const userId = await requireUserId(request);
 
-  let games = await db.game.findMany({
+  const games = await db.game.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
     select: {
@@ -22,16 +20,16 @@ export let loader = async ({ request }: DataFunctionArgs) => {
     },
   });
 
-  let formatter = new Intl.DateTimeFormat("en-US", {
+  const formatter = new Intl.DateTimeFormat("en-US", {
     dateStyle: "short",
     timeStyle: "short",
   });
 
   return json({
     games: games.map((game) => {
-      let createdAt = new Date(game.createdAt);
-      let updatedAt = new Date(game.updatedAt);
-      let date = updatedAt > createdAt ? updatedAt : createdAt;
+      const createdAt = new Date(game.createdAt);
+      const updatedAt = new Date(game.updatedAt);
+      const date = updatedAt > createdAt ? updatedAt : createdAt;
       return {
         id: game.id,
         date: formatter.format(date),
@@ -41,14 +39,14 @@ export let loader = async ({ request }: DataFunctionArgs) => {
       };
     }),
   });
-};
+});
 
-export let meta: V2_MetaFunction<typeof loader> = () => {
+export const meta = () => {
   return [{ title: "Remix Wordle" }];
 };
 
 export default function HistoryPage() {
-  let data = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
 
   return (
     <div className="px-4 pt-8 sm:px-6 lg:px-8">

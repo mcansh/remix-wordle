@@ -1,34 +1,45 @@
-import { PassThrough } from "node:stream";
-import crypto from "node:crypto";
-import { renderToPipeableStream } from "react-dom/server";
-import { RemixServer } from "@remix-run/react";
-import { Response } from "@remix-run/node";
-import type { EntryContext, Headers } from "@remix-run/node";
-import isbot from "isbot";
-import { createSecureHeaders } from "@mcansh/http-helmet";
+/**
+ * By default, Remix will handle generating the HTTP Response for you.
+ * You are free to delete this file if you'd like to, but if you ever want it revealed again, you can run `npx remix reveal` ✨
+ * For more information, see https://remix.run/file-conventions/entry.server
+ */
 
-import { NonceProvider } from "./components/nonce";
+import { PassThrough } from "node:stream";
+
+import type { AppLoadContext, EntryContext } from "@remix-run/node";
+import { createReadableStreamFromReadable } from "@remix-run/node";
+import { RemixServer } from "@remix-run/react";
+import { isbot } from "isbot";
+import { renderToPipeableStream } from "react-dom/server";
+import { createSecureHeaders, mergeHeaders } from "@mcansh/http-helmet";
+import { NonceProvider, createNonce } from "@mcansh/http-helmet/react";
 
 const ABORT_DELAY = 5_000;
+
+const isProduction = process.env.NODE_ENV === "production";
 
 export default function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
+  // This is ignored so we can keep it in the template for visibility.  Feel
+  // free to delete this parameter in your app if you're not using it!
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  loadContext: AppLoadContext,
 ) {
-  let callbackName = isbot(request.headers.get("user-agent"))
+  const callbackName = isbot(request.headers.get("user-agent"))
     ? "onAllReady"
     : "onShellReady";
 
-  let nonce = crypto.randomBytes(16).toString("base64");
-
-  let secureHeaders = createSecureHeaders({
+  const nonce = createNonce();
+  const secureHeaders = createSecureHeaders({
     "Content-Security-Policy": {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", `'nonce-${nonce}'`],
-      // prettier-ignore
-      connectSrc: process.env.NODE_ENV === "production" ? ["'self'"] : ["'self'", "ws:"],
+      "base-uri": ["'self'"],
+      "default-src": ["'self'"],
+      "script-src": ["'self'", `'nonce-${nonce}'`],
+      "connect-src": isProduction ? ["'self'"] : ["'self'", "ws:"],
+      "style-src": isProduction ? ["'self'"] : ["'self'", "'unsafe-inline'"],
     },
     "X-Frame-Options": "DENY",
     "Cross-Origin-Opener-Policy": "same-origin",
@@ -43,42 +54,53 @@ export default function handleRequest(
     "X-XSS-Protection": "1; mode=block",
   });
 
-  for (let header of secureHeaders) {
-    responseHeaders.set(...header);
-  }
+  responseHeaders = mergeHeaders(responseHeaders, secureHeaders);
 
   return new Promise((resolve, reject) => {
-    let didError = false;
-
-    let { pipe, abort } = renderToPipeableStream(
+    let shellRendered = false;
+    const { pipe, abort } = renderToPipeableStream(
       <NonceProvider nonce={nonce}>
-        <RemixServer context={remixContext} url={request.url} />
+        <RemixServer
+          context={remixContext}
+          url={request.url}
+          abortDelay={ABORT_DELAY}
+          nonce={nonce}
+        />
       </NonceProvider>,
       {
         nonce,
         [callbackName]() {
-          let body = new PassThrough();
+          shellRendered = true;
+          const body = new PassThrough();
+          const stream = createReadableStreamFromReadable(body);
 
           responseHeaders.set("Content-Type", "text/html");
           responseHeaders.set("Vary", "Cookie");
 
           resolve(
-            new Response(body, {
-              status: didError ? 500 : responseStatusCode,
+            new Response(stream, {
               headers: responseHeaders,
+              status: responseStatusCode,
             }),
           );
+
           pipe(body);
         },
-        onShellError(err: unknown) {
-          reject(err);
+        onShellError(error: unknown) {
+          reject(error);
         },
         onError(error: unknown) {
-          didError = true;
-          console.error(error);
+          responseStatusCode = 500;
+          // Log streaming rendering errors from inside the shell.  Don't log
+          // errors encountered during initial shell rendering since they'll
+          // reject and get logged in handleDocumentRequest.
+          if (shellRendered) {
+            console.error(error);
+          }
         },
       },
     );
+
     setTimeout(abort, ABORT_DELAY);
   });
 }

@@ -27,23 +27,23 @@ export function computeGuess(
   guess: string,
   answer: string,
 ): Array<ComputedGuess> {
-  let result: Array<ComputedGuess> = [];
+  const result: Array<ComputedGuess> = [];
 
   if (guess.length !== answer.length) {
     return [];
   }
 
-  let answerLetters = answer.split("");
-  let guessLetters = guess.split("");
+  const answerLetters = answer.split("");
+  const guessLetters = guess.split("");
 
-  let answerLetterCount: Record<string, number> = {};
+  const answerLetterCount: Record<string, number> = {};
 
   guessLetters.forEach((letter, index) => {
-    let currentAnswerLetter = answerLetters[index];
-    let count = answerLetterCount[currentAnswerLetter];
+    const currentAnswerLetter = answerLetters[index];
+    const count = answerLetterCount[currentAnswerLetter];
     answerLetterCount[currentAnswerLetter] = count ? count + 1 : 1;
 
-    let id = genId();
+    const id = genId();
 
     if (currentAnswerLetter === letter) {
       result.push({ id, letter, state: LetterState.Match });
@@ -59,7 +59,7 @@ export function computeGuess(
       return;
     }
 
-    let guessLetter = guessLetters[resultIndex];
+    const guessLetter = guessLetters[resultIndex];
 
     answerLetters.forEach((currentAnswerLetter, answerIndex) => {
       if (currentAnswerLetter !== guessLetter) {

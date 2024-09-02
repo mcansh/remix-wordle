@@ -1,26 +1,30 @@
 import * as React from "react";
-import type { DataFunctionArgs, V2_MetaFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 
+import {
+  json,
+  redirect,
+  unstable_defineAction,
+  unstable_defineLoader,
+} from "@remix-run/node";
+import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import { createUserSession, getUserId } from "~/session.server";
 import { loginSchema, verifyLogin } from "~/models/user.server";
 import { safeRedirect } from "~/utils";
 
-export async function loader({ request }: DataFunctionArgs) {
-  let userId = await getUserId(request);
+export const loader = unstable_defineLoader(async ({ request }) => {
+  const userId = await getUserId(request);
   if (userId) return redirect("/");
   return json({});
-}
+});
 
-export async function action({ request }: DataFunctionArgs) {
-  let formData = await request.formData();
-  let email = formData.get("email");
-  let password = formData.get("password");
-  let redirectTo = safeRedirect(formData.get("redirectTo"), "/");
-  let remember = formData.get("remember");
+export const action = unstable_defineAction(async ({ request }) => {
+  const formData = await request.formData();
+  const email = formData.get("email");
+  const password = formData.get("password");
+  const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
+  const remember = formData.get("remember");
 
-  let result = loginSchema.safeParse({ email, password });
+  const result = loginSchema.safeParse({ email, password });
 
   if (!result.success) {
     return json(
@@ -29,7 +33,7 @@ export async function action({ request }: DataFunctionArgs) {
     );
   }
 
-  let user = await verifyLogin(result.data.email, result.data.password);
+  const user = await verifyLogin(result.data.email, result.data.password);
 
   if (!user) {
     return json(
@@ -44,20 +48,20 @@ export async function action({ request }: DataFunctionArgs) {
     remember: remember === "on" ? true : false,
     redirectTo,
   });
-}
+});
 
-export const meta: V2_MetaFunction = () => {
+export const meta = () => {
   return [{ title: "Login" }];
 };
 
 export default function LoginPage() {
-  let [searchParams] = useSearchParams();
-  let redirectTo = searchParams.get("redirectTo") || "/";
-  let actionData = useActionData<typeof action>();
-  let emailRef = React.useRef<HTMLInputElement>(null);
-  let passwordRef = React.useRef<HTMLInputElement>(null);
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") || "/";
+  const actionData = useActionData<typeof action>();
+  const emailRef = React.useRef<HTMLInputElement>(null);
+  const passwordRef = React.useRef<HTMLInputElement>(null);
 
-  let errors = React.useMemo(() => {
+  const errors = React.useMemo(() => {
     return {
       email:
         actionData?.errors && "email" in actionData.errors
@@ -96,6 +100,7 @@ export default function LoginPage() {
             ref={emailRef}
             id="email"
             required
+            // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus={true}
             name="email"
             type="email"
@@ -161,7 +166,7 @@ export default function LoginPage() {
           </label>
         </div>
         <div className="text-sm text-gray-500">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             className="text-blue-500 underline"
             to={{

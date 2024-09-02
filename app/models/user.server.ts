@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { db } from "~/db.server";
 
-export let joinSchema = z.object({
+export const joinSchema = z.object({
   email: z.string().email(),
   username: z.string().min(1, "Username is required"),
   password: z.string().min(10, "Password must be at least 10 characters"),
@@ -13,7 +13,7 @@ export let joinSchema = z.object({
 export type JoinData = z.infer<typeof joinSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
 
-export let loginSchema = z.object({
+export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(10, "Password must be at least 10 characters"),
 });
@@ -31,7 +31,7 @@ export async function createUser(user: {
   email: User["email"];
   password: User["password"];
 }) {
-  let hashedPassword = await bcrypt.hash(user.password, 10);
+  const hashedPassword = await bcrypt.hash(user.password, 10);
 
   return db.user.create({
     data: {
@@ -50,17 +50,17 @@ export async function verifyLogin(
   email: User["email"],
   password: User["password"],
 ) {
-  let user = await db.user.findUnique({
+  const user = await db.user.findUnique({
     where: { email },
   });
 
   if (!user || !user.password) return null;
 
-  let isValid = await bcrypt.compare(password, user.password);
+  const isValid = await bcrypt.compare(password, user.password);
 
   if (!isValid) return null;
 
-  let { password: _password, ...userWithoutPassword } = user;
+  const { password: _password, ...userWithoutPassword } = user;
 
   return userWithoutPassword;
 }

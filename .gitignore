@@ -1,9 +1,6 @@
-# build artifacts
-/.cache/
-/build/
-/public/build/
+node_modules
 
-/node_modules/
+/.cache
+/build
 .env
 .DS_Store
-.eslintcache

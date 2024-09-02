@@ -1,23 +1,37 @@
 {
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/.server/**/*.ts",
+    "**/.server/**/*.tsx",
+    "**/.client/**/*.ts",
+    "**/.client/**/*.tsx",
+    "./vite.config.ts"
+  ],
   "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2019"],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "types": [
+      "@remix-run/node",
+      "vite/client",
+      "@remix-run/react/future/single-fetch.d.ts"
+    ],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
-    "target": "ES2019",
+    "target": "ES2022",
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["./app/*"]
     },
-    // Remix takes care of building everything in `remix build`.
+
+    // Vite takes care of building everything, not tsc.
     "noEmit": true
   }
 }
