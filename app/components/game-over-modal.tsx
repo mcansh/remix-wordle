@@ -72,7 +72,7 @@ export function GameOverModal({
                         const blob = new Blob([text], { type });
                         const write = [new ClipboardItem({ [type]: blob })];
                         await window.navigator.clipboard.write(write);
-                      } catch (error) {
+                      } catch {
                         // browser doesn't support clipboard api
                       }
                     }}

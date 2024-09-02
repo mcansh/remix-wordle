@@ -1,4 +1,3 @@
-import type {} from "@remix-run/node";
 import {
   json,
   redirect,

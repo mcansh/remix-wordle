@@ -98,7 +98,7 @@ const KEYBOARD = [
 export function keyboardWithStatus(
   guesses: Array<{ letters: Array<ComputedGuess> }>,
 ) {
-  let letters = guesses
+  const letters = guesses
     .flatMap((guess) => guess.letters)
     .filter((guess) => guess.state !== LetterState.Blank);
 
