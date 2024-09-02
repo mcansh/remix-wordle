@@ -11,6 +11,7 @@ import {
   createEmptyLetter,
   getRandomWord,
   isValidWord,
+  keyboardWithStatus,
   LetterState,
 } from "~/utils/game";
 
@@ -81,12 +82,14 @@ export function getFullBoard(game: FullGame) {
     ...computedGuesses,
     ...fillerGuesses,
   ];
+
   const currentGuess = game.guesses.length;
 
   return {
     currentGuess,
     ...game,
     guesses,
+    keyboardWithStatus: keyboardWithStatus(guesses),
   };
 }
 
@@ -139,8 +142,8 @@ export async function createGuess(
         status: won
           ? GameStatus.WON
           : game.guesses.length + 1 >= TOTAL_GUESSES
-          ? GameStatus.COMPLETE
-          : GameStatus.IN_PROGRESS,
+            ? GameStatus.COMPLETE
+            : GameStatus.IN_PROGRESS,
       },
     });
 

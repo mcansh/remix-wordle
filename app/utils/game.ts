@@ -88,3 +88,43 @@ export function getRandomWord(): string {
 export function isValidWord(guess: string): boolean {
   return [...wordBank.valid, ...wordBank.invalid].includes(guess);
 }
+
+const KEYBOARD = [
+  ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
+  ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
+  ["z", "x", "c", "v", "b", "n", "m"],
+] as const;
+
+export function keyboardWithStatus(
+  guesses: Array<{ letters: Array<ComputedGuess> }>,
+) {
+  let letters = guesses
+    .flatMap((guess) => guess.letters)
+    .filter((guess) => guess.state !== LetterState.Blank);
+
+  // map letters to best state for each letter
+  const states = new Map<string, LetterState>(
+    letters.reduce((acc, letter) => {
+      if (acc.has(letter.letter)) {
+        const current = acc.get(letter.letter);
+        if (current === LetterState.Match) {
+          return acc;
+        }
+
+        if (letter.state === LetterState.Match) {
+          acc.set(letter.letter, LetterState.Match);
+        }
+      } else {
+        acc.set(letter.letter, letter.state);
+      }
+
+      return acc;
+    }, new Map<string, LetterState>()),
+  );
+
+  return KEYBOARD.map((row) => {
+    return row.map((letter) => {
+      return { letter, state: states.get(letter) || LetterState.Blank };
+    });
+  });
+}

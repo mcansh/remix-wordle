@@ -38,6 +38,7 @@ export const loader = unstable_defineLoader(async ({ request }) => {
     ...rest,
     word: showModal || url.searchParams.has("cheat") ? word : undefined,
     showModal,
+    keyboardWithStatus: board.keyboardWithStatus,
   });
 });
 
@@ -70,6 +71,7 @@ export const action = unstable_defineAction(async ({ request }) => {
     ...rest,
     word: showModal || url.searchParams.has("cheat") ? word : undefined,
     showModal,
+    keyboardWithStatus: board.keyboardWithStatus,
   });
 });
 
@@ -94,10 +96,7 @@ export default function IndexPage() {
         />
       ) : null}
 
-      <div
-        className="mx-auto h-full max-w-sm"
-        aria-hidden={data.showModal ? true : undefined}
-      >
+      <div className="h-full" aria-hidden={data.showModal ? true : undefined}>
         <header>
           <h1 className="py-4 text-center text-4xl font-semibold">
             Remix Wordle
@@ -113,7 +112,7 @@ export default function IndexPage() {
           {errorMessage && (
             <div className="mb-4 text-center text-red-500">{errorMessage}</div>
           )}
-          <div className="space-y-4">
+          <div className="mx-auto max-w-sm space-y-4">
             {data.guesses.map((guess, guessIndex) => {
               if (data.currentGuess === guessIndex) {
                 return (
@@ -174,15 +173,15 @@ export default function IndexPage() {
                         key={`guess-${guessIndex}-letter-${letter.id}`}
                         readOnly
                         className={clsx(
-                          "inline-block aspect-square w-full border-4 text-center text-xl uppercase",
+                          "inline-block aspect-square w-full border-4 text-center text-xl uppercase text-white",
                           {
-                            "border-green-500 bg-green-500 text-white":
+                            "border-green-500 bg-green-500":
                               letter.state === LetterState.Match,
-                            "border-red-500 bg-red-500 text-white":
+                            "border-red-500 bg-red-500":
                               letter.state === LetterState.Miss,
-                            "border-yellow-500 bg-yellow-500 text-white":
+                            "border-yellow-500 bg-yellow-500":
                               letter.state === LetterState.Present,
-                            "border-gray-400 text-white":
+                            "border-gray-400":
                               letter.state === LetterState.Blank,
                           },
                         )}
@@ -206,6 +205,40 @@ export default function IndexPage() {
               className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
               value="Submit Guess"
             />
+          </div>
+
+          <div className="mx-auto max-w-md pt-10">
+            {data.keyboardWithStatus.map((row, index) => {
+              const letters = row.map((letter) => letter.letter).join("");
+              return (
+                <div
+                  key={`keyboard-row-${letters}`}
+                  className={clsx("flex justify-center gap-2", {
+                    "mt-2": index > 0,
+                  })}
+                >
+                  {row.map((letter) => {
+                    return (
+                      <div
+                        className={clsx(
+                          `flex size-10 items-center justify-center rounded text-center uppercase text-white`,
+                          {
+                            "bg-green-500": letter.state === LetterState.Match,
+                            "bg-red-500": letter.state === LetterState.Miss,
+                            "bg-yellow-500":
+                              letter.state === LetterState.Present,
+                            "bg-gray-400": letter.state === LetterState.Blank,
+                          },
+                        )}
+                        key={`keyboard-letter-${letter.letter}`}
+                      >
+                        {letter.letter}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
           </div>
         </main>
       </div>
