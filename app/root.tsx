@@ -18,6 +18,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <script src="https://cdn.usefathom.com/script.js" data-site="LHPWDAMW" defer />
       </head>
       <body className="h-screen">
         {children}
