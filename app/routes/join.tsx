@@ -2,23 +2,23 @@ import * as React from "react";
 import {
   json,
   redirect,
-  unstable_defineAction,
-  unstable_defineLoader,
+  type LoaderFunctionArgs,
+  type ActionFunctionArgs,
 } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { PrismaClientKnownRequestError } from "@prisma/client";
 import { getUserId, createUserSession } from "~/session.server";
 import type { JoinData } from "~/models/user.server";
 import { createUser, joinSchema } from "~/models/user.server";
 import { safeRedirect } from "~/utils";
 
-export const loader = unstable_defineLoader(async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await getUserId(request);
   if (userId) return redirect("/");
   return json({});
-});
+};
 
-export const action = unstable_defineAction(async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const email = formData.get("email");
   const username = formData.get("username");
@@ -63,7 +63,7 @@ export const action = unstable_defineAction(async ({ request }) => {
       }
     }
   }
-});
+};
 
 export const meta = () => {
   return [{ title: "Sign Up" }];

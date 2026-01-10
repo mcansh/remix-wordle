@@ -7,6 +7,7 @@ export const LetterState = {
   Match: "Match", // Letter exists and is in the right location
 } as const;
 
+// eslint-disable-next-line no-redeclare
 type LetterState = (typeof LetterState)[keyof typeof LetterState];
 
 export interface ComputedGuess {

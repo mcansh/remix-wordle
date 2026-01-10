@@ -1,14 +1,14 @@
 import {
   redirect,
-  unstable_defineAction,
-  unstable_defineLoader,
+  type LoaderFunctionArgs,
+  type ActionFunctionArgs,
 } from "@remix-run/node";
 import { logout } from "~/session.server";
 
-export const loader = unstable_defineLoader(async () => {
+export const loader = async (_: LoaderFunctionArgs) => {
   return redirect("/");
-});
+};
 
-export const action = unstable_defineAction(async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   return logout(request);
-});
+};

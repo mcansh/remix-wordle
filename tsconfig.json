@@ -13,7 +13,7 @@
     "types": [
       "@remix-run/node",
       "vite/client",
-      "@remix-run/react/future/single-fetch.d.ts"
+      "@remix-run/react/dist/single-fetch.d.ts"
     ],
     "isolatedModules": true,
     "esModuleInterop": true,

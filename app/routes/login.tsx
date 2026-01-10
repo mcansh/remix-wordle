@@ -3,21 +3,21 @@ import * as React from "react";
 import {
   json,
   redirect,
-  unstable_defineAction,
-  unstable_defineLoader,
+  type LoaderFunctionArgs,
+  type ActionFunctionArgs,
 } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import { createUserSession, getUserId } from "~/session.server";
 import { loginSchema, verifyLogin } from "~/models/user.server";
 import { safeRedirect } from "~/utils";
 
-export const loader = unstable_defineLoader(async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await getUserId(request);
   if (userId) return redirect("/");
   return json({});
-});
+};
 
-export const action = unstable_defineAction(async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
@@ -48,7 +48,7 @@ export const action = unstable_defineAction(async ({ request }) => {
     remember: remember === "on" ? true : false,
     redirectTo,
   });
-});
+};
 
 export const meta = () => {
   return [{ title: "Login" }];
@@ -150,7 +150,7 @@ export default function LoginPage() {
       >
         Log in
       </button>
-      <div className="w-full space-y-2 text-center sm:flex sm:items-center sm:justify-between sm:space-x-2 sm:space-y-0">
+      <div className="w-full space-y-2 text-center sm:flex sm:items-center sm:justify-between sm:space-y-0 sm:space-x-2">
         <div className="flex items-center justify-center">
           <input
             id="remember"

@@ -1,8 +1,8 @@
 import {
   json,
   redirect,
-  unstable_defineAction,
-  unstable_defineLoader,
+  type LoaderFunctionArgs,
+  type ActionFunctionArgs,
 } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -22,7 +22,7 @@ export const meta = () => {
   return [{ title: "Remix Wordle" }];
 };
 
-export const loader = unstable_defineLoader(async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
   const game = await getTodaysGame(userId);
   const board = getFullBoard(game);
@@ -39,9 +39,9 @@ export const loader = unstable_defineLoader(async ({ request }) => {
     showModal,
     keyboardWithStatus: board.keyboardWithStatus,
   });
-});
+};
 
-export const action = unstable_defineAction(async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const userId = await requireUserId(request);
   const formData = await request.formData();
   const letters = formData.getAll("letter");
@@ -72,7 +72,7 @@ export const action = unstable_defineAction(async ({ request }) => {
     showModal,
     keyboardWithStatus: board.keyboardWithStatus,
   });
-});
+};
 
 export default function IndexPage() {
   const data = useLoaderData<typeof loader>();
@@ -172,7 +172,7 @@ export default function IndexPage() {
                         key={`guess-${guessIndex}-letter-${letter.id}`}
                         readOnly
                         className={clsx(
-                          "inline-block aspect-square w-full border-4 text-center text-xl uppercase text-white",
+                          "inline-block aspect-square w-full border-4 text-center text-xl text-white uppercase",
                           {
                             "border-green-500 bg-green-500":
                               letter.state === LetterState.Match,
@@ -201,7 +201,7 @@ export default function IndexPage() {
               form="current-guess"
               enterKeyHint="send"
               type="submit"
-              className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+              className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
               value="Submit Guess"
             />
           </div>
@@ -220,7 +220,7 @@ export default function IndexPage() {
                     return (
                       <div
                         className={clsx(
-                          `flex size-10 items-center justify-center rounded text-center uppercase text-white`,
+                          `flex size-10 items-center justify-center rounded text-center text-white uppercase`,
                           {
                             "bg-green-500": letter.state === LetterState.Match,
                             "bg-red-500": letter.state === LetterState.Miss,

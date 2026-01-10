@@ -1,4 +1,4 @@
-import { json, unstable_defineLoader } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { MetaArgs_SingleFetch, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { GameOverModal } from "~/components/game-over-modal";
@@ -7,7 +7,7 @@ import { getGameById, isGameComplete } from "~/models/game.server";
 import { requireUserId } from "~/session.server";
 import { LetterState } from "~/utils/game";
 
-export const loader = unstable_defineLoader(async ({ request, params }) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   await requireUserId(request);
   const gameId = params.gameid;
   if (!gameId) {
@@ -19,7 +19,7 @@ export const loader = unstable_defineLoader(async ({ request, params }) => {
   const showModal = isGameComplete(game.status);
 
   return json({ game, showModal });
-});
+};
 
 export const meta = ({ data }: MetaArgs_SingleFetch<typeof loader>) => {
   if (!data) return [{ title: "Remix Wordle" }];
@@ -92,7 +92,7 @@ export default function HistoricalGamePage() {
               form="current-guess"
               enterKeyHint="send"
               type="submit"
-              className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+              className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
               value="Submit Guess"
             />
           </div>

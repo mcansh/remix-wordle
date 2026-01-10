@@ -1,10 +1,10 @@
-import { json, unstable_defineLoader } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { db } from "~/db.server";
 import { requireUserId } from "~/session.server";
 
-export const loader = unstable_defineLoader(async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
 
   const games = await db.game.findMany({
@@ -39,7 +39,7 @@ export const loader = unstable_defineLoader(async ({ request }) => {
       };
     }),
   });
-});
+};
 
 export const meta = () => {
   return [{ title: "Remix Wordle" }];
@@ -52,7 +52,7 @@ export default function HistoryPage() {
     <div className="px-4 pt-8 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">
+          <h1 className="text-base leading-6 font-semibold text-gray-900">
             History
           </h1>
           <p className="mt-2 text-sm text-gray-700">
@@ -68,31 +68,31 @@ export default function HistoryPage() {
                 <tr>
                   <th
                     scope="col"
-                    className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
+                    className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
                   >
                     Date
                   </th>
                   <th
                     scope="col"
-                    className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
+                    className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
                   >
                     Word
                   </th>
                   <th
                     scope="col"
-                    className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+                    className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
                   >
                     Guesses
                   </th>
                   <th
                     scope="col"
-                    className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+                    className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
                   >
                     Status
                   </th>
                   <th
                     scope="col"
-                    className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-3 pr-4 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8"
+                    className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white py-3.5 pr-4 pl-3 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8"
                   >
                     <span className="sr-only">Edit</span>
                   </th>
@@ -106,7 +106,7 @@ export default function HistoryPage() {
                         gameIndex !== array.length - 1
                           ? "border-b border-gray-200"
                           : "",
-                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8",
+                        "py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 lg:pl-8",
                       )}
                     >
                       {game.date}
@@ -116,7 +116,7 @@ export default function HistoryPage() {
                         gameIndex !== array.length - 1
                           ? "border-b border-gray-200"
                           : "",
-                        "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
+                        "px-3 py-4 text-sm whitespace-nowrap text-gray-500",
                       )}
                     >
                       {game.word}
@@ -126,7 +126,7 @@ export default function HistoryPage() {
                         gameIndex !== array.length - 1
                           ? "border-b border-gray-200"
                           : "",
-                        "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
+                        "px-3 py-4 text-sm whitespace-nowrap text-gray-500",
                       )}
                     >
                       {game.guesses}
@@ -136,7 +136,7 @@ export default function HistoryPage() {
                         gameIndex !== array.length - 1
                           ? "border-b border-gray-200"
                           : "",
-                        "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
+                        "px-3 py-4 text-sm whitespace-nowrap text-gray-500",
                       )}
                     >
                       {game.status}
@@ -146,7 +146,7 @@ export default function HistoryPage() {
                         gameIndex !== array.length - 1
                           ? "border-b border-gray-200"
                           : "",
-                        "relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-8 lg:pr-8",
+                        "relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-8 lg:pr-8",
                       )}
                     >
                       <Link
