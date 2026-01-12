@@ -1,3 +1,5 @@
+"use client";
+
 import clsx from "clsx";
 
 export function LetterInput({
@@ -20,7 +22,6 @@ export function LetterInput({
       aria-label={`letter ${index + 1}`}
       placeholder=" "
       autoFocus={index === 0}
-      // on={press((event) => event.currentTarget.select())}
     />
   );
 }

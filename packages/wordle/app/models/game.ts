@@ -4,9 +4,9 @@ import type { Game, User } from "../generated/prisma/client";
 import type { ComputedGuess } from "../utils/game";
 
 import { WORD_LENGTH } from "../constants";
-import { db } from "../db.server";
+import { db } from "../db";
 import { GameStatus, Prisma } from "../generated/prisma/client";
-import { gameQueue } from "../queue.server";
+import { gameQueue } from "../queue";
 import {
   computeGuess,
   createEmptyLetter,

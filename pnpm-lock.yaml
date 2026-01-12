@@ -30,6 +30,9 @@ catalogs:
     '@remix-run/compression-middleware':
       specifier: ^0.1.0
       version: 0.1.0
+    '@remix-run/cookie':
+      specifier: ^0.5.0
+      version: 0.5.0
     '@remix-run/dom':
       specifier: 0.0.0-experimental-remix-jam.6
       version: 0.0.0-experimental-remix-jam.6
@@ -42,6 +45,9 @@ catalogs:
     '@remix-run/form-data-middleware':
       specifier: ^0.1.1
       version: 0.1.1
+    '@remix-run/headers':
+      specifier: ^0.18.0
+      version: 0.18.0
     '@remix-run/logger-middleware':
       specifier: ^0.1.0
       version: 0.1.0
@@ -57,6 +63,9 @@ catalogs:
     '@remix-run/response':
       specifier: ^0.2.1
       version: 0.2.1
+    '@remix-run/session':
+      specifier: ^0.4.1
+      version: 0.4.1
     '@remix-run/session-middleware':
       specifier: ^0.1.1
       version: 0.1.1
@@ -198,6 +207,9 @@ importers:
       '@remix-run/compression-middleware':
         specifier: 'catalog:'
         version: 0.1.0(@remix-run/fetch-router@0.14.0(@remix-run/headers@0.18.0)(@remix-run/route-pattern@0.16.0)(@remix-run/session@0.4.1))(@remix-run/mime@0.2.0)(@remix-run/response@0.2.1(@remix-run/headers@0.18.0)(@remix-run/html-template@0.3.0)(@remix-run/mime@0.2.0))
+      '@remix-run/cookie':
+        specifier: 'catalog:'
+        version: 0.5.0(@remix-run/headers@0.18.0)
       '@remix-run/dom':
         specifier: 'catalog:'
         version: 0.0.0-experimental-remix-jam.6
@@ -210,6 +222,9 @@ importers:
       '@remix-run/form-data-middleware':
         specifier: 'catalog:'
         version: 0.1.1(@remix-run/fetch-router@0.14.0(@remix-run/headers@0.18.0)(@remix-run/route-pattern@0.16.0)(@remix-run/session@0.4.1))(@remix-run/form-data-parser@0.14.0)
+      '@remix-run/headers':
+        specifier: 'catalog:'
+        version: 0.18.0
       '@remix-run/logger-middleware':
         specifier: 'catalog:'
         version: 0.1.0(@remix-run/fetch-router@0.14.0(@remix-run/headers@0.18.0)(@remix-run/route-pattern@0.16.0)(@remix-run/session@0.4.1))
@@ -225,6 +240,9 @@ importers:
       '@remix-run/response':
         specifier: 'catalog:'
         version: 0.2.1(@remix-run/headers@0.18.0)(@remix-run/html-template@0.3.0)(@remix-run/mime@0.2.0)
+      '@remix-run/session':
+        specifier: 'catalog:'
+        version: 0.4.1
       '@remix-run/session-middleware':
         specifier: 'catalog:'
         version: 0.1.1(@remix-run/cookie@0.5.0(@remix-run/headers@0.18.0))(@remix-run/fetch-router@0.14.0(@remix-run/headers@0.18.0)(@remix-run/route-pattern@0.16.0)(@remix-run/session@0.4.1))(@remix-run/session@0.4.1)

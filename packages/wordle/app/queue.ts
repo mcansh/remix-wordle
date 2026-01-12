@@ -2,8 +2,8 @@ import type { Processor } from "bullmq";
 
 import { Queue as BullQueue, Worker } from "bullmq";
 
-import { db, redis } from "./db.server";
-import { isGameComplete } from "./models/game.server";
+import { db, redis } from "./db";
+import { isGameComplete } from "./models/game";
 
 type RegisteredQueue = {
   queue: BullQueue;
@@ -14,9 +14,7 @@ const registeredQueues = new Map<string, RegisteredQueue>();
 
 export function Queue<Payload>(name: string, handler: Processor<Payload>): BullQueue<Payload> {
   const current = registeredQueues.get(name);
-  if (current) {
-    return current.queue;
-  }
+  if (current) return current.queue;
 
   const queue = new BullQueue<Payload>(name, { connection: redis });
   const worker = new Worker<Payload>(name, handler, { connection: redis });

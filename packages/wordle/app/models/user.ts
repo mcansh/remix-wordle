@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import type { User } from "../generated/prisma/client";
 
-import { db } from "../db.server";
+import { db } from "../db";
 
 export const joinSchema = z.object({
   email: z.email(),
@@ -47,7 +47,7 @@ export async function deleteUserByEmail(email: User["email"]) {
   return db.user.delete({ where: { email } });
 }
 
-export async function verifyLogin(email: User["email"], password: User["password"]) {
+export async function authenticateUser(email: User["email"], password: User["password"]) {
   const user = await db.user.findUnique({
     where: { email },
   });
@@ -61,4 +61,34 @@ export async function verifyLogin(email: User["email"], password: User["password
   const { password: _password, ...userWithoutPassword } = user;
 
   return userWithoutPassword;
+}
+
+export function createPasswordResetToken(email: string): string | undefined {
+  let user = getUserByEmail(email);
+  if (!user) return undefined;
+
+  let token = Math.random().toString(36).substring(2, 15);
+  console.log(`Password reset token for ${email}: ${token}`);
+  // resetTokens.set(token, {
+  //   userId: user.id,
+  //   expiresAt: new Date(Date.now() + 3600000), // 1 hour
+  // })
+
+  return token;
+}
+
+export function resetPassword(token: string, newPassword: string): boolean {
+  // let tokenData = resetTokens.get(token)
+  // if (!tokenData || tokenData.expiresAt < new Date()) {
+  //   return false
+  // }
+
+  console.log(`Resetting password for token ${token}`);
+
+  // let user = getUserById(tokenData.userId)
+  // if (!user) return false
+
+  // user.password = newPassword
+  // resetTokens.delete(token)
+  return true;
 }

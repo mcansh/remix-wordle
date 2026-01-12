@@ -1,7 +1,7 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import Redis from "ioredis";
 
-import { env } from "./constants.server";
+import { env } from "./constants";
 import { PrismaClient } from "./generated/prisma/client";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
