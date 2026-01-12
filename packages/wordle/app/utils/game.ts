@@ -1,0 +1,125 @@
+import wordBank from "./word-bank.json";
+
+export const LetterState = {
+  Blank: "Blank", // The letter is blank
+  Miss: "Miss", // Letter doesn't exist at all
+  Present: "Present", // Letter exists but wrong location
+  Match: "Match", // Letter exists and is in the right location
+} as const;
+
+type LetterState = (typeof LetterState)[keyof typeof LetterState];
+
+export interface ComputedGuess {
+  id: string;
+  letter: string;
+  state: LetterState;
+}
+
+function genId() {
+  return Math.random().toString(36).substring(2, 15);
+}
+
+export function createEmptyLetter() {
+  return { id: genId(), state: LetterState.Blank, letter: "" };
+}
+
+export function computeGuess(guess: string, answer: string): Array<ComputedGuess> {
+  const result: Array<ComputedGuess> = [];
+
+  if (guess.length !== answer.length) {
+    return [];
+  }
+
+  const answerLetters = answer.split("");
+  const guessLetters = guess.split("");
+
+  const answerLetterCount: Record<string, number> = {};
+
+  guessLetters.forEach((letter, index) => {
+    const currentAnswerLetter = answerLetters[index];
+    const count = answerLetterCount[currentAnswerLetter];
+    answerLetterCount[currentAnswerLetter] = count ? count + 1 : 1;
+
+    const id = genId();
+
+    if (currentAnswerLetter === letter) {
+      result.push({ id, letter, state: LetterState.Match });
+    } else if (answer.includes(letter)) {
+      result.push({ id, letter, state: LetterState.Present });
+    } else {
+      result.push({ id, letter, state: LetterState.Miss });
+    }
+  });
+
+  result.forEach((curResult, resultIndex) => {
+    if (curResult.state !== LetterState.Present) {
+      return;
+    }
+
+    const guessLetter = guessLetters[resultIndex];
+
+    answerLetters.forEach((currentAnswerLetter, answerIndex) => {
+      if (currentAnswerLetter !== guessLetter) {
+        return;
+      }
+
+      if (result[answerIndex].state === LetterState.Match) {
+        result[resultIndex].state = LetterState.Miss;
+      }
+
+      if (answerLetterCount[guessLetter] <= 0) {
+        result[resultIndex].state = LetterState.Miss;
+      }
+    });
+
+    answerLetterCount[guessLetter]--;
+  });
+
+  return result;
+}
+
+export function getRandomWord(): string {
+  return wordBank.valid[Math.floor(Math.random() * wordBank.valid.length)];
+}
+
+export function isValidWord(guess: string): boolean {
+  return [...wordBank.valid, ...wordBank.invalid].includes(guess);
+}
+
+const KEYBOARD = [
+  ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
+  ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
+  ["z", "x", "c", "v", "b", "n", "m"],
+] as const;
+
+export function keyboardWithStatus(guesses: Array<{ letters: Array<ComputedGuess> }>) {
+  const letters = guesses
+    .flatMap((guess) => guess.letters)
+    .filter((guess) => guess.state !== LetterState.Blank);
+
+  // map letters to best state for each letter
+  const states = new Map<string, LetterState>(
+    letters.reduce((acc, letter) => {
+      if (acc.has(letter.letter)) {
+        const current = acc.get(letter.letter);
+        if (current === LetterState.Match) {
+          return acc;
+        }
+
+        if (letter.state === LetterState.Match) {
+          acc.set(letter.letter, LetterState.Match);
+        }
+      } else {
+        acc.set(letter.letter, letter.state);
+      }
+
+      return acc;
+    }, new Map<string, LetterState>()),
+  );
+
+  return KEYBOARD.map((row) => {
+    return row.map((letter) => {
+      return { letter, state: states.get(letter) || LetterState.Blank };
+    });
+  });
+}

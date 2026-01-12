@@ -1,0 +1,19 @@
+import { get, post, route, form } from "@remix-run/fetch-router";
+
+export let routes = route({
+  home: form("/"),
+  health: get("/health"),
+
+  history: route("history", {
+    index: "/",
+    game: get(":gameid"),
+  }),
+
+  auth: {
+    login: form("login"),
+    register: form("register"),
+    logout: post("logout"),
+    forgotPassword: form("forgot-password"),
+    resetPassword: form("reset-password/:token"),
+  },
+});

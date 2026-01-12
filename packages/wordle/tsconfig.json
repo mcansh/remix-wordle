@@ -1,0 +1,8 @@
+{
+  "extends": "@tsconfig/vite-react/tsconfig.json",
+  "compilerOptions": {
+    "jsxImportSource": "@remix-run/dom",
+    "strict": true,
+    "types": ["node", "vite/client", "@jacob-ebey/vite-plugin-remix/types"]
+  }
+}

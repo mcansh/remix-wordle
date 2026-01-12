@@ -1,0 +1,48 @@
+generator client {
+  provider   = "prisma-client" // or `prisma-client-js`
+  output     = "../app/generated/prisma"
+  engineType = "client" // enable Prisma ORM without Rust
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  games     Game[]
+}
+
+enum GameStatus {
+  EMPTY
+  IN_PROGRESS
+  COMPLETE
+  WON
+}
+
+model Game {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  guesses   Guess[]
+  word      String
+  status    GameStatus
+}
+
+model Guess {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId    String
+  guess     String
+
+  @@unique([guess, gameId], name: "UniqueGuessPerGame")
+}
