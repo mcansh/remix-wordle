@@ -24,9 +24,10 @@ catalog:
   "@tsconfig/node24": 24.0.3
   "@tsconfig/vite-react": ^7.0.2
   "@types/express": ^5.0.6
-  "@types/node": 25.0.3
+  "@types/node": 25.0.6
+  "@vitest/coverage-v8": ^4.0.17
   bcryptjs: ^3.0.3
-  bullmq: ^5.66.4
+  bullmq: ^5.66.5
   clsx: ^2.1.1
   date-fns: ^4.1.0
   express: ^5.2.1
@@ -35,21 +36,22 @@ catalog:
   lint-staged: ^16.2.7
   magic-string: 0.30.21
   msw: ^2.12.7
-  oxfmt: ^0.23.0
-  oxlint: ^1.38.0
+  oxfmt: ^0.24.0
+  oxlint: ^1.39.0
   prisma: ^7.2.0
   tailwindcss: ^4.1.18
-  type-fest: ^5.3.1
+  type-fest: ^5.4.0
   typescript: ^5.9.3
   vite: 7.3.1
   vite-plugin-devtools-json: ^1.0.0
-  vitest: ^4.0.16
+  vitest: ^4.0.17
   zod: ^4.3.5
 
 catalogMode: strict
 
 onlyBuiltDependencies:
   - "@prisma/engines"
+  - msw
   - prisma
 
 shellEmulator: true

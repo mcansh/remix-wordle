@@ -47,6 +47,7 @@
     "@tsconfig/vite-react": "catalog:",
     "@types/express": "catalog:",
     "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "msw": "catalog:",
     "prisma": "catalog:",
     "tailwindcss": "catalog:",
