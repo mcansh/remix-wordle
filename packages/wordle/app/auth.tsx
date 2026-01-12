@@ -11,6 +11,7 @@ import {
   createPasswordResetToken,
   resetPassword,
   joinSchema,
+  loginSchema,
 } from "./models/user.ts";
 import { routes } from "./routes.ts";
 import { render } from "./utils/render.ts";
@@ -27,81 +28,68 @@ export default {
 
         return render(
           <Document>
-            <form method="post" className="" action={formAction}>
-              <div className="w-full">
-                <label htmlFor="email" className="">
-                  Email address
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="email"
-                    required
-                    autoFocus={true}
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    // aria-invalid={errors.email ? true : undefined}
-                    aria-describedby="email-error"
-                    className=""
-                  />
-                  {/* {errors.email && (
-                        <div className="" id="email-error">
-                          {errors.email}
-                        </div>
-                      )} */}
-                </div>
-              </div>
-
-              <div className="w-full">
-                <label htmlFor="password" className="">
-                  Password
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    // aria-invalid={errors.password ? true : undefined}
-                    aria-describedby="password-error"
-                    className=""
-                  />
-                  {/* {errors.password ? (
-                        <div className="" id="password-error">
-                          {errors.password}
-                        </div>
-                      ) : null} */}
-                </div>
-              </div>
-
-              <button type="submit" className="">
-                Log in
-              </button>
-              <div className="">
-                <div className="">
-                  <input id="remember" name="remember" type="checkbox" className="" />
-                  <label htmlFor="remember" className="">
-                    Remember me
+            <main class="h-dvh">
+              {error && typeof error === "string" ? <div class="text-red-500">{error}</div> : null}
+              <form
+                method="post"
+                class="mx-auto flex h-full w-full max-w-md flex-col items-center justify-center space-y-6 px-8"
+                action={formAction}
+              >
+                <div class="w-full">
+                  <label htmlFor="email" class="block text-sm font-medium text-gray-700">
+                    Email address
                   </label>
+                  <div class="mt-1">
+                    <input
+                      id="email"
+                      required
+                      autoFocus={true}
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      class="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                    />
+                  </div>
                 </div>
-                <div className="">
+
+                <div class="w-full">
+                  <label htmlFor="password" class="block text-sm font-medium text-gray-700">
+                    Password
+                  </label>
+                  <div class="mt-1">
+                    <input
+                      id="password"
+                      name="password"
+                      type="password"
+                      autoComplete="current-password"
+                      class="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  class="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
+                >
+                  Log in
+                </button>
+                <div class="text-sm text-gray-500">
                   Don&apos;t have an account?{" "}
-                  <a className="" href={routes.auth.register.index.href()}>
+                  <a class="text-blue-500 underline" href={routes.auth.register.index.href()}>
                     Sign up
                   </a>
                 </div>
-              </div>
-            </form>
+              </form>
+            </main>
           </Document>,
         );
       },
 
       async action({ session, formData, url }) {
-        let email = formData.get("email")?.toString() ?? "";
-        let password = formData.get("password")?.toString() ?? "";
+        let result = loginSchema.parse(Object.fromEntries(formData));
         let returnTo = url.searchParams.get("returnTo");
 
-        let user = await authenticateUser(email, password);
+        let user = await authenticateUser(result.email, result.password);
         if (!user) {
           session.flash("error", "Invalid email or password. Please try again.");
           return redirect(routes.auth.login.index.href(undefined, { returnTo }));
@@ -118,39 +106,69 @@ export default {
       index() {
         return render(
           <Document>
-            <div class="card" style="max-width: 500px; margin: 2rem auto;">
-              <h1>Register</h1>
-              <form method="POST" action={routes.auth.register.action.href()}>
-                <div class="form-group">
-                  <label for="name">Name</label>
-                  <input type="text" id="name" name="name" required autoComplete="name" />
+            <main class="h-dvh">
+              <form
+                method="POST"
+                action={routes.auth.register.action.href()}
+                class="mx-auto flex h-full w-full max-w-md flex-col items-center justify-center space-y-6 px-8"
+              >
+                <div class="w-full">
+                  <label class="block text-sm font-medium text-gray-700" for="email">
+                    Email address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    autoComplete="email"
+                    class="mt-1 w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                  />
                 </div>
 
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input type="email" id="email" name="email" required autoComplete="email" />
+                <div class="w-full">
+                  <label class="block text-sm font-medium text-gray-700" for="username">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    required
+                    autoComplete="username"
+                    class="mt-1 w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                  />
                 </div>
 
-                <div class="form-group">
-                  <label for="password">Password</label>
+                <div class="w-full">
+                  <label class="block text-sm font-medium text-gray-700" for="password">
+                    Password
+                  </label>
                   <input
                     type="password"
                     id="password"
                     name="password"
                     required
                     autoComplete="new-password"
+                    class="mt-1 w-full rounded border border-gray-500 px-2 py-1 text-lg"
                   />
                 </div>
 
-                <button type="submit" class="btn">
-                  Register
+                <button
+                  type="submit"
+                  class="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
+                >
+                  Join now
                 </button>
-              </form>
 
-              <p style="margin-top: 1.5rem;">
-                Already have an account? <a href={routes.auth.login.index.href()}>Login here</a>
-              </p>
-            </div>
+                <p class="text-sm text-gray-500">
+                  Already have an account?{" "}
+                  <a href={routes.auth.login.index.href()} class="text-blue-500 underline">
+                    Login here
+                  </a>
+                </p>
+              </form>
+            </main>
           </Document>,
         );
       },
@@ -208,7 +226,7 @@ export default {
               <p>Enter your email address and we'll send you a link to reset your password.</p>
 
               <form method="POST" action={routes.auth.forgotPassword.action.href()}>
-                <div class="form-group">
+                <div>
                   <label for="email">Email</label>
                   <input type="email" id="email" name="email" required autoComplete="email" />
                 </div>
@@ -280,7 +298,7 @@ export default {
               ) : null}
 
               <form method="POST" action={routes.auth.resetPassword.action.href({ token })}>
-                <div class="form-group">
+                <div>
                   <label for="password">New Password</label>
                   <input
                     type="password"
@@ -291,7 +309,7 @@ export default {
                   />
                 </div>
 
-                <div class="form-group">
+                <div>
                   <label for="confirmPassword">Confirm Password</label>
                   <input
                     type="password"
