@@ -5,7 +5,9 @@ import { loadEnvFile } from "node:process";
 import { defineConfig } from "vite";
 import devtoolsJson from "vite-plugin-devtools-json";
 
-loadEnvFile(".env");
+try {
+  loadEnvFile(".env");
+} catch {}
 
 export default defineConfig({
   builder: {
