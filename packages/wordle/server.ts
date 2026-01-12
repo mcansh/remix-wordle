@@ -5,6 +5,12 @@ import express from "express";
 import ssr from "./dist/ssr/entry.server.js";
 
 const app = express();
+
+if (process.env.NODE_ENV === "development") {
+  let middleware = await import("./mocks/server.ts");
+  app.use(middleware.middleware);
+}
+
 app.use(
   "/assets",
   express.static("dist/client/assets", {

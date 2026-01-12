@@ -8,8 +8,6 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
-    "dev:lol": "TZ=UTC node --require ./mocks/index.cjs --watch ./server.ts ./server.ts",
-    "start": "TZ=UTC node ./server.ts",
     "lint": "oxlint",
     "format": "oxfmt",
     "typecheck": "tsc"
@@ -43,6 +41,7 @@
   "devDependencies": {
     "@jacob-ebey/vite-plugin-remix": "workspace:^",
     "@mcansh/vite-plugin-svg-sprite": "catalog:",
+    "@mswjs/http-middleware": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tsconfig/vite-react": "catalog:",
     "@types/express": "catalog:",
