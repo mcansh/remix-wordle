@@ -25,13 +25,13 @@ export function loadAuth(): Middleware {
   };
 }
 
-export interface RequireAuthOptions {
+export type RequireAuthOptions = {
   /**
    * Where to redirect if the user is not authenticated.
    * Defaults to the login page.
    */
   redirectTo?: Route;
-}
+};
 
 /**
  * Middleware that requires a user to be authenticated.

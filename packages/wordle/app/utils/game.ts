@@ -9,11 +9,11 @@ export const LetterState = {
 
 type LetterState = (typeof LetterState)[keyof typeof LetterState];
 
-export interface ComputedGuess {
+export type ComputedGuess = {
   id: string;
   letter: string;
   state: LetterState;
-}
+};
 
 function genId() {
   return Math.random().toString(36).substring(2, 15);
