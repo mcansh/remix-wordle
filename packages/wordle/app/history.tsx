@@ -52,6 +52,7 @@ export default {
 
       return render(
         <Document>
+          <title>Remix Wordle Game History</title>
           <div className="mx-auto h-full max-w-sm">
             <div className="">
               <div className="sm:flex-auto">
@@ -145,6 +146,7 @@ export default {
       if (!game) {
         return render(
           <Document>
+            <title>Remix Wordle - Game Not Found</title>
             <div className="mx-auto h-full max-w-sm">
               <header>
                 <h1 className="">Remix Wordle</h1>
@@ -166,6 +168,7 @@ export default {
 
       return render(
         <Document>
+          <title>Remix Wordle - Game {game.id}</title>
           {showModal ? (
             <GameOverModal
               currentGuess={game.currentGuess}
