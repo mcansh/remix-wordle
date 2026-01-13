@@ -19,10 +19,10 @@ let REVEAL_WORD = "cheat";
 export default {
   middleware: [requireAuth()],
   actions: {
-    async action({ formData, session, url }) {
+    async action({ formData, session }) {
       const user = getCurrentUser();
       const letters = formData.getAll("letter");
-      const revealWord = url.searchParams.has(REVEAL_WORD);
+      const revealWord = formData.get("cheat") === "true";
 
       const guessedWord = letters.join("");
       const error = await createGuess(user.id, guessedWord);
@@ -44,7 +44,7 @@ export default {
 
       const showModal = isGameComplete(game.status);
 
-      let word = showModal || url.searchParams.has(REVEAL_WORD) ? board.word : undefined;
+      let showWord = showModal || url.searchParams.has(REVEAL_WORD) ? board.word : undefined;
       let keyboardWithStatus = board.keyboardWithStatus;
 
       let errorMessage = session.get("error") || null;
@@ -69,8 +69,8 @@ export default {
           <div className="h-full" aria-hidden={showModal ? true : undefined}>
             <header>
               <h1 className="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
-              {!showModal && word ? (
-                <h2 className="mb-4 text-center text-sm text-gray-700">Your word is {word}</h2>
+              {!showModal && showWord ? (
+                <h2 className="mb-4 text-center text-sm text-gray-700">Your word is {showWord}</h2>
               ) : null}
             </header>
 
@@ -83,6 +83,7 @@ export default {
                   if (board.currentGuess === guessIndex) {
                     return (
                       <Form currentGuess={board.currentGuess}>
+                        {showWord ? <input type="hidden" name="cheat" value="true" /> : null}
                         {LETTER_INPUTS.map((index) => (
                           <LetterInput
                             key={`input-number-${index}`}

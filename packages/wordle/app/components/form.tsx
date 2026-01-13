@@ -16,7 +16,7 @@ export function Form({
   return () => (
     <form
       method="POST"
-      action={routes.home.action.href(undefined, { cheat: true })}
+      action={routes.home.action.href()}
       key={`current-guess-${currentGuess}`}
       className="grid grid-cols-5 gap-4"
       id="current-guess"
