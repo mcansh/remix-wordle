@@ -89,7 +89,7 @@ export function GameOverModal(
                       </p>
 
                       <p>
-                        View your{" "}
+                        View your&nbsp;
                         <a className="text-indigo-600" href={routes.history.index.href()}>
                           full game history
                         </a>
