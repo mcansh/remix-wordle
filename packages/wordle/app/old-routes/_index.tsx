@@ -148,7 +148,7 @@ export default function IndexPage() {
                         key={`guess-${guessIndex}-letter-${letter.id}`}
                         readOnly
                         className={clsx(
-                          "inline-block aspect-square w-full border-4 text-center text-xl uppercase text-white",
+                          "inline-block aspect-square w-full border-4 text-center text-xl text-white uppercase",
                           {
                             "border-green-500 bg-green-500": letter.state === LetterState.Match,
                             "border-red-500 bg-red-500": letter.state === LetterState.Miss,

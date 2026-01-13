@@ -86,7 +86,7 @@ export default function HistoryPage() {
                     <td
                       className={clsx(
                         gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
-                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8",
+                        "py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 lg:pl-8",
                       )}
                     >
                       {game.date}
@@ -94,7 +94,7 @@ export default function HistoryPage() {
                     <td
                       className={clsx(
                         gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
-                        "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
+                        "px-3 py-4 text-sm whitespace-nowrap text-gray-500",
                       )}
                     >
                       {game.word}
@@ -102,7 +102,7 @@ export default function HistoryPage() {
                     <td
                       className={clsx(
                         gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
-                        "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
+                        "px-3 py-4 text-sm whitespace-nowrap text-gray-500",
                       )}
                     >
                       {game.guesses}
@@ -110,7 +110,7 @@ export default function HistoryPage() {
                     <td
                       className={clsx(
                         gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
-                        "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
+                        "px-3 py-4 text-sm whitespace-nowrap text-gray-500",
                       )}
                     >
                       {game.status}
@@ -118,7 +118,7 @@ export default function HistoryPage() {
                     <td
                       className={clsx(
                         gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
-                        "relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-8 lg:pr-8",
+                        "relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-8 lg:pr-8",
                       )}
                     >
                       <Link to={`/history/${game.id}`} className="">

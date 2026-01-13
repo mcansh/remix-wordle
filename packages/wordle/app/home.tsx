@@ -103,7 +103,7 @@ export default {
                             key={`guess-${guessIndex}-letter-${letter.id}`}
                             readOnly
                             data-state={letter.state}
-                            class={`inline-block aspect-square w-full border-4 text-center text-xl uppercase text-white data-[state=Blank]:border-gray-400 data-[state=Present]:border-yellow-500 data-[state=Present]:bg-yellow-500 data-[state=Match]:border-green-500 data-[state=Match]:bg-green-500 data-[state=Miss]:border-red-500 data-[state=Miss]:bg-red-500`}
+                            class={`inline-block aspect-square w-full border-4 text-center text-xl text-white uppercase data-[state=Blank]:border-gray-400 data-[state=Match]:border-green-500 data-[state=Match]:bg-green-500 data-[state=Miss]:border-red-500 data-[state=Miss]:bg-red-500 data-[state=Present]:border-yellow-500 data-[state=Present]:bg-yellow-500`}
                             value={letter.letter}
                             type="text"
                             pattern="[a-zA-Z]{1}"
@@ -121,7 +121,7 @@ export default {
                   form="current-guess"
                   enterKeyHint="send"
                   type="submit"
-                  className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+                  className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
                   value="Submit Guess"
                 />
               </div>
@@ -138,7 +138,7 @@ export default {
                         return (
                           <div
                             data-state={letter.state}
-                            class={`flex size-10 items-center justify-center rounded text-center uppercase text-white data-[state=Blank]:bg-gray-400 data-[state=Present]:bg-yellow-500 data-[state=Match]:bg-green-500 data-[state=Miss]:bg-red-500`}
+                            class={`flex size-10 items-center justify-center rounded text-center text-white uppercase data-[state=Blank]:bg-gray-400 data-[state=Match]:bg-green-500 data-[state=Miss]:bg-red-500 data-[state=Present]:bg-yellow-500`}
                             key={`keyboard-letter-${letter.letter}`}
                           >
                             {letter.letter}
