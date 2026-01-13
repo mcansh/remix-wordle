@@ -8,6 +8,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
+    "start": "node ./server.ts",
     "lint": "oxlint",
     "format": "oxfmt",
     "typecheck": "tsc"
