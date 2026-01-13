@@ -36,9 +36,9 @@
     "bcryptjs": "catalog:",
     "bullmq": "catalog:",
     "clsx": "catalog:",
-    "date-fns": "catalog:",
     "express": "catalog:",
     "ioredis": "catalog:",
+    "temporal-polyfill": "catalog:",
     "type-fest": "catalog:",
     "zod": "catalog:"
   },
