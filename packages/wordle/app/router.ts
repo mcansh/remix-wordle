@@ -6,6 +6,7 @@ import { methodOverride } from "@remix-run/method-override-middleware";
 import { session } from "@remix-run/session-middleware";
 
 import auth from "./auth.tsx";
+import history from "./history.tsx";
 import home from "./home.tsx";
 import { routes } from "./routes.ts";
 import { sessionCookie, sessionStorage } from "./utils/session.ts";
@@ -24,5 +25,5 @@ middleware.push(asyncContext());
 export let router = createRouter({ middleware });
 
 router.map(routes.home, home);
-
+router.map(routes.history, history);
 router.map(routes.auth, auth);

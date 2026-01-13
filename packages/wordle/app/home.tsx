@@ -21,11 +21,8 @@ export default {
   actions: {
     async action({ formData, session, url }) {
       const user = getCurrentUser();
-      console.log({ user });
       const letters = formData.getAll("letter");
       const revealWord = url.searchParams.has(REVEAL_WORD);
-
-      console.log({ letters });
 
       const guessedWord = letters.join("");
       const error = await createGuess(user.id, guessedWord);
@@ -71,7 +68,7 @@ export default {
 
           <div className="h-full" aria-hidden={showModal ? true : undefined}>
             <header>
-              {/* <h1 className="py-4 text-center text-4xl font-semibold">Remix Wordle</h1> */}
+              <h1 className="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
               {!showModal && word ? (
                 <h2 className="mb-4 text-center text-sm text-gray-700">Your word is {word}</h2>
               ) : null}

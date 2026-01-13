@@ -5,7 +5,7 @@ export let routes = route({
   health: get("/health"),
 
   history: route("history", {
-    index: "/",
+    index: get("/"),
     game: get(":gameid"),
   }),
 
