@@ -16,7 +16,7 @@ import {
 import { routes } from "./routes.ts";
 import { render } from "./utils/render.ts";
 
-export default {
+export const auth = {
   middleware: [loadAuth()],
   actions: {
     login: {

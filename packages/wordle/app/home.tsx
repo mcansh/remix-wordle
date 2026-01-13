@@ -16,7 +16,7 @@ import { render } from "./utils/render.ts";
 
 let REVEAL_WORD = "cheat";
 
-export default {
+export const home = {
   middleware: [requireAuth()],
   actions: {
     async action({ formData, session }) {

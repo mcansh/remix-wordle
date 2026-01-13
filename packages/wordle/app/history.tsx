@@ -13,7 +13,7 @@ import { getCurrentUser } from "./utils/context.ts";
 import { LetterState } from "./utils/game.ts";
 import { render } from "./utils/render.ts";
 
-export default {
+export const history = {
   middleware: [requireAuth()],
   actions: {
     async index() {
@@ -53,32 +53,47 @@ export default {
       return render(
         <Document>
           <title>Remix Wordle Game History</title>
-          <div className="mx-auto h-full max-w-sm">
-            <div className="">
+          <div className="px-4 pt-8 sm:px-6 lg:px-8">
+            <div className="sm:flex sm:items-center">
               <div className="sm:flex-auto">
-                <h1 className="">History</h1>
-                <p className="">A history of all of your games.</p>
+                <h1 className="text-base leading-6 font-semibold text-gray-900">History</h1>
+                <p className="mt-2 text-sm text-gray-700">A history of all of your games.</p>
               </div>
             </div>
-            <div className="">
-              <div className="">
-                <div className="">
-                  <table className="">
+            <div className="mt-8 flow-root">
+              <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
+                <div className="inline-block min-w-full py-2 align-middle">
+                  <table className="min-w-full border-separate border-spacing-0 lg:px-6">
                     <thead>
                       <tr>
-                        <th scope="col" className="">
+                        <th
+                          scope="col"
+                          className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
+                        >
                           Date
                         </th>
-                        <th scope="col" className="">
+                        <th
+                          scope="col"
+                          className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
+                        >
                           Word
                         </th>
-                        <th scope="col" className="">
+                        <th
+                          scope="col"
+                          className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+                        >
                           Guesses
                         </th>
-                        <th scope="col" className="">
+                        <th
+                          scope="col"
+                          className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+                        >
                           Status
                         </th>
-                        <th scope="col" className="">
+                        <th
+                          scope="col"
+                          className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white py-3.5 pr-4 pl-3 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8"
+                        >
                           <span className="sr-only">Edit</span>
                         </th>
                       </tr>
@@ -124,7 +139,10 @@ export default {
                               "relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-8 lg:pr-8",
                             )}
                           >
-                            <a href={routes.history.game.href({ gameid: game.id })} className="">
+                            <a
+                              href={routes.history.game.href({ gameid: game.id })}
+                              className="text-indigo-600 hover:text-indigo-900"
+                            >
                               View<span className="sr-only">, {game.word}</span>
                             </a>
                           </td>
@@ -149,7 +167,7 @@ export default {
             <title>Remix Wordle - Game Not Found</title>
             <div className="mx-auto h-full max-w-sm">
               <header>
-                <h1 className="">Remix Wordle</h1>
+                <h1 className="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
               </header>
 
               <main>
@@ -181,7 +199,7 @@ export default {
 
           <div className="mx-auto h-full max-w-sm">
             <header>
-              <h1 className="">Remix Wordle</h1>
+              <h1 className="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
             </header>
 
             <main>
@@ -223,7 +241,7 @@ export default {
                   form="current-guess"
                   enterKeyHint="send"
                   type="submit"
-                  className=""
+                  className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
                   value="Submit Guess"
                 />
               </div>
