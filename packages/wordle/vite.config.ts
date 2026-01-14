@@ -10,6 +10,7 @@ try {
 } catch {}
 
 export default defineConfig({
+  server: { port: 44100 },
   builder: {
     async buildApp(builder) {
       await builder.build(builder.environments.ssr);

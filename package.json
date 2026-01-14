@@ -5,6 +5,7 @@
     "prepare": "husky",
     "format": "oxfmt",
     "lint": "oxlint",
+    "dev": "pnpm --filter ./packages/wordle run dev",
     "build": "pnpm --recursive run build"
   },
   "dependencies": {
