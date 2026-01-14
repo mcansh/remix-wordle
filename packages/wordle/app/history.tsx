@@ -140,7 +140,7 @@ export let history = {
                             )}
                           >
                             <a
-                              href={routes.history.game.href({ gameid: game.id })}
+                              href={routes.history.game.href({ id: game.id })}
                               className="text-indigo-600 hover:text-indigo-900"
                             >
                               View<span className="sr-only">, {game.word}</span>
@@ -159,7 +159,7 @@ export let history = {
     },
 
     async game({ params }) {
-      let game = await getGameById(params.gameid);
+      let game = await getGameById(params.id);
 
       if (!game) {
         return render(

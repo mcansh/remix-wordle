@@ -2,11 +2,11 @@ import { get, post, route, form } from "@remix-run/fetch-router";
 
 export let routes = route({
   home: form("/"),
-  health: get("/health"),
+  health: get("health"),
 
   history: route("history", {
     index: get("/"),
-    game: get(":gameid"),
+    game: get(":id"),
   }),
 
   auth: {
