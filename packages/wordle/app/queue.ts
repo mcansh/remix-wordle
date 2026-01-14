@@ -10,14 +10,14 @@ type RegisteredQueue = {
   worker: Worker;
 };
 
-const registeredQueues = new Map<string, RegisteredQueue>();
+let registeredQueues = new Map<string, RegisteredQueue>();
 
 export function Queue<Payload>(name: string, handler: Processor<Payload>): BullQueue<Payload> {
-  const current = registeredQueues.get(name);
+  let current = registeredQueues.get(name);
   if (current) return current.queue;
 
-  const queue = new BullQueue<Payload>(name, { connection: redis });
-  const worker = new Worker<Payload>(name, handler, { connection: redis });
+  let queue = new BullQueue<Payload>(name, { connection: redis });
+  let worker = new Worker<Payload>(name, handler, { connection: redis });
 
   registeredQueues.set(name, { queue, worker });
 
@@ -29,7 +29,7 @@ type QueueData = {
 };
 
 export const gameQueue = Queue<QueueData>("mark_game_as_complete", async (job) => {
-  const game = await db.game.findUnique({
+  let game = await db.game.findUnique({
     where: { id: job.data.gameId },
   });
 

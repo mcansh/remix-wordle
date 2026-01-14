@@ -8,6 +8,7 @@
     "build": "pnpm --recursive run build"
   },
   "dependencies": {
+    "@mcansh/http-helmet": "catalog:",
     "husky": "catalog:",
     "lint-staged": "catalog:",
     "oxfmt": "catalog:",

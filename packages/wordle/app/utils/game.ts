@@ -24,23 +24,23 @@ export function createEmptyLetter() {
 }
 
 export function computeGuess(guess: string, answer: string): Array<ComputedGuess> {
-  const result: Array<ComputedGuess> = [];
+  let result: Array<ComputedGuess> = [];
 
   if (guess.length !== answer.length) {
     return [];
   }
 
-  const answerLetters = answer.split("");
-  const guessLetters = guess.split("");
+  let answerLetters = answer.split("");
+  let guessLetters = guess.split("");
 
-  const answerLetterCount: Record<string, number> = {};
+  let answerLetterCount: Record<string, number> = {};
 
   guessLetters.forEach((letter, index) => {
-    const currentAnswerLetter = answerLetters[index];
-    const count = answerLetterCount[currentAnswerLetter];
+    let currentAnswerLetter = answerLetters[index];
+    let count = answerLetterCount[currentAnswerLetter];
     answerLetterCount[currentAnswerLetter] = count ? count + 1 : 1;
 
-    const id = genId();
+    let id = genId();
 
     if (currentAnswerLetter === letter) {
       result.push({ id, letter, state: LetterState.Match });
@@ -56,7 +56,7 @@ export function computeGuess(guess: string, answer: string): Array<ComputedGuess
       return;
     }
 
-    const guessLetter = guessLetters[resultIndex];
+    let guessLetter = guessLetters[resultIndex];
 
     answerLetters.forEach((currentAnswerLetter, answerIndex) => {
       if (currentAnswerLetter !== guessLetter) {
@@ -93,15 +93,15 @@ const KEYBOARD = [
 ] as const;
 
 export function keyboardWithStatus(guesses: Array<{ letters: Array<ComputedGuess> }>) {
-  const letters = guesses
+  let letters = guesses
     .flatMap((guess) => guess.letters)
     .filter((guess) => guess.state !== LetterState.Blank);
 
   // map letters to best state for each letter
-  const states = new Map<string, LetterState>(
+  let states = new Map<string, LetterState>(
     letters.reduce((acc, letter) => {
       if (acc.has(letter.letter)) {
-        const current = acc.get(letter.letter);
+        let current = acc.get(letter.letter);
         if (current === LetterState.Match) {
           return acc;
         }

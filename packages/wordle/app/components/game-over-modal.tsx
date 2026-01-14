@@ -56,18 +56,18 @@ export function GameOverModal(
                       type="button"
                       className="mx-auto my-4 flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
                       on={press(async () => {
-                        const guessString = (winner ? currentGuess : "X") + "/" + totalGuesses;
+                        let guessString = (winner ? currentGuess : "X") + "/" + totalGuesses;
 
-                        const text =
+                        let text =
                           `Remix Wordle - ${guessString} \n` +
                           boardToEmoji(guesses)
                             .split("\n")
                             .map((line) => line.trim())
                             .join("\n");
                         try {
-                          const type = "text/plain";
-                          const blob = new Blob([text], { type });
-                          const write = [new ClipboardItem({ [type]: blob })];
+                          let type = "text/plain";
+                          let blob = new Blob([text], { type });
+                          let write = [new ClipboardItem({ [type]: blob })];
                           await window.navigator.clipboard.write(write);
                           copied = true;
                           this.update();

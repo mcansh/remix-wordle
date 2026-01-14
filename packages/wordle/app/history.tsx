@@ -13,13 +13,13 @@ import { getCurrentUser } from "./utils/context.ts";
 import { LetterState } from "./utils/game.ts";
 import { render } from "./utils/render.ts";
 
-export const history = {
+export let history = {
   middleware: [requireAuth()],
   actions: {
     async index() {
-      const user = getCurrentUser();
+      let user = getCurrentUser();
 
-      const games = await db.game.findMany({
+      let games = await db.game.findMany({
         where: { userId: user.id },
         orderBy: { createdAt: "desc" },
         select: {
@@ -32,15 +32,15 @@ export const history = {
         },
       });
 
-      const formatter = new Intl.DateTimeFormat("en-US", {
+      let formatter = new Intl.DateTimeFormat("en-US", {
         dateStyle: "short",
         timeStyle: "short",
       });
 
       let formattedGames = games.map((game) => {
-        const createdAt = new Date(game.createdAt);
-        const updatedAt = new Date(game.updatedAt);
-        const date = updatedAt > createdAt ? updatedAt : createdAt;
+        let createdAt = new Date(game.createdAt);
+        let updatedAt = new Date(game.updatedAt);
+        let date = updatedAt > createdAt ? updatedAt : createdAt;
         return {
           id: game.id,
           date: formatter.format(date),
@@ -159,7 +159,7 @@ export const history = {
     },
 
     async game({ params }) {
-      const game = await getGameById(params.gameid);
+      let game = await getGameById(params.gameid);
 
       if (!game) {
         return render(
@@ -182,7 +182,7 @@ export const history = {
         );
       }
 
-      const showModal = isGameComplete(game.status);
+      let showModal = isGameComplete(game.status);
 
       return render(
         <Document>

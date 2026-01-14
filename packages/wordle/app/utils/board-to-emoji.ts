@@ -3,7 +3,7 @@ import type { ComputedGuess } from "./game";
 import { LetterState } from "./game";
 
 function emojiRow(row: Array<ComputedGuess>) {
-  const emoji = row.map((letter) => {
+  let emoji = row.map((letter) => {
     switch (letter.state) {
       case LetterState.Match:
         return "🟩";

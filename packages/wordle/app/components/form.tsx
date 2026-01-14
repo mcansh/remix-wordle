@@ -23,11 +23,11 @@ export function Form({
       autoComplete="off"
       on={[
         dom.input((event) => {
-          const target = event.target;
+          let target = event.target;
           if (!(target instanceof HTMLInputElement)) return;
           if (target.value === "") return;
           if (target.nextElementSibling) {
-            const nextInput = target.nextElementSibling;
+            let nextInput = target.nextElementSibling;
             if (nextInput instanceof HTMLInputElement) {
               nextInput.select();
             }

@@ -20,12 +20,12 @@ export const home = {
   middleware: [requireAuth()],
   actions: {
     async action({ formData, session }) {
-      const user = getCurrentUser();
-      const letters = formData.getAll("letter");
-      const revealWord = formData.get("cheat") === "true";
+      let user = getCurrentUser();
+      let letters = formData.getAll("letter");
+      let revealWord = formData.get("cheat") === "true";
 
-      const guessedWord = letters.join("");
-      const error = await createGuess(user.id, guessedWord);
+      let guessedWord = letters.join("");
+      let error = await createGuess(user.id, guessedWord);
 
       if (error) {
         console.error({ error });
@@ -38,11 +38,11 @@ export const home = {
     },
 
     async index({ url, session }) {
-      const user = getCurrentUser();
-      const game = await getTodaysGame(user.id);
-      const board = getFullBoard(game);
+      let user = getCurrentUser();
+      let game = await getTodaysGame(user.id);
+      let board = getFullBoard(game);
 
-      const showModal = isGameComplete(game.status);
+      let showModal = isGameComplete(game.status);
 
       let showWord = showModal || url.searchParams.has(REVEAL_WORD) ? board.word : undefined;
       let keyboardWithStatus = board.keyboardWithStatus;
@@ -128,7 +128,7 @@ export const home = {
 
               <div className="mx-auto max-w-md pt-10">
                 {keyboardWithStatus.map((row, index) => {
-                  const letters = row.map((letter) => letter.letter).join("");
+                  let letters = row.map((letter) => letter.letter).join("");
                   return (
                     <div
                       key={`keyboard-row-${letters}`}
