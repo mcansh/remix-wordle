@@ -34,7 +34,6 @@ export let history = {
 
 			let formatter = new Intl.DateTimeFormat("en-US", {
 				dateStyle: "short",
-				timeStyle: "short",
 			})
 
 			let formattedGames = games.map((game) => {
