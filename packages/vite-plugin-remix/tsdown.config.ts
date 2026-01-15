@@ -11,7 +11,7 @@ export default defineConfig({
 	sourcemap: true,
 	nodeProtocol: true,
 	skipNodeModulesBundle: true,
-	attw: { profile: "esm-only" },
+	// attw: { profile: "esm-only" },
 	publint: true,
 	format: "esm",
 	exports: {

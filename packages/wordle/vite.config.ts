@@ -13,6 +13,9 @@ export default defineConfig({
 	server: { port: 44100 },
 	builder: {
 		async buildApp(builder) {
+			if (builder.environments.ssr == null || builder.environments.client == null) {
+				throw new Error("missing ssr and client environments")
+			}
 			await builder.build(builder.environments.ssr)
 			await builder.build(builder.environments.client)
 		},
