@@ -1,45 +1,45 @@
 {
-  "name": "@jacob-ebey/vite-plugin-remix",
-  "version": "0.0.0",
-  "description": "",
-  "keywords": [],
-  "license": "ISC",
-  "author": "",
-  "files": [
-    "dist"
-  ],
-  "type": "module",
-  "exports": {
-    ".": "./src/vite-plugin-remix.ts",
-    "./runtime": "./src/runtime.ts",
-    "./types": "./src/types.ts",
-    "./package.json": "./package.json"
-  },
-  "publishConfig": {
-    "exports": {
-      ".": "./dist/index.mjs",
-      "./runtime": "./dist/runtime.mjs",
-      "./types": "./dist/types.mjs",
-      "./package.json": "./package.json"
-    }
-  },
-  "scripts": {
-    "build": "tsdown"
-  },
-  "dependencies": {
-    "@hiogawa/vite-plugin-fullstack": "catalog:",
-    "magic-string": "catalog:"
-  },
-  "devDependencies": {
-    "@arethetypeswrong/core": "catalog:",
-    "@tsconfig/node24": "catalog:",
-    "@types/estree": "1.0.8",
-    "publint": "catalog:",
-    "tsdown": "catalog:",
-    "typescript": "5.9.3",
-    "vite": "catalog:"
-  },
-  "peerDependencies": {
-    "vite": "^5.0.0-0 || ^6.0.0-0 || ^7.0.0-0 || ^8.0.0-0"
-  }
+	"name": "@jacob-ebey/vite-plugin-remix",
+	"version": "0.0.0",
+	"description": "",
+	"keywords": [],
+	"license": "ISC",
+	"author": "",
+	"files": [
+		"dist"
+	],
+	"type": "module",
+	"exports": {
+		".": "./src/vite-plugin-remix.ts",
+		"./runtime": "./src/runtime.ts",
+		"./types": "./src/types.ts",
+		"./package.json": "./package.json"
+	},
+	"publishConfig": {
+		"exports": {
+			".": "./dist/index.mjs",
+			"./runtime": "./dist/runtime.mjs",
+			"./types": "./dist/types.mjs",
+			"./package.json": "./package.json"
+		}
+	},
+	"scripts": {
+		"build": "tsdown"
+	},
+	"dependencies": {
+		"@hiogawa/vite-plugin-fullstack": "catalog:",
+		"magic-string": "catalog:"
+	},
+	"devDependencies": {
+		"@arethetypeswrong/core": "catalog:",
+		"@tsconfig/node24": "catalog:",
+		"@types/estree": "1.0.8",
+		"publint": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "5.9.3",
+		"vite": "catalog:"
+	},
+	"peerDependencies": {
+		"vite": "^5.0.0-0 || ^6.0.0-0 || ^7.0.0-0 || ^8.0.0-0"
+	}
 }

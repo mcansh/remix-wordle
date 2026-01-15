@@ -1,3 +1,3 @@
-import "@hiogawa/vite-plugin-fullstack/types";
+import "@hiogawa/vite-plugin-fullstack/types"
 
-export {};
+export {}

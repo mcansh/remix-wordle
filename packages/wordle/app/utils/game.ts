@@ -1,125 +1,125 @@
-import wordBank from "./word-bank.json";
+import wordBank from "./word-bank.json"
 
 export const LetterState = {
-  Blank: "Blank", // The letter is blank
-  Miss: "Miss", // Letter doesn't exist at all
-  Present: "Present", // Letter exists but wrong location
-  Match: "Match", // Letter exists and is in the right location
-} as const;
+	Blank: "Blank", // The letter is blank
+	Miss: "Miss", // Letter doesn't exist at all
+	Present: "Present", // Letter exists but wrong location
+	Match: "Match", // Letter exists and is in the right location
+} as const
 
-type LetterState = (typeof LetterState)[keyof typeof LetterState];
+type LetterState = (typeof LetterState)[keyof typeof LetterState]
 
 export type ComputedGuess = {
-  id: string;
-  letter: string;
-  state: LetterState;
-};
+	id: string
+	letter: string
+	state: LetterState
+}
 
 function genId() {
-  return Math.random().toString(36).substring(2, 15);
+	return Math.random().toString(36).substring(2, 15)
 }
 
 export function createEmptyLetter() {
-  return { id: genId(), state: LetterState.Blank, letter: "" };
+	return { id: genId(), state: LetterState.Blank, letter: "" }
 }
 
 export function computeGuess(guess: string, answer: string): Array<ComputedGuess> {
-  let result: Array<ComputedGuess> = [];
+	let result: Array<ComputedGuess> = []
 
-  if (guess.length !== answer.length) {
-    return [];
-  }
+	if (guess.length !== answer.length) {
+		return []
+	}
 
-  let answerLetters = answer.split("");
-  let guessLetters = guess.split("");
+	let answerLetters = answer.split("")
+	let guessLetters = guess.split("")
 
-  let answerLetterCount: Record<string, number> = {};
+	let answerLetterCount: Record<string, number> = {}
 
-  guessLetters.forEach((letter, index) => {
-    let currentAnswerLetter = answerLetters[index];
-    let count = answerLetterCount[currentAnswerLetter];
-    answerLetterCount[currentAnswerLetter] = count ? count + 1 : 1;
+	guessLetters.forEach((letter, index) => {
+		let currentAnswerLetter = answerLetters[index]
+		let count = answerLetterCount[currentAnswerLetter]
+		answerLetterCount[currentAnswerLetter] = count ? count + 1 : 1
 
-    let id = genId();
+		let id = genId()
 
-    if (currentAnswerLetter === letter) {
-      result.push({ id, letter, state: LetterState.Match });
-    } else if (answer.includes(letter)) {
-      result.push({ id, letter, state: LetterState.Present });
-    } else {
-      result.push({ id, letter, state: LetterState.Miss });
-    }
-  });
+		if (currentAnswerLetter === letter) {
+			result.push({ id, letter, state: LetterState.Match })
+		} else if (answer.includes(letter)) {
+			result.push({ id, letter, state: LetterState.Present })
+		} else {
+			result.push({ id, letter, state: LetterState.Miss })
+		}
+	})
 
-  result.forEach((curResult, resultIndex) => {
-    if (curResult.state !== LetterState.Present) {
-      return;
-    }
+	result.forEach((curResult, resultIndex) => {
+		if (curResult.state !== LetterState.Present) {
+			return
+		}
 
-    let guessLetter = guessLetters[resultIndex];
+		let guessLetter = guessLetters[resultIndex]
 
-    answerLetters.forEach((currentAnswerLetter, answerIndex) => {
-      if (currentAnswerLetter !== guessLetter) {
-        return;
-      }
+		answerLetters.forEach((currentAnswerLetter, answerIndex) => {
+			if (currentAnswerLetter !== guessLetter) {
+				return
+			}
 
-      if (result[answerIndex].state === LetterState.Match) {
-        result[resultIndex].state = LetterState.Miss;
-      }
+			if (result[answerIndex].state === LetterState.Match) {
+				result[resultIndex].state = LetterState.Miss
+			}
 
-      if (answerLetterCount[guessLetter] <= 0) {
-        result[resultIndex].state = LetterState.Miss;
-      }
-    });
+			if (answerLetterCount[guessLetter] <= 0) {
+				result[resultIndex].state = LetterState.Miss
+			}
+		})
 
-    answerLetterCount[guessLetter]--;
-  });
+		answerLetterCount[guessLetter]--
+	})
 
-  return result;
+	return result
 }
 
 export function getRandomWord(): string {
-  return wordBank.valid[Math.floor(Math.random() * wordBank.valid.length)];
+	return wordBank.valid[Math.floor(Math.random() * wordBank.valid.length)]
 }
 
 export function isValidWord(guess: string): boolean {
-  return [...wordBank.valid, ...wordBank.invalid].includes(guess);
+	return [...wordBank.valid, ...wordBank.invalid].includes(guess)
 }
 
 const KEYBOARD = [
-  ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
-  ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
-  ["z", "x", "c", "v", "b", "n", "m"],
-] as const;
+	["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
+	["a", "s", "d", "f", "g", "h", "j", "k", "l"],
+	["z", "x", "c", "v", "b", "n", "m"],
+] as const
 
 export function keyboardWithStatus(guesses: Array<{ letters: Array<ComputedGuess> }>) {
-  let letters = guesses
-    .flatMap((guess) => guess.letters)
-    .filter((guess) => guess.state !== LetterState.Blank);
+	let letters = guesses
+		.flatMap((guess) => guess.letters)
+		.filter((guess) => guess.state !== LetterState.Blank)
 
-  // map letters to best state for each letter
-  let states = new Map<string, LetterState>(
-    letters.reduce((acc, letter) => {
-      if (acc.has(letter.letter)) {
-        let current = acc.get(letter.letter);
-        if (current === LetterState.Match) {
-          return acc;
-        }
+	// map letters to best state for each letter
+	let states = new Map<string, LetterState>(
+		letters.reduce((acc, letter) => {
+			if (acc.has(letter.letter)) {
+				let current = acc.get(letter.letter)
+				if (current === LetterState.Match) {
+					return acc
+				}
 
-        if (letter.state === LetterState.Match) {
-          acc.set(letter.letter, LetterState.Match);
-        }
-      } else {
-        acc.set(letter.letter, letter.state);
-      }
+				if (letter.state === LetterState.Match) {
+					acc.set(letter.letter, LetterState.Match)
+				}
+			} else {
+				acc.set(letter.letter, letter.state)
+			}
 
-      return acc;
-    }, new Map<string, LetterState>()),
-  );
+			return acc
+		}, new Map<string, LetterState>()),
+	)
 
-  return KEYBOARD.map((row) => {
-    return row.map((letter) => {
-      return { letter, state: states.get(letter) || LetterState.Blank };
-    });
-  });
+	return KEYBOARD.map((row) => {
+		return row.map((letter) => {
+			return { letter, state: states.get(letter) || LetterState.Blank }
+		})
+	})
 }

@@ -1,12 +1,15 @@
 {
-  "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "ignorePatterns": ["packages/wordle/app/generated/**"],
-  "experimentalSortImports": {},
-  "experimentalTailwindcss": {
-    "stylesheet": "./packages/wordle/app/app.css",
-    "attributes": ["class", "className"],
-    "functions": ["clsx", "cn"],
-    "preserveDuplicates": false,
-    "preserveWhitespace": false
-  }
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"ignorePatterns": ["packages/wordle/app/generated/**"],
+	"experimentalSortImports": {},
+	"experimentalSortPackageJson": true,
+	"experimentalTailwindcss": {
+		"stylesheet": "./packages/wordle/app/app.css",
+		"attributes": ["class", "className"],
+		"functions": ["clsx", "cn"],
+		"preserveDuplicates": false,
+		"preserveWhitespace": false
+	},
+	"semi": false,
+	"useTabs": true
 }

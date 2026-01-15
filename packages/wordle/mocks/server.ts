@@ -1,5 +1,5 @@
-import { createMiddleware } from "@mswjs/http-middleware";
+import { createMiddleware } from "@mswjs/http-middleware"
 
-import { handlers } from "./handlers.ts";
+import { handlers } from "./handlers.ts"
 
-export const middleware = createMiddleware(...handlers);
+export const middleware = createMiddleware(...handlers)
