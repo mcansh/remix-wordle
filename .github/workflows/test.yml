@@ -1,0 +1,35 @@
+name: 🧪 Test
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: 🧪 Test
+    if: github.repository == 'mcansh/remix-wordle'
+
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v5
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ".node-version"
+
+      - uses: pnpm/action-setup@v4
+        name: 🟧 Install pnpm
+        with:
+          cache: true
+
+      - name: 🟧 Install dependencies
+        run: pnpm install --recursive --frozen-lockfile --strict-peer-dependencies
+
+      - name: 🧪 Run Tests
+        run: pnpm run test
