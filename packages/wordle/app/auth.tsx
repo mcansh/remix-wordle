@@ -95,7 +95,6 @@ export const auth = {
           return redirect(routes.auth.login.index.href(undefined, { returnTo }));
         }
 
-        session.regenerateId(true);
         session.set("userId", user.id);
 
         return redirect(returnTo ?? routes.home.index.href());

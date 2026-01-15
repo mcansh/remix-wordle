@@ -11,6 +11,7 @@
     "start": "node ./server.ts",
     "lint": "oxlint",
     "format": "oxfmt",
+    "test": "vitest",
     "typecheck": "tsc"
   },
   "dependencies": {
@@ -51,6 +52,7 @@
     "@types/express": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
+    "happy-dom": "catalog:",
     "msw": "catalog:",
     "prisma": "catalog:",
     "tailwindcss": "catalog:",

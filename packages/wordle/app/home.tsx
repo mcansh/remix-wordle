@@ -39,6 +39,7 @@ export const home = {
 
     async index({ url, session }) {
       let user = getCurrentUser();
+
       let game = await getTodaysGame(user.id);
       let board = getFullBoard(game);
 

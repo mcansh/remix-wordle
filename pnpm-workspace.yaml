@@ -35,8 +35,9 @@ catalog:
   clsx: ^2.1.1
   date-fns: ^4.1.0
   express: ^5.2.1
+  happy-dom: ^20.3.0
   husky: ^9.1.7
-  ioredis: ^5.9.1
+  ioredis: ^5.9.2
   lint-staged: ^16.2.7
   magic-string: ^0.30.21
   msw: ^2.12.7
@@ -44,7 +45,7 @@ catalog:
   oxlint: ^1.39.0
   prisma: ^7.2.0
   tailwindcss: ^4.1.18
-  type-fest: ^5.4.0
+  type-fest: ^5.4.1
   typescript: ^5.9.3
   vite: ^7.3.1
   vite-plugin-devtools-json: ^1.0.0
