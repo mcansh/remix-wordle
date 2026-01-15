@@ -4,13 +4,35 @@ updates:
     directory: /
     schedule:
       interval: daily
+    assignees:
+      - "mcansh"
 
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
-      day: "monday"
       time: "10:00"
       timezone: "America/Detroit"
-    labels:
-      - "dependencies"
+    assignees:
+      - "mcansh"
+    groups:
+      "remix":
+        patterns:
+          - "@remix-run/*"
+          - "remix"
+      "vitest":
+        patterns:
+          - "@vitest/*"
+          - "vitest"
+      "prisma":
+        patterns:
+          - "@prisma/*"
+          - "prisma"
+      "tailwindcss":
+        patterns:
+          - "@tailwindcss/*"
+          - "tailwindcss"
+      "oxc":
+        patterns:
+          - "oxlint"
+          - "oxfmt"
