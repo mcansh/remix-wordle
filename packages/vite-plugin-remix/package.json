@@ -17,9 +17,9 @@
 	},
 	"publishConfig": {
 		"exports": {
-			".": "./dist/index.mjs",
-			"./runtime": "./dist/runtime.mjs",
-			"./types": "./dist/types.mjs",
+			".": "./dist/index.js",
+			"./runtime": "./dist/runtime.js",
+			"./types": "./dist/types.js",
 			"./package.json": "./package.json"
 		}
 	},
