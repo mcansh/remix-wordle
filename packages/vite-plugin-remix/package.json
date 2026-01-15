@@ -24,7 +24,8 @@
 		}
 	},
 	"scripts": {
-		"build": "tsdown"
+		"build": "tsdown",
+		"typecheck": "tsc"
 	},
 	"dependencies": {
 		"@hiogawa/vite-plugin-fullstack": "catalog:",
@@ -32,11 +33,11 @@
 	},
 	"devDependencies": {
 		"@arethetypeswrong/core": "catalog:",
-		"@tsconfig/node24": "catalog:",
+		"@total-typescript/tsconfig": "catalog:",
 		"@types/estree": "1.0.8",
 		"publint": "catalog:",
 		"tsdown": "catalog:",
-		"typescript": "5.9.3",
+		"typescript": "catalog:",
 		"vite": "catalog:"
 	},
 	"peerDependencies": {

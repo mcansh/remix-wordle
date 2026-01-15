@@ -78,12 +78,9 @@ catalogs:
     '@tailwindcss/vite':
       specifier: ^4.1.18
       version: 4.1.18
-    '@tsconfig/node24':
-      specifier: 24.0.3
-      version: 24.0.3
-    '@tsconfig/vite-react':
-      specifier: ^7.0.2
-      version: 7.0.2
+    '@total-typescript/tsconfig':
+      specifier: ^1.0.4
+      version: 1.0.4
     '@types/express':
       specifier: ^5.0.6
       version: 5.0.6
@@ -198,9 +195,9 @@ importers:
       '@arethetypeswrong/core':
         specifier: 'catalog:'
         version: 0.18.2
-      '@tsconfig/node24':
+      '@total-typescript/tsconfig':
         specifier: 'catalog:'
-        version: 24.0.3
+        version: 1.0.4
       '@types/estree':
         specifier: 1.0.8
         version: 1.0.8
@@ -211,7 +208,7 @@ importers:
         specifier: 'catalog:'
         version: 0.20.0-beta.3(@arethetypeswrong/core@0.18.2)(publint@0.3.16)(typescript@5.9.3)
       typescript:
-        specifier: 5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
       vite:
         specifier: 'catalog:'
@@ -313,9 +310,9 @@ importers:
       '@tailwindcss/vite':
         specifier: 'catalog:'
         version: 4.1.18(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
-      '@tsconfig/vite-react':
+      '@total-typescript/tsconfig':
         specifier: 'catalog:'
-        version: 7.0.2
+        version: 1.0.4
       '@types/express':
         specifier: 'catalog:'
         version: 5.0.6
@@ -1278,11 +1275,8 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7
 
-  '@tsconfig/node24@24.0.3':
-    resolution: {integrity: sha512-vcERKtKQKHgzt/vfS3Gjasd8SUI2a0WZXpgJURdJsMySpS5+ctgbPfuLj2z/W+w4lAfTWxoN4upKfu2WzIRYnw==}
-
-  '@tsconfig/vite-react@7.0.2':
-    resolution: {integrity: sha512-lEj4y5SPRcH+bjw0tyuxrEnPqQUwfQzBKgd1YamD9xyet9zLwh2gwy5F8w/Nxg5DjdgYVjjKo5aLJUf0BTDz4w==}
+  '@total-typescript/tsconfig@1.0.4':
+    resolution: {integrity: sha512-fO4ctMPGz1kOFOQ4RCPBRBfMy3gDn+pegUfrGyUFRMv/Rd0ZM3/SHH3hFCYG4u6bPLG8OlmOGcBLDexvyr3A5w==}
 
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
@@ -3747,9 +3741,7 @@ snapshots:
       tailwindcss: 4.1.18
       vite: 7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
 
-  '@tsconfig/node24@24.0.3': {}
-
-  '@tsconfig/vite-react@7.0.2': {}
+  '@total-typescript/tsconfig@1.0.4': {}
 
   '@tybys/wasm-util@0.10.1':
     dependencies:

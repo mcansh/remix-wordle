@@ -7,7 +7,8 @@
 		"lint": "oxlint",
 		"dev": "pnpm --filter ./packages/wordle run dev",
 		"build": "pnpm --recursive run build",
-		"test": "pnpm --recursive run test"
+		"test": "pnpm --recursive run test",
+		"typecheck": "pnpm --recursive run typecheck"
 	},
 	"dependencies": {
 		"@mcansh/http-helmet": "catalog:",

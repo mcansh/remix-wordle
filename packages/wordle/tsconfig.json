@@ -1,5 +1,5 @@
 {
-	"extends": "@tsconfig/vite-react/tsconfig.json",
+	"extends": "@total-typescript/tsconfig/bundler/dom",
 	"compilerOptions": {
 		"jsxImportSource": "@remix-run/dom",
 		"strict": true,

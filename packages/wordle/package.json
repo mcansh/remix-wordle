@@ -48,7 +48,7 @@
 		"@mcansh/vite-plugin-svg-sprite": "catalog:",
 		"@mswjs/http-middleware": "catalog:",
 		"@tailwindcss/vite": "catalog:",
-		"@tsconfig/vite-react": "catalog:",
+		"@total-typescript/tsconfig": "catalog:",
 		"@types/express": "catalog:",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
