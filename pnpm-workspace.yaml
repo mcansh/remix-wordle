@@ -2,6 +2,7 @@ packages:
   - ./packages/*
 
 catalog:
+  "@arethetypeswrong/core": ^0.18.2
   "@hiogawa/vite-plugin-fullstack": ^0.0.11
   "@mcansh/http-helmet": ^0.13.2
   "@mcansh/vite-plugin-svg-sprite": ^0.7.1
@@ -44,7 +45,9 @@ catalog:
   oxfmt: ^0.24.0
   oxlint: ^1.39.0
   prisma: ^7.2.0
+  publint: ^0.3.16
   tailwindcss: ^4.1.18
+  tsdown: 0.20.0-beta.3
   type-fest: ^5.4.1
   typescript: ^5.9.3
   vite: ^7.3.1
