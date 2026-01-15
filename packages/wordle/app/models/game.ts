@@ -1,4 +1,4 @@
-import { differenceInMilliseconds, endOfDay, startOfDay } from "date-fns";
+import { endOfDay, startOfDay } from "date-fns";
 
 import type { Game, User } from "../generated/prisma/client";
 import type { ComputedGuess } from "../utils/game";
@@ -6,7 +6,6 @@ import type { ComputedGuess } from "../utils/game";
 import { WORD_LENGTH } from "../constants";
 import { db } from "../db";
 import { GameStatus, Prisma } from "../generated/prisma/client";
-import { gameQueue } from "../queue";
 import {
   computeGuess,
   createEmptyLetter,
@@ -120,7 +119,7 @@ export async function createGuess(userId: User["id"], guessedWord: string): Prom
   try {
     let computedGuess = computeGuess(normalized, game.word);
     let won = computedGuess.every((l) => l.state === LetterState.Match);
-    let updatedGame = await db.game.update({
+    await db.game.update({
       where: { id: game.id },
       data: {
         guesses: { create: { guess: normalized } },
@@ -131,11 +130,6 @@ export async function createGuess(userId: User["id"], guessedWord: string): Prom
             : GameStatus.IN_PROGRESS,
       },
     });
-
-    if (updatedGame.status === GameStatus.COMPLETE) {
-      console.log(`Game ${game.id} is complete, removing from queue`);
-      gameQueue.remove(game.id);
-    }
 
     return null;
   } catch (error) {
