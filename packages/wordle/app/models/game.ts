@@ -98,21 +98,6 @@ export async function createGame(userId: User["id"]): Promise<FullGame> {
     select: FULL_GAME_OPTIONS,
   });
 
-  let timeUntilEndOfDay = differenceInMilliseconds(
-    endOfDay(game.createdAt),
-    new Date(game.createdAt),
-  );
-
-  gameQueue.add(
-    game.id,
-    { gameId: game.id },
-    {
-      delay: timeUntilEndOfDay,
-      attempts: 3,
-      removeOnComplete: true,
-    },
-  );
-
   return game;
 }
 

@@ -1,51 +1,54 @@
-import type { Processor } from "bullmq";
+import type { ConnectionOptions } from "bullmq";
 
-import { Queue as BullQueue, Worker } from "bullmq";
+import { Queue, Worker } from "bullmq";
+import { startOfDay } from "date-fns";
 
-import { db, redis } from "./db";
-import { isGameComplete } from "./models/game";
+import { env } from "./constants";
+import { db } from "./db";
 
-type RegisteredQueue = {
-  queue: BullQueue;
-  worker: Worker;
-};
+const connection = { url: env.REDIS_URL } satisfies ConnectionOptions;
 
-let registeredQueues = new Map<string, RegisteredQueue>();
+const queue = new Queue("my-cron-jobs", { connection });
 
-export function Queue<Payload>(name: string, handler: Processor<Payload>): BullQueue<Payload> {
-  let current = registeredQueues.get(name);
-  if (current) return current.queue;
+await queue.upsertJobScheduler(
+  "midnight-game-cleanup",
+  {
+    pattern: "0 0 0 * * *", // Every day at midnight
+  },
+  { name: "cron-job" },
+);
 
-  let queue = new BullQueue<Payload>(name, { connection: redis });
-  let worker = new Worker<Payload>(name, handler, { connection: redis });
+// Worker to process the jobs
+const worker = new Worker(
+  "my-cron-jobs",
+  async (job) => {
+    console.log(`Starting job ${job.id} at ${new Date()} to clean up games`);
 
-  registeredQueues.set(name, { queue, worker });
-
-  return queue;
-}
-
-type QueueData = {
-  gameId: string;
-};
-
-export const gameQueue = Queue<QueueData>("mark_game_as_complete", async (job) => {
-  let game = await db.game.findUnique({
-    where: { id: job.data.gameId },
-  });
-
-  if (!game) {
-    console.log(`Game ${job.data.gameId} not found`);
-    return;
-  }
-
-  if (!isGameComplete(game.status)) {
-    console.log(`Game ${job.data.gameId} not complete, marking as complete`);
-
-    await db.game.update({
-      where: { id: job.data.gameId },
-      data: { status: "COMPLETE" },
+    let incompleteGames = await db.game.findMany({
+      where: {
+        status: { in: ["IN_PROGRESS", "EMPTY"] },
+        createdAt: {
+          lt: startOfDay(new Date()), // games created before today
+        },
+      },
     });
 
-    console.log(`Game ${job.data.gameId} marked as complete`);
-  }
+    for (let game of incompleteGames) {
+      await db.game.update({
+        where: { id: game.id },
+        data: { status: "COMPLETE" },
+      });
+
+      console.log(`Marked game ${game.id} as COMPLETE`);
+    }
+  },
+  { connection },
+);
+
+worker.on("completed", (job) => {
+  console.log(`Job ${job.id} has completed`);
+});
+
+worker.on("failed", (job, err) => {
+  console.error(`Job ${job?.id} has failed with error: ${err.message}`);
 });
