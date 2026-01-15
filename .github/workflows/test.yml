@@ -4,6 +4,11 @@ on:
   push:
   pull_request:
 
+env:
+  DATABASE_URL: postgresql://postgres:password@localhost:5432/remix_wordle_test
+  REDIS_URL: redis://localhost:6379
+  SESSION_SECRET: thisisaverysecuresecret1234567890
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
