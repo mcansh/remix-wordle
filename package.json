@@ -19,7 +19,7 @@
     "@mcansh/remix-fastify": "^3.4.0",
     "@prisma/client": "^5.19.0",
     "@remix-run/node": "^2.11.2",
-    "@remix-run/react": "^2.11.2",
+    "@remix-run/react": "^2.17.4",
     "@remix-run/serve": "^2.11.2",
     "bcryptjs": "^2.4.3",
     "bullmq": "^5.12.12",
