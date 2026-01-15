@@ -59,4 +59,7 @@ onlyBuiltDependencies:
   - msw
   - prisma
 
+overrides:
+  hono@<4.11.4: ">=4.11.4"
+
 shellEmulator: true
