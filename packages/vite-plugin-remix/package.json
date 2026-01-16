@@ -10,18 +10,10 @@
 	],
 	"type": "module",
 	"exports": {
-		".": "./src/vite-plugin-remix.ts",
-		"./runtime": "./src/runtime.ts",
-		"./types": "./src/types.ts",
+		".": "./dist/index.js",
+		"./runtime": "./dist/runtime.js",
+		"./types": "./dist/types.js",
 		"./package.json": "./package.json"
-	},
-	"publishConfig": {
-		"exports": {
-			".": "./dist/index.js",
-			"./runtime": "./dist/runtime.js",
-			"./types": "./dist/types.js",
-			"./package.json": "./package.json"
-		}
 	},
 	"scripts": {
 		"build": "tsdown",

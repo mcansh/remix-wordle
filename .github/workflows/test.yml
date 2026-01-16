@@ -36,5 +36,8 @@ jobs:
       - name: 🟧 Install dependencies
         run: pnpm install --recursive --frozen-lockfile --strict-peer-dependencies
 
+      - name: 🛠️ Build
+        run: pnpm run build
+
       - name: 🧪 Run Tests
         run: pnpm run test
