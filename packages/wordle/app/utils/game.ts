@@ -23,63 +23,61 @@ export function createEmptyLetter() {
 	return { id: genId(), state: LetterState.Blank, letter: "" }
 }
 
-export function computeGuess(guess: string, answer: string): Array<ComputedGuess> {
-	let result: Array<ComputedGuess> = []
+const segmenter = new Intl.Segmenter("en", { granularity: "grapheme" })
 
+export function computeGuess(guess: string, answer: string): Array<ComputedGuess> {
 	if (guess.length !== answer.length) {
 		return []
 	}
 
-	let answerLetters = answer.split("")
-	let guessLetters = guess.split("")
+	let result: Array<ComputedGuess> = []
+	let answerLetters = [...segmenter.segment(answer)].map((s) => s.segment)
+	let guessLetters = [...segmenter.segment(guess)].map((s) => s.segment)
 
 	let answerLetterCount: Record<string, number> = {}
+	for (const letter of answerLetters) {
+		answerLetterCount[letter] = (answerLetterCount[letter] ?? 0) + 1
+	}
 
-	guessLetters.forEach((letter, index) => {
-		let currentAnswerLetter = answerLetters[index]
-		let count = answerLetterCount[currentAnswerLetter]
-		answerLetterCount[currentAnswerLetter] = count ? count + 1 : 1
+	for (const [index, guessLetter] of guessLetters.entries()) {
+		const answerLetter = answerLetters.at(index)
+		if (!answerLetter) continue
 
-		let id = genId()
+		const id = genId()
 
-		if (currentAnswerLetter === letter) {
-			result.push({ id, letter, state: LetterState.Match })
-		} else if (answer.includes(letter)) {
-			result.push({ id, letter, state: LetterState.Present })
+		if (guessLetter === answerLetter) {
+			result.push({ id, letter: guessLetter, state: LetterState.Match })
+			answerLetterCount[guessLetter] = (answerLetterCount[guessLetter] ?? 0) - 1
 		} else {
-			result.push({ id, letter, state: LetterState.Miss })
+			result.push({ id, letter: guessLetter, state: LetterState.Present })
 		}
-	})
+	}
 
-	result.forEach((curResult, resultIndex) => {
-		if (curResult.state !== LetterState.Present) {
-			return
+	for (const [index, item] of result.entries()) {
+		if (item.state !== LetterState.Present) {
+			continue
 		}
 
-		let guessLetter = guessLetters[resultIndex]
+		const letter = guessLetters.at(index)
+		if (!letter) continue
 
-		answerLetters.forEach((currentAnswerLetter, answerIndex) => {
-			if (currentAnswerLetter !== guessLetter) {
-				return
-			}
-
-			if (result[answerIndex].state === LetterState.Match) {
-				result[resultIndex].state = LetterState.Miss
-			}
-
-			if (answerLetterCount[guessLetter] <= 0) {
-				result[resultIndex].state = LetterState.Miss
-			}
-		})
-
-		answerLetterCount[guessLetter]--
-	})
+		if ((answerLetterCount[letter] ?? 0) > 0) {
+			answerLetterCount[letter] = (answerLetterCount[letter] ?? 0) - 1
+		} else {
+			item.state = LetterState.Miss
+		}
+	}
 
 	return result
 }
 
 export function getRandomWord(): string {
-	return wordBank.valid[Math.floor(Math.random() * wordBank.valid.length)]
+	const validWords = wordBank.valid
+	if (validWords.length === 0) throw new Error("No valid words available")
+	const index = Math.floor(Math.random() * validWords.length)
+	const word = validWords.at(index)
+	if (!word) throw new Error("Failed to select a random word")
+	return word
 }
 
 export function isValidWord(guess: string): boolean {
