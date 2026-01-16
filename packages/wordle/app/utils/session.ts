@@ -7,8 +7,9 @@ export let sessionCookie = createCookie("session", {
 	secrets: [env.SESSION_SECRET],
 	httpOnly: true,
 	sameSite: "Lax",
-	maxAge: 2592000, // 30 days
+	maxAge: 60 * 60 * 24 * 30, // 30 days
 	path: "/",
+	secure: import.meta.env.PROD,
 })
 
 export let sessionStorage = createCookieSessionStorage()
