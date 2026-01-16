@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest"
 
+import type { ComputedGuess } from "./game"
+
 import {
 	computeGuess,
 	createEmptyLetter,
@@ -7,7 +9,6 @@ import {
 	isValidWord,
 	keyboardWithStatus,
 	LetterState,
-	type ComputedGuess,
 } from "./game"
 
 describe("computeGuess", () => {
