@@ -11,7 +11,7 @@ export function LetterInput({
 }) {
 	return (
 		<input
-			className={clsx(
+			class={clsx(
 				"inline-block aspect-square w-full border-4 text-center text-xl uppercase",
 				errorMessage ? "border-red-500" : "border-gray-900 empty:border-gray-400",
 			)}

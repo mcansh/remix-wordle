@@ -67,19 +67,19 @@ export const home = {
 						/>
 					) : null}
 
-					<div className="h-full" aria-hidden={showModal ? true : undefined}>
+					<div class="h-full" aria-hidden={showModal ? true : undefined}>
 						<header>
-							<h1 className="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
+							<h1 class="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
 							{!showModal && showWord ? (
-								<h2 className="mb-4 text-center text-sm text-gray-700">Your word is {showWord}</h2>
+								<h2 class="mb-4 text-center text-sm text-gray-700">Your word is {showWord}</h2>
 							) : null}
 						</header>
 
 						<main>
 							{errorMessage ? (
-								<div className="mb-4 text-center text-red-500">{errorMessage}</div>
+								<div class="mb-4 text-center text-red-500">{errorMessage}</div>
 							) : null}
-							<div className="mx-auto max-w-sm space-y-4">
+							<div class="mx-auto max-w-sm space-y-4">
 								{board.guesses.map((guess, guessIndex) => {
 									if (board.currentGuess === guessIndex) {
 										return (
@@ -97,7 +97,7 @@ export const home = {
 									}
 
 									return (
-										<div key={`guess-number-${guessIndex}`} className="grid grid-cols-5 gap-4">
+										<div key={`guess-number-${guessIndex}`} class="grid grid-cols-5 gap-4">
 											{guess.letters.map((letter) => {
 												return (
 													<input
@@ -122,18 +122,18 @@ export const home = {
 									form="current-guess"
 									enterKeyHint="send"
 									type="submit"
-									className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
+									class="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
 									value="Submit Guess"
 								/>
 							</div>
 
-							<div className="mx-auto max-w-md pt-10">
+							<div class="mx-auto max-w-md pt-10">
 								{keyboardWithStatus.map((row, index) => {
 									let letters = row.map((letter) => letter.letter).join("")
 									return (
 										<div
 											key={`keyboard-row-${letters}`}
-											className={clsx("flex justify-center gap-2", { "mt-2": index > 0 })}
+											class={clsx("flex justify-center gap-2", { "mt-2": index > 0 })}
 										>
 											{row.map((letter) => {
 												return (

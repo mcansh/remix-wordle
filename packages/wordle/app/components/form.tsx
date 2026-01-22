@@ -18,7 +18,7 @@ export function Form({
 			method="POST"
 			action={routes.home.action.href()}
 			key={`current-guess-${currentGuess}`}
-			className="grid grid-cols-5 gap-4"
+			class="grid grid-cols-5 gap-4"
 			id="current-guess"
 			autoComplete="off"
 			on={[

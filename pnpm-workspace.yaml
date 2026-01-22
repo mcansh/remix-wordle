@@ -2,34 +2,34 @@ packages:
   - ./packages/*
 
 catalog:
-  '@arethetypeswrong/core': ^0.18.2
-  '@hiogawa/vite-plugin-fullstack': ^0.0.11
-  '@mcansh/http-helmet': ^0.13.2
-  '@mcansh/vite-plugin-svg-sprite': ^0.7.1
-  '@mswjs/http-middleware': ^0.10.3
-  '@prisma/adapter-pg': ^7.2.0
-  '@prisma/client': ^7.2.0
-  '@remix-run/async-context-middleware': ^0.1.0
-  '@remix-run/compression-middleware': ^0.1.0
-  '@remix-run/cookie': ^0.5.0
-  '@remix-run/dom': 0.0.0-experimental-remix-jam.6
-  '@remix-run/events': 0.0.0-experimental-remix-jam.5
-  '@remix-run/fetch-router': ^0.14.0
-  '@remix-run/form-data-middleware': ^0.1.1
-  '@remix-run/headers': ^0.18.0
-  '@remix-run/logger-middleware': ^0.1.0
-  '@remix-run/method-override-middleware': ^0.1.1
-  '@remix-run/mime': ^0.2.0
-  '@remix-run/node-fetch-server': 0.13.0
-  '@remix-run/response': ^0.2.1
-  '@remix-run/session': ^0.4.1
-  '@remix-run/session-middleware': ^0.1.1
-  '@remix-run/static-middleware': ^0.4.0
-  '@tailwindcss/vite': ^4.1.18
-  '@total-typescript/tsconfig': ^1.0.4
-  '@types/express': ^5.0.6
-  '@types/node': ^25.0.9
-  '@vitest/coverage-v8': ^4.0.17
+  "@arethetypeswrong/core": ^0.18.2
+  "@hiogawa/vite-plugin-fullstack": ^0.0.11
+  "@mcansh/http-helmet": ^0.13.2
+  "@mcansh/vite-plugin-svg-sprite": ^0.7.1
+  "@mswjs/http-middleware": ^0.10.3
+  "@prisma/adapter-pg": ^7.2.0
+  "@prisma/client": ^7.2.0
+  "@remix-run/async-context-middleware": ^0.1.0
+  "@remix-run/compression-middleware": ^0.1.0
+  "@remix-run/cookie": ^0.5.0
+  "@remix-run/dom": 0.0.0-experimental-remix-jam.6
+  "@remix-run/events": 0.0.0-experimental-remix-jam.5
+  "@remix-run/fetch-router": ^0.14.0
+  "@remix-run/form-data-middleware": ^0.1.1
+  "@remix-run/headers": ^0.18.0
+  "@remix-run/logger-middleware": ^0.1.0
+  "@remix-run/method-override-middleware": ^0.1.1
+  "@remix-run/mime": ^0.2.0
+  "@remix-run/node-fetch-server": 0.13.0
+  "@remix-run/response": ^0.2.1
+  "@remix-run/session": ^0.4.1
+  "@remix-run/session-middleware": ^0.1.1
+  "@remix-run/static-middleware": ^0.4.0
+  "@tailwindcss/vite": ^4.1.18
+  "@total-typescript/tsconfig": ^1.0.4
+  "@types/express": ^5.0.6
+  "@types/node": ^25.0.9
+  "@vitest/coverage-v8": ^4.0.17
   bcryptjs: ^3.0.3
   bullmq: ^5.66.5
   clsx: ^2.1.1
@@ -57,11 +57,11 @@ catalog:
 catalogMode: strict
 
 onlyBuiltDependencies:
-  - '@prisma/engines'
+  - "@prisma/engines"
   - msw
   - prisma
 
 overrides:
-  hono@<4.11.4: '>=4.11.4'
+  hono@<4.11.4: ">=4.11.4"
 
 shellEmulator: true
