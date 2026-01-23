@@ -52,48 +52,48 @@ export let history = {
 			return render(
 				<Document>
 					<title>Remix Wordle Game History</title>
-					<div className="px-4 pt-8 sm:px-6 lg:px-8">
-						<div className="sm:flex sm:items-center">
-							<div className="sm:flex-auto">
-								<h1 className="text-base leading-6 font-semibold text-gray-900">History</h1>
-								<p className="mt-2 text-sm text-gray-700">A history of all of your games.</p>
+					<div class="px-4 pt-8 sm:px-6 lg:px-8">
+						<div class="sm:flex sm:items-center">
+							<div class="sm:flex-auto">
+								<h1 class="text-base leading-6 font-semibold text-gray-900">History</h1>
+								<p class="mt-2 text-sm text-gray-700">A history of all of your games.</p>
 							</div>
 						</div>
-						<div className="mt-8 flow-root">
-							<div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
-								<div className="inline-block min-w-full py-2 align-middle">
-									<table className="min-w-full border-separate border-spacing-0 lg:px-6">
+						<div class="mt-8 flow-root">
+							<div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
+								<div class="inline-block min-w-full py-2 align-middle">
+									<table class="min-w-full border-separate border-spacing-0 lg:px-6">
 										<thead>
 											<tr>
 												<th
 													scope="col"
-													className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
+													class="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
 												>
 													Date
 												</th>
 												<th
 													scope="col"
-													className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
+													class="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:table-cell"
 												>
 													Word
 												</th>
 												<th
 													scope="col"
-													className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+													class="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
 												>
 													Guesses
 												</th>
 												<th
 													scope="col"
-													className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+													class="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
 												>
 													Status
 												</th>
 												<th
 													scope="col"
-													className="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white py-3.5 pr-4 pl-3 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8"
+													class="bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 bg-white py-3.5 pr-4 pl-3 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8"
 												>
-													<span className="sr-only">Edit</span>
+													<span class="sr-only">Edit</span>
 												</th>
 											</tr>
 										</thead>
@@ -101,7 +101,7 @@ export let history = {
 											{formattedGames.map((game, gameIndex, array) => (
 												<tr key={game.id}>
 													<td
-														className={clsx(
+														class={clsx(
 															gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
 															"py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 lg:pl-8",
 														)}
@@ -109,7 +109,7 @@ export let history = {
 														{game.date}
 													</td>
 													<td
-														className={clsx(
+														class={clsx(
 															gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
 															"px-3 py-4 text-sm whitespace-nowrap text-gray-500",
 														)}
@@ -117,7 +117,7 @@ export let history = {
 														{game.word}
 													</td>
 													<td
-														className={clsx(
+														class={clsx(
 															gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
 															"px-3 py-4 text-sm whitespace-nowrap text-gray-500",
 														)}
@@ -125,7 +125,7 @@ export let history = {
 														{game.guesses}
 													</td>
 													<td
-														className={clsx(
+														class={clsx(
 															gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
 															"px-3 py-4 text-sm whitespace-nowrap text-gray-500",
 														)}
@@ -133,16 +133,16 @@ export let history = {
 														{game.status}
 													</td>
 													<td
-														className={clsx(
+														class={clsx(
 															gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
 															"relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-8 lg:pr-8",
 														)}
 													>
 														<a
 															href={routes.history.game.href({ id: game.id })}
-															className="text-indigo-600 hover:text-indigo-900"
+															class="text-indigo-600 hover:text-indigo-900"
 														>
-															View<span className="sr-only">, {game.word}</span>
+															View<span class="sr-only">, {game.word}</span>
 														</a>
 													</td>
 												</tr>
@@ -164,15 +164,15 @@ export let history = {
 				return render(
 					<Document>
 						<title>Remix Wordle - Game Not Found</title>
-						<div className="mx-auto h-full max-w-sm">
+						<div class="mx-auto h-full max-w-sm">
 							<header>
-								<h1 className="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
+								<h1 class="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
 							</header>
 
 							<main>
-								<div className="">
-									<h2 className="">Game Not Found</h2>
-									<p className="">The game you are looking for does not exist.</p>
+								<div class="">
+									<h2 class="">Game Not Found</h2>
+									<p class="">The game you are looking for does not exist.</p>
 								</div>
 							</main>
 						</div>
@@ -196,22 +196,22 @@ export let history = {
 						/>
 					) : null}
 
-					<div className="mx-auto h-full max-w-sm">
+					<div class="mx-auto h-full max-w-sm">
 						<header>
-							<h1 className="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
+							<h1 class="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
 						</header>
 
 						<main>
-							<div className="space-y-4">
+							<div class="space-y-4">
 								{game.guesses.map((guess, guessIndex) => {
 									return (
-										<div key={`guess-number-${guessIndex}`} className="grid grid-cols-5 gap-4">
+										<div key={`guess-number-${guessIndex}`} class="grid grid-cols-5 gap-4">
 											{guess.letters.map((letter) => {
 												return (
 													<input
 														key={`guess-${guessIndex}-letter-${letter.id}`}
 														readOnly
-														className={clsx(
+														class={clsx(
 															"inline-block aspect-square w-full border-4 text-center text-xl uppercase",
 															{
 																"border-green-500 bg-green-500 text-white":
@@ -240,7 +240,7 @@ export let history = {
 									form="current-guess"
 									enterKeyHint="send"
 									type="submit"
-									className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
+									class="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
 									value="Submit Guess"
 								/>
 							</div>

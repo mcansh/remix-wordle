@@ -5,7 +5,7 @@
 	"experimentalSortPackageJson": true,
 	"experimentalTailwindcss": {
 		"stylesheet": "./packages/wordle/app/app.css",
-		"attributes": ["class", "className"],
+		"attributes": ["class"],
 		"functions": ["clsx", "cn"],
 		"preserveDuplicates": false,
 		"preserveWhitespace": false
