@@ -147,11 +147,11 @@ describe("keyboardWithStatus", () => {
 		const keyboard = keyboardWithStatus(guesses)
 
 		expect(keyboard).toHaveLength(3) // Three rows
-		keyboard.forEach((row) => {
-			row.forEach((key) => {
+		for (let row of keyboard) {
+			for (let key of row) {
 				expect(key.state).toBe(LetterState.Blank)
-			})
-		})
+			}
+		}
 	})
 
 	it("marks correctly guessed letters as Match", () => {
@@ -254,11 +254,11 @@ describe("keyboardWithStatus", () => {
 		]
 
 		const keyboard = keyboardWithStatus(guesses)
-		keyboard.forEach((row) => {
-			row.forEach((key) => {
+		for (let row of keyboard) {
+			for (let key of row) {
 				expect(key.state).toBe(LetterState.Blank)
-			})
-		})
+			}
+		}
 	})
 
 	it("handles multiple guesses with mixed states", () => {
