@@ -7,7 +7,7 @@ import { GameOverModal } from "./components/game-over-modal.tsx"
 import { TOTAL_GUESSES } from "./constants.ts"
 import { db } from "./db.ts"
 import { requireAuth } from "./middleware/auth.ts"
-import { getGameById, isGameComplete } from "./models/game.ts"
+import { getGameByDate, isGameComplete } from "./models/game.ts"
 import { routes } from "./routes.ts"
 import { getCurrentUser } from "./utils/context.ts"
 import { LetterState } from "./utils/game.ts"
@@ -40,9 +40,11 @@ export let history = {
 				let createdAt = new Date(game.createdAt)
 				let updatedAt = new Date(game.updatedAt)
 				let date = updatedAt > createdAt ? updatedAt : createdAt
+				let dateStr = formatter.format(date)
 				return {
 					id: game.id,
-					date: formatter.format(date),
+					date: dateStr,
+					urlDate: dateStr.replace(/\//g, "-"),
 					guesses: game._count.guesses,
 					status: game.status,
 					word: game.word,
@@ -139,7 +141,7 @@ export let history = {
 														)}
 													>
 														<a
-															href={routes.history.game.href({ id: game.id })}
+															href={routes.history.game.href({ date: game.urlDate })}
 															class="text-indigo-600 hover:text-indigo-900"
 														>
 															View<span class="sr-only">, {game.word}</span>
@@ -158,7 +160,8 @@ export let history = {
 		},
 
 		async game({ params }) {
-			let game = await getGameById(params.id)
+			let user = getCurrentUser()
+			let game = await getGameByDate(user.id, params.date)
 
 			if (!game) {
 				return render(
@@ -185,7 +188,7 @@ export let history = {
 
 			return render(
 				<Document>
-					<title>Remix Wordle - Game {game.id}</title>
+					<title>Remix Wordle - Game {params.date.replace(/-/g, "/")}</title>
 					{showModal ? (
 						<GameOverModal
 							currentGuess={game.currentGuess}

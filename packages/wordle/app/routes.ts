@@ -6,7 +6,7 @@ export let routes = route({
 
 	history: route("history", {
 		index: get("/"),
-		game: get(":id"),
+		game: get(":date"),
 	}),
 
 	auth: {

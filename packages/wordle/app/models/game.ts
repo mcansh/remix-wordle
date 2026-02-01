@@ -161,6 +161,51 @@ export async function getGameById(id: Game["id"]): Promise<ReturnType<typeof get
 	return getFullBoard(game)
 }
 
+export async function getGameByDate(
+	userId: User["id"],
+	dateString: string,
+): Promise<ReturnType<typeof getFullBoard> | null> {
+	// Parse the date string (format: "M-D-YY" like "1-15-24")
+	// Convert back to date with slashes for parsing
+	let dateWithSlashes = dateString.replace(/-/g, "/")
+	let parsedDate = new Date(dateWithSlashes)
+
+	// Check if date is valid
+	if (Number.isNaN(parsedDate.getTime())) {
+		return null
+	}
+
+	let start = startOfDay(parsedDate)
+	let end = endOfDay(parsedDate)
+
+	let game = await db.game.findFirst({
+		select: FULL_GAME_OPTIONS,
+		where: {
+			userId,
+			OR: [
+				{
+					createdAt: {
+						gte: start,
+						lte: end,
+					},
+				},
+				{
+					updatedAt: {
+						gte: start,
+						lte: end,
+					},
+				},
+			],
+		},
+	})
+
+	if (!game) {
+		return null
+	}
+
+	return getFullBoard(game)
+}
+
 export function isGameComplete(status: GameStatus) {
 	return ["WON", "COMPLETE"].includes(status)
 }
