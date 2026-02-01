@@ -166,11 +166,24 @@ export async function getGameByDate(
 	dateString: string,
 ): Promise<ReturnType<typeof getFullBoard> | null> {
 	// Parse the date string (format: "M-D-YY" like "1-15-24")
-	// Convert back to date with slashes for parsing
-	let dateWithSlashes = dateString.replace(/-/g, "/")
-	let parsedDate = new Date(dateWithSlashes)
+	let parts = dateString.split("-")
+	if (parts.length !== 3 || !parts[0] || !parts[1] || !parts[2]) {
+		return null
+	}
 
-	// Check if date is valid
+	let month = Number.parseInt(parts[0], 10)
+	let day = Number.parseInt(parts[1], 10)
+	let year = Number.parseInt(parts[2], 10) + 2000 // Convert YY to YYYY
+
+	// Validate parsed values
+	if (Number.isNaN(month) || Number.isNaN(day) || Number.isNaN(year)) {
+		return null
+	}
+
+	// Create date object (month is 0-indexed)
+	let parsedDate = new Date(year, month - 1, day)
+
+	// Validate the date is valid
 	if (Number.isNaN(parsedDate.getTime())) {
 		return null
 	}
@@ -178,6 +191,8 @@ export async function getGameByDate(
 	let start = startOfDay(parsedDate)
 	let end = endOfDay(parsedDate)
 
+	// Find the game matching either createdAt or updatedAt within the date range
+	// If multiple games exist (edge case), return the most recently updated one
 	let game = await db.game.findFirst({
 		select: FULL_GAME_OPTIONS,
 		where: {
@@ -197,6 +212,7 @@ export async function getGameByDate(
 				},
 			],
 		},
+		orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
 	})
 
 	if (!game) {

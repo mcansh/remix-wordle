@@ -10,6 +10,7 @@ import { requireAuth } from "./middleware/auth.ts"
 import { getGameByDate, isGameComplete } from "./models/game.ts"
 import { routes } from "./routes.ts"
 import { getCurrentUser } from "./utils/context.ts"
+import { dateToUrlFormat, urlFormatToDate } from "./utils/date.ts"
 import { LetterState } from "./utils/game.ts"
 import { render } from "./utils/render.ts"
 
@@ -44,7 +45,7 @@ export let history = {
 				return {
 					id: game.id,
 					date: dateStr,
-					urlDate: dateStr.replace(/\//g, "-"),
+					urlDate: dateToUrlFormat(dateStr),
 					guesses: game._count.guesses,
 					status: game.status,
 					word: game.word,
@@ -188,7 +189,7 @@ export let history = {
 
 			return render(
 				<Document>
-					<title>Remix Wordle - Game {params.date.replace(/-/g, "/")}</title>
+					<title>Remix Wordle - Game {urlFormatToDate(params.date)}</title>
 					{showModal ? (
 						<GameOverModal
 							currentGuess={game.currentGuess}
