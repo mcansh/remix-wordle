@@ -14,7 +14,6 @@ let shortDateFormatter = new Intl.DateTimeFormat("en-US", {
 	dateStyle: "short",
 })
 
-
 let HISTORY_GAME_SELECT = {
 	id: true,
 	createdAt: true,

@@ -1,3 +1,4 @@
+import { mergeHeaders } from "@mcansh/http-helmet"
 import type { CreateSecureHeaders } from "@mcansh/http-helmet"
 import { createNonce, createSecureHeaders } from "@mcansh/http-helmet"
 import type { Middleware } from "remix/fetch-router"
@@ -24,7 +25,7 @@ export function createSecurityHeadersMiddleware({
 		let response = await next()
 
 		return new Response(response.body, {
-			headers: { ...response.headers, ...securityHeaders },
+			headers: mergeHeaders(response.headers, securityHeaders),
 			status: response.status,
 			statusText: response.statusText,
 		})
