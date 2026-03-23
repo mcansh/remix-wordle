@@ -19,17 +19,14 @@ catalog:
   express: ^5.2.1
   happy-dom: ^20.8.4
   ioredis: ^5.10.1
+  knip: "^6.0.3"
   msw: ^2.12.14
   oxfmt: ^0.41.0
   oxlint: ^1.56.0
   prisma: ^7.2.0
-  publint: ^0.3.16
-  remix: github:remix-run/remix#preview/main&path:packages/remix
   tailwindcss: ^4.2.2
-  tsdown: 0.20.0-beta.3
-  type-fest: ^5.5.0
   typescript: ^5.9.3
-  vite: ^7.3.1
+  vite: ^8.0.2
   vite-plugin-devtools-json: ^1.0.0
   vitest: ^4.0.17
 

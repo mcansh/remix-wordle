@@ -12,7 +12,8 @@
 		"lint": "oxlint",
 		"format": "oxfmt",
 		"test": "vitest",
-		"typecheck": "tsc"
+		"typecheck": "tsc",
+		"knip": "knip"
 	},
 	"dependencies": {
 		"@mcansh/http-helmet": "catalog:",
@@ -24,8 +25,7 @@
 		"date-fns": "catalog:",
 		"express": "catalog:",
 		"ioredis": "catalog:",
-		"remix": "catalog:",
-		"type-fest": "catalog:"
+		"remix": "github:remix-run/remix#preview/main&path:packages/remix"
 	},
 	"devDependencies": {
 		"@mcansh/remix-testing-library": "catalog:",
@@ -39,6 +39,7 @@
 		"@vitest/coverage-v8": "catalog:",
 		"@vitest/ui": "catalog:",
 		"happy-dom": "catalog:",
+		"knip": "catalog:",
 		"msw": "catalog:",
 		"oxfmt": "catalog:",
 		"oxlint": "catalog:",

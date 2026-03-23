@@ -1,0 +1,10 @@
+{
+	"$schema": "https://unpkg.com/knip@6/schema.json",
+	"tags": [],
+	"vitest": true,
+	"vite": true,
+	"prisma": true,
+  "ignore": [
+    "./app/generated/prisma/**/*"
+  ]
+}
