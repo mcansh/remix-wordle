@@ -15,9 +15,9 @@ import {
 } from "../models/user.ts"
 import { routes } from "../routes.ts"
 import { renderDocument } from "../utils/render.tsx"
-import { LoginPage } from "./login-page.tsx";
-import { RegisterPage } from "./register-page.tsx";
-import { ForgotPasswordPage } from "./forgot-password-page.tsx";
+import { ForgotPasswordPage } from "./forgot-password-page.tsx"
+import { LoginPage } from "./login-page.tsx"
+import { RegisterPage } from "./register-page.tsx"
 
 export const auth = {
 	middleware: [loadAuth()],
@@ -32,9 +32,7 @@ export const auth = {
 						returnTo: url.searchParams.get("returnTo"),
 					})
 
-					return renderDocument(
-						<LoginPage error={errorMessage} formAction={formAction} />,
-					)
+					return renderDocument(<LoginPage error={errorMessage} formAction={formAction} />)
 				},
 
 				async action({ get, url }) {
@@ -59,9 +57,7 @@ export const auth = {
 		register: {
 			actions: {
 				index() {
-					return renderDocument(
-						<RegisterPage formAction={routes.auth.register.action.href()} />,
-					)
+					return renderDocument(<RegisterPage formAction={routes.auth.register.action.href()} />)
 				},
 
 				async action({ get }) {
@@ -113,9 +109,7 @@ export const auth = {
 		forgotPassword: {
 			actions: {
 				index() {
-					return renderDocument(
-						<ForgotPasswordPage />,
-					)
+					return renderDocument(<ForgotPasswordPage />)
 				},
 
 				async action({ get }) {
