@@ -26,7 +26,8 @@
 		"date-fns": "catalog:",
 		"express": "catalog:",
 		"ioredis": "catalog:",
-		"remix": "github:remix-run/remix#preview/main&path:packages/remix"
+		"remix": "github:remix-run/remix#preview/main&path:packages/remix",
+		"strict-event-emitter": "catalog:"
 	},
 	"devDependencies": {
 		"@fontsource/space-grotesk": "catalog:",

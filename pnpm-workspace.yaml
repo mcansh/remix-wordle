@@ -27,6 +27,7 @@ catalog:
   oxfmt: ^0.41.0
   oxlint: ^1.56.0
   prisma: ^7.2.0
+  strict-event-emitter: ^0.5.1
   tailwindcss: ^4.2.2
   typescript: ^5.9.3
   vite: ^8.0.2

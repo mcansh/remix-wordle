@@ -90,6 +90,9 @@ catalogs:
     prisma:
       specifier: ^7.2.0
       version: 7.5.0
+    strict-event-emitter:
+      specifier: ^0.5.1
+      version: 0.5.1
     tailwindcss:
       specifier: ^4.2.2
       version: 4.2.2
@@ -146,6 +149,9 @@ importers:
       remix:
         specifier: github:remix-run/remix#preview/main&path:packages/remix
         version: https://codeload.github.com/remix-run/remix/tar.gz/11275ba2b5ee24c2386722ad5dddf5b7365fe409#path:packages/remix(mysql2@3.15.3)(pg@8.20.0)
+      strict-event-emitter:
+        specifier: 'catalog:'
+        version: 0.5.1
     devDependencies:
       '@fontsource/space-grotesk':
         specifier: 'catalog:'

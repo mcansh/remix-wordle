@@ -1,23 +1,26 @@
 import { NONCE, NONE, SELF } from "@mcansh/http-helmet"
 import { asyncContext } from "remix/async-context-middleware"
-import { createRouter } from "remix/fetch-router"
+import { createRouter, type Middleware } from "remix/fetch-router"
 import { formData } from "remix/form-data-middleware"
 import { logger } from "remix/logger-middleware"
 import { methodOverride } from "remix/method-override-middleware"
 import { session } from "remix/session-middleware"
 
+import { handlers } from "../mocks/handlers.ts"
 import { auth } from "./auth/controller.tsx"
 import { health } from "./health/controller.tsx"
 import { history } from "./history/controller.tsx"
 import { home } from "./home/controller.tsx"
+import { createRouterMiddleware } from "./middleware/msw.ts"
 import { createSecurityHeadersMiddleware } from "./middleware/security-headers.ts"
 import { routes } from "./routes.ts"
 import { sessionCookie, sessionStorage } from "./utils/session.ts"
 
-let middleware = []
+let middleware: Array<Middleware> = []
 
-if (process.env.NODE_ENV === "development") {
+if (import.meta.env.DEV) {
 	middleware.push(logger())
+	middleware.push(createRouterMiddleware(...handlers))
 }
 
 middleware.push(asyncContext())
