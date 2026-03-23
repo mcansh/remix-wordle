@@ -22,7 +22,6 @@ export function GamePage() {
 	}) => {
 		return (
 			<>
-				<title>Remix Wordle</title>
 				{showModal ? (
 					<GameOverModal
 						currentGuess={board.currentGuess}

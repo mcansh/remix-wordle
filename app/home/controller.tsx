@@ -1,11 +1,16 @@
-import { matchError } from "better-result"
 import type { Controller } from "remix/fetch-router"
 import { createRedirectResponse } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { REVEAL_WORD, WORD_LENGTH } from "../constants.ts"
+import { REVEAL_WORD } from "../constants.ts"
 import { requireAuth } from "../middleware/auth.ts"
-import { createGuess, getFailedToCreateGuessMessage, getFullBoard, getTodaysGame, isGameComplete } from "../models/game.ts"
+import {
+	createGuess,
+	getFailedToCreateGuessMessage,
+	getFullBoard,
+	getTodaysGame,
+	isGameComplete,
+} from "../models/game.ts"
 import { routes } from "../routes.ts"
 import { getCurrentUser } from "../utils/context.ts"
 import { renderDocument } from "../utils/render.tsx"
@@ -59,6 +64,9 @@ export const home = {
 					game={game}
 					showWord={showWord}
 				/>,
+				{
+					head: <title>Remix Wordle</title>,
+				},
 			)
 		},
 	},

@@ -1,5 +1,5 @@
 import { getContext } from "remix/async-context-middleware"
-import type * as Remix from "remix/component"
+import type { RemixNode } from "remix/component"
 import { renderToStream } from "remix/component/server"
 import type { Router } from "remix/fetch-router"
 import { createHtmlResponse } from "remix/response/html"
@@ -7,7 +7,7 @@ import { createHtmlResponse } from "remix/response/html"
 import { Document } from "../components/document.tsx"
 import { getCSPNonce } from "./context.ts"
 
-export function render(node: Remix.RemixNode, init?: ResponseInit) {
+export function render(node: RemixNode, init?: ResponseInit) {
 	let context = getContext()
 	let request = context.request
 	let router = context.router
@@ -20,9 +20,19 @@ export function render(node: Remix.RemixNode, init?: ResponseInit) {
 	return createHtmlResponse(stream, init)
 }
 
-export async function renderDocument(node: Remix.RemixNode, init?: ResponseInit) {
+export async function renderDocument(
+	node: RemixNode,
+	{ head, ...init }: ResponseInit & { head?: RemixNode } = {
+		head: <title>Remix Wordle</title>,
+	},
+) {
 	let nonce = getCSPNonce()
-	return render(<Document nonce={nonce}>{node}</Document>, init)
+	return render(
+		<Document nonce={nonce} head={head}>
+			{node}
+		</Document>,
+		init,
+	)
 }
 
 async function resolveFrame(request: Request, router: Router, src: string) {
@@ -51,7 +61,7 @@ async function resolveFrame(request: Request, router: Router, src: string) {
 	return res.text()
 }
 
-export function renderFragment(node: Remix.RemixNode, init?: ResponseInit) {
+export function renderFragment(node: RemixNode, init?: ResponseInit) {
 	let headers = new Headers(init?.headers)
 	if (!headers.has("Cache-Control")) {
 		headers.set("Cache-Control", "no-store")

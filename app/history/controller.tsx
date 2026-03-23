@@ -54,19 +54,34 @@ export let history = {
 				return createHistoricalGame(game)
 			})
 
-			return renderDocument(<HistoryListPage games={formattedGames} />)
+			return renderDocument(<HistoryListPage games={formattedGames} />, {
+				head: <title>Remix Wordle Game History</title>,
+			})
 		},
 
 		async game({ params }) {
 			let game = await getGameById(params.id)
 
 			if (!game) {
-				return renderDocument(<NoGameFoundPage />, { status: 404 })
+				return renderDocument(<NoGameFoundPage />, {
+					status: 404,
+					head: (
+						<>
+							<title>Remix Wordle - Game Not Found</title>
+						</>
+					),
+				})
 			}
 
 			let showModal = isGameComplete(game.status)
 
-			return renderDocument(<GamePage game={game} showModal={showModal} />)
+			return renderDocument(<GamePage game={game} showModal={showModal} />, {
+				head: (
+					<>
+						<title>Remix Wordle - Game {game.id}</title>
+					</>
+				),
+			})
 		},
 	},
 } satisfies Controller<typeof routes.history>

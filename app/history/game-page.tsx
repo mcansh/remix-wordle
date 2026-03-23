@@ -8,21 +8,18 @@ import { LetterState } from "../utils/game"
 export function NoGameFoundPage() {
 	return () => {
 		return (
-			<>
-				<title>Remix Wordle - Game Not Found</title>
-				<div class="mx-auto h-full max-w-sm">
-					<header>
-						<h1 class="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
-					</header>
+			<div class="mx-auto h-full max-w-sm">
+				<header>
+					<h1 class="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
+				</header>
 
-					<main>
-						<div class="">
-							<h2 class="">Game Not Found</h2>
-							<p class="">The game you are looking for does not exist.</p>
-						</div>
-					</main>
-				</div>
-			</>
+				<main>
+					<div class="flex flex-col items-center space-y-4">
+						<h2 class="">Game Not Found</h2>
+						<p class="">The game you are looking for does not exist.</p>
+					</div>
+				</main>
+			</div>
 		)
 	}
 }
@@ -31,7 +28,6 @@ export function GamePage() {
 	return ({ game, showModal }: { game: GameBoard; showModal: boolean }) => {
 		return (
 			<>
-				<title>Remix Wordle - Game {game.id}</title>
 				{showModal ? (
 					<GameOverModal
 						currentGuess={game.currentGuess}
