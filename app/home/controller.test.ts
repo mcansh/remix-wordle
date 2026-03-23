@@ -4,7 +4,7 @@ import { assertContains, loginAsCustomer, requestWithSession } from "../../test/
 import type { FullGame } from "../models/game.ts"
 import { router } from "../router.ts"
 
-vi.mock("./models/game.ts", async (importActual) => {
+vi.mock("../models/game.ts", async (importActual) => {
 	let actual = await importActual<typeof import("../models/game.ts")>()
 
 	return {
@@ -32,7 +32,7 @@ vi.mock("./models/game.ts", async (importActual) => {
 	}
 })
 
-vi.mock("./models/user.ts", async (importActual) => {
+vi.mock("../models/user.ts", async (importActual) => {
 	let actual = await importActual<typeof import("../models/user.ts")>()
 
 	return {
