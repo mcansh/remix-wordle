@@ -1,12 +1,11 @@
-import "@mcansh/vite-plugin-remix/types";
+import "@mcansh/vite-plugin-remix/types"
+import { mergeAssets } from "@mcansh/vite-plugin-remix/runtime"
+import type { RemixNode } from "remix/component"
 
-import { mergeAssets } from "@mcansh/vite-plugin-remix/runtime";
+import clientAssets from "../entry.browser.ts?assets=client"
+import serverAssets from "../entry.server.tsx?assets=ssr"
 
-import clientAssets from "../entry.browser.ts?assets=client";
-import serverAssets from "../entry.server.tsx?assets=ssr";
-
-import type { RemixNode } from "remix/component";
-import appStylesHref from "../app.css?url";
+import appStylesHref from "../app.css?url"
 
 const assets = mergeAssets(clientAssets, serverAssets)
 

@@ -1,13 +1,13 @@
-import type { Controller } from "remix/fetch-router";
-import { createRedirectResponse } from "remix/response/redirect";
-import { Session } from "remix/session";
+import type { Controller } from "remix/fetch-router"
+import { createRedirectResponse } from "remix/response/redirect"
+import { Session } from "remix/session"
 
-import { requireAuth } from "../middleware/auth.ts";
-import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "../models/game.ts";
-import { routes } from "../routes.ts";
-import { getCurrentUser } from "../utils/context.ts";
-import { renderDocument } from "../utils/render.tsx";
-import { GamePage } from "./page.tsx";
+import { requireAuth } from "../middleware/auth.ts"
+import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "../models/game.ts"
+import { routes } from "../routes.ts"
+import { getCurrentUser } from "../utils/context.ts"
+import { renderDocument } from "../utils/render.tsx"
+import { GamePage } from "./page.tsx"
 
 let REVEAL_WORD = "cheat"
 
@@ -52,7 +52,13 @@ export const home = {
 			}
 
 			return renderDocument(
-				<GamePage showModal={showModal} board={board} error={errorMessage} game={game} showWord={showWord}/>,
+				<GamePage
+					showModal={showModal}
+					board={board}
+					error={errorMessage}
+					game={game}
+					showWord={showWord}
+				/>,
 			)
 		},
 	},

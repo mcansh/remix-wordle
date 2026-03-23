@@ -6,7 +6,7 @@
 	},
 	"experimentalSortPackageJson": true,
 	"experimentalTailwindcss": {
-		"stylesheet": "./packages/wordle/app/app.css",
+		"stylesheet": "./app/app.css",
 		"attributes": ["class"],
 		"functions": ["clsx", "cn"],
 		"preserveDuplicates": false,

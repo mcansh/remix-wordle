@@ -1,10 +1,10 @@
-import type { BuildAction } from "remix/fetch-router";
+import type { BuildAction } from "remix/fetch-router"
 
-import { db } from "./db.ts";
-import { routes } from "./routes.ts";
+import { db } from "../db.ts"
+import { routes } from "../routes.ts"
 
 export const health = {
- 	async handler({ headers }) {
+	async handler({ headers }) {
 		let host = headers.get("X-Forwarded-Host") ?? headers.get("host")
 
 		try {
@@ -23,5 +23,4 @@ export const health = {
 			return new Response("ERROR", { status: 500 })
 		}
 	},
-
 } satisfies BuildAction<"GET", typeof routes.health>

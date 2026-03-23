@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest"
 
-import { assertContains, getSessionCookie } from "../test/helpers.ts"
-import { router } from "./router.ts"
+import { assertContains, getSessionCookie } from "../../test/helpers.ts"
+import { router } from "../router.ts"
 
-vi.mock("./models/user.ts", async (importActual) => {
-	let actual = await importActual<typeof import("./models/user.ts")>()
+vi.mock("../models/user.ts", async (importActual) => {
+	let actual = await importActual<typeof import("../models/user.ts")>()
 	return {
 		...actual,
 		authenticateUser: vi.fn().mockImplementation(async (email: string, password: string) => {

@@ -1,8 +1,8 @@
-import express from "express";
-import { createRequestListener } from "remix/node-fetch-server";
+import express from "express"
+import { createRequestListener } from "remix/node-fetch-server"
 
 // @ts-ignore - no types for this
-import ssr from "./dist/ssr/entry.server.js";
+import ssr from "./dist/ssr/entry.server.js"
 
 const app = express()
 

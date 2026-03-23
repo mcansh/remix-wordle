@@ -1,18 +1,18 @@
-import { NONCE, NONE, SELF } from "@mcansh/http-helmet";
-import { asyncContext } from "remix/async-context-middleware";
-import { createRouter } from "remix/fetch-router";
-import { formData } from "remix/form-data-middleware";
-import { logger } from "remix/logger-middleware";
-import { methodOverride } from "remix/method-override-middleware";
-import { session } from "remix/session-middleware";
+import { NONCE, NONE, SELF } from "@mcansh/http-helmet"
+import { asyncContext } from "remix/async-context-middleware"
+import { createRouter } from "remix/fetch-router"
+import { formData } from "remix/form-data-middleware"
+import { logger } from "remix/logger-middleware"
+import { methodOverride } from "remix/method-override-middleware"
+import { session } from "remix/session-middleware"
 
-import { auth } from "./auth.tsx";
-import { health } from "./health.tsx";
-import { history } from "./history.tsx";
-import { home } from "./home/controller.tsx";
-import { createSecurityHeadersMiddleware } from "./middleware/security-headers.ts";
-import { routes } from "./routes.ts";
-import { sessionCookie, sessionStorage } from "./utils/session.ts";
+import { auth } from "./auth/controller.tsx"
+import { health } from "./health/controller.tsx"
+import { history } from "./history/controller.tsx"
+import { home } from "./home/controller.tsx"
+import { createSecurityHeadersMiddleware } from "./middleware/security-headers.ts"
+import { routes } from "./routes.ts"
+import { sessionCookie, sessionStorage } from "./utils/session.ts"
 
 let middleware = []
 

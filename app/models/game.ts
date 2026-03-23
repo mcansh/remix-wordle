@@ -147,7 +147,7 @@ export async function createGuess(userId: User["id"], guessedWord: string): Prom
 	}
 }
 
-export async function getGameById(id: Game["id"]): Promise<ReturnType<typeof getFullBoard>> {
+export async function getGameById(id: Game["id"]): Promise<GameBoard> {
 	let game = await db.game.findUnique({
 		select: FULL_GAME_OPTIONS,
 		where: { id },
