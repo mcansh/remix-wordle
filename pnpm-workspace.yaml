@@ -14,6 +14,7 @@ catalog:
   "@vitest/coverage-v8": ^4.1.1
   "@vitest/ui": 4.1.1
   bcryptjs: ^3.0.3
+  better-result: ^2.7.0
   bullmq: ^5.71.0
   clsx: ^2.1.1
   date-fns: ^4.1.0

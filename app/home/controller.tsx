@@ -1,10 +1,11 @@
+import { matchError } from "better-result"
 import type { Controller } from "remix/fetch-router"
 import { createRedirectResponse } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { REVEAL_WORD } from "../constants.ts"
+import { REVEAL_WORD, WORD_LENGTH } from "../constants.ts"
 import { requireAuth } from "../middleware/auth.ts"
-import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "../models/game.ts"
+import { createGuess, getFailedToCreateGuessMessage, getFullBoard, getTodaysGame, isGameComplete } from "../models/game.ts"
 import { routes } from "../routes.ts"
 import { getCurrentUser } from "../utils/context.ts"
 import { renderDocument } from "../utils/render.tsx"
@@ -21,11 +22,11 @@ export const home = {
 			let revealWord = formData.get("cheat") === "true"
 
 			let guessedWord = letters.join("")
-			let error = await createGuess(user.id, guessedWord)
+			let result = await createGuess(user.id, guessedWord)
 
-			if (error) {
-				console.error({ error })
-				session.flash("error", error)
+			if (result.isErr()) {
+				let message = getFailedToCreateGuessMessage(result.error)
+				session.flash("error", message)
 			}
 
 			return createRedirectResponse(

@@ -20,6 +20,7 @@
 		"@prisma/adapter-pg": "catalog:",
 		"@prisma/client": "catalog:",
 		"bcryptjs": "catalog:",
+		"better-result": "catalog:",
 		"bullmq": "catalog:",
 		"clsx": "catalog:",
 		"date-fns": "catalog:",
