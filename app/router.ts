@@ -36,6 +36,7 @@ middleware.push(
 					"connect-src": [SELF, ...(import.meta.env.DEV ? ["ws"] : [])],
 					"style-src": [SELF, NONCE(nonce)],
 					"img-src": [SELF],
+					"font-src": [SELF],
 				},
 				"X-Content-Type-Options": "nosniff",
 				"X-DNS-Prefetch-Control": "on",

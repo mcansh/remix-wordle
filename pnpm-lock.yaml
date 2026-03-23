@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@fontsource/space-grotesk':
+      specifier: ^5.2.10
+      version: 5.2.10
     '@mcansh/http-helmet':
       specifier: ^0.13.2
       version: 0.13.2
@@ -144,6 +147,9 @@ importers:
         specifier: github:remix-run/remix#preview/main&path:packages/remix
         version: https://codeload.github.com/remix-run/remix/tar.gz/11275ba2b5ee24c2386722ad5dddf5b7365fe409#path:packages/remix(mysql2@3.15.3)(pg@8.20.0)
     devDependencies:
+      '@fontsource/space-grotesk':
+        specifier: 'catalog:'
+        version: 5.2.10
       '@mcansh/remix-testing-library':
         specifier: 'catalog:'
         version: 0.0.1(@remix-run/component@0.5.0)
@@ -447,6 +453,9 @@ packages:
 
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
+
+  '@fontsource/space-grotesk@5.2.10':
+    resolution: {integrity: sha512-XNXEbT74OIITPqw2H6HXwPDp85fy43uxfBwFR5PU+9sLnjuLj12KlhVM9nZVN6q6dlKjkuN8JisW/OBxwxgUew==}
 
   '@gwhitney/detect-indent@7.0.1':
     resolution: {integrity: sha512-7bQW+gkKa2kKZPeJf6+c6gFK9ARxQfn+FKy9ScTBppyKRWH2KzsmweXUoklqeEiHiNVWaeP5csIdsNq6w7QhzA==}
@@ -3988,6 +3997,8 @@ snapshots:
       '@floating-ui/utils': 0.2.11
 
   '@floating-ui/utils@0.2.11': {}
+
+  '@fontsource/space-grotesk@5.2.10': {}
 
   '@gwhitney/detect-indent@7.0.1': {}
 

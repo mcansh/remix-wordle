@@ -29,6 +29,7 @@
 		"remix": "github:remix-run/remix#preview/main&path:packages/remix"
 	},
 	"devDependencies": {
+		"@fontsource/space-grotesk": "catalog:",
 		"@mcansh/remix-testing-library": "catalog:",
 		"@mcansh/vite-plugin-remix": "catalog:",
 		"@mcansh/vite-plugin-svg-sprite": "catalog:",

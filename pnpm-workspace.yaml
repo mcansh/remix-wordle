@@ -1,4 +1,5 @@
 catalog:
+  "@fontsource/space-grotesk": ^5.2.10
   "@mcansh/http-helmet": ^0.13.2
   "@mcansh/remix-testing-library": ^0.0.1
   "@mcansh/vite-plugin-remix": ^0.0.1
