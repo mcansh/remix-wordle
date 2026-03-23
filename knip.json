@@ -4,7 +4,5 @@
 	"vitest": true,
 	"vite": true,
 	"prisma": true,
-  "ignore": [
-    "./app/generated/prisma/**/*"
-  ]
+	"ignore": ["./app/generated/prisma/**/*"]
 }

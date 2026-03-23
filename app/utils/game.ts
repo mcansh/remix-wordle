@@ -95,25 +95,23 @@ export function keyboardWithStatus(guesses: Array<{ letters: Array<ComputedGuess
 		.flatMap((guess) => guess.letters)
 		.filter((guess) => guess.state !== LetterState.Blank)
 
-	// map letters to best state for each letter
-	let states = new Map<string, LetterState>(
-		letters.reduce((acc, letter) => {
-			if (acc.has(letter.letter)) {
-				let current = acc.get(letter.letter)
-				if (current === LetterState.Match) {
-					return acc
-				}
+	let states = new Map<string, LetterState>()
 
-				if (letter.state === LetterState.Match) {
-					acc.set(letter.letter, LetterState.Match)
-				}
-			} else {
-				acc.set(letter.letter, letter.state)
+	// map letters to best state for each letter
+	for (let letter of letters) {
+		if (states.has(letter.letter)) {
+			let current = states.get(letter.letter)
+			if (current === LetterState.Match) {
+				continue
 			}
 
-			return acc
-		}, new Map<string, LetterState>()),
-	)
+			if (letter.state === LetterState.Match) {
+				states.set(letter.letter, LetterState.Match)
+			}
+		} else {
+			states.set(letter.letter, letter.state)
+		}
+	}
 
 	return KEYBOARD.map((row) => {
 		return row.map((letter) => {

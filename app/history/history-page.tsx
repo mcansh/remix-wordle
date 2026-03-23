@@ -3,12 +3,18 @@ import { clsx } from "clsx"
 import type { GameStatus } from "../generated/prisma/client"
 import { routes } from "../routes"
 
+type HistoricalGameProps = {
+	games: Array<{
+		id: string
+		date: string
+		guesses: number
+		status: GameStatus
+		word: string
+	}>
+}
+
 export function HistoryListPage() {
-	return ({
-		games,
-	}: {
-		games: Array<{ id: string; date: string; guesses: number; status: GameStatus; word: string }>
-	}) => (
+	return ({ games }: HistoricalGameProps) => (
 		<>
 			<title>Remix Wordle Game History</title>
 			<div class="px-4 pt-8 sm:px-6 lg:px-8">
