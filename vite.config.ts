@@ -3,6 +3,7 @@ import { loadEnvFile } from "node:process"
 import { remix } from "@mcansh/vite-plugin-remix"
 import { svgSprite } from "@mcansh/vite-plugin-svg-sprite"
 import tailwindcss from "@tailwindcss/vite"
+import { DevTools } from "@vitejs/devtools"
 import { defineConfig } from "vite"
 import devtoolsJson from "vite-plugin-devtools-json"
 
@@ -42,5 +43,10 @@ export default defineConfig({
 			},
 		},
 	},
-	plugins: [remix(), devtoolsJson(), tailwindcss(), svgSprite()],
+	build: {
+		rolldownOptions: {
+			devtools: {}, // enable devtools mode
+		},
+	},
+	plugins: [remix(), devtoolsJson(), tailwindcss(), svgSprite(), DevTools()],
 })

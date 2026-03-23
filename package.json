@@ -36,6 +36,7 @@
 		"@total-typescript/tsconfig": "catalog:",
 		"@types/express": "catalog:",
 		"@types/node": "catalog:",
+		"@vitejs/devtools": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"@vitest/ui": "catalog:",
 		"happy-dom": "catalog:",
