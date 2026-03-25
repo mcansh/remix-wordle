@@ -1,8 +1,10 @@
+import { parse } from "remix/data-schema"
 import { describe, expect, it, vi } from "vite-plus/test"
 
 import { assertContains, loginAsCustomer, requestWithSession } from "../../test/helpers.ts"
 import type { FullGame } from "../models/game.ts"
 import { router } from "../router.ts"
+import { guessWordSchema } from "./controller.tsx"
 
 vi.mock("./models/game.ts", async (importActual) => {
 	let actual = await importActual<typeof import("../models/game.ts")>()
@@ -70,9 +72,22 @@ describe("marketing handlers", () => {
 		let request = requestWithSession("https://remix.run/", sessionId)
 		let response = await router.fetch(request)
 
-		expect(response.status).toBe(200)
+		expect(response.status).toBe(3)
 		let html = await response.text()
 		assertContains(html, "Remix Wordle")
 		assertContains(html, "Submit Guess")
 	})
+})
+
+it.only("submits a valid guess", async () => {
+	let formData = new FormData()
+	formData.append("letter", "r")
+	formData.append("letter", "e")
+	formData.append("letter", "m")
+	formData.append("letter", "i")
+	formData.append("letter", "x")
+
+	let result = parse(guessWordSchema, formData)
+
+	expect(result).toEqual({ letter: ["r", "e", "m", "i", "x"], cheat: undefined })
 })

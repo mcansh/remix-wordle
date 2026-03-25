@@ -1,8 +1,8 @@
+import * as s from "remix/data-schema"
+import * as f from "remix/data-schema/form-data"
 import type { Controller } from "remix/fetch-router"
 import { createRedirectResponse } from "remix/response/redirect"
 import { Session } from "remix/session"
-import * as s from "remix/data-schema"
-import * as f from "remix/data-schema/form-data"
 
 import { REVEAL_WORD } from "../constants.ts"
 import { requireAuth } from "../middleware/auth.ts"
@@ -12,6 +12,11 @@ import { getCurrentUser } from "../utils/context.ts"
 import { render } from "../utils/render.ts"
 import { Page } from "./page.tsx"
 
+export const guessWordSchema = f.object({
+	letter: f.fields(s.array(s.string())),
+	cheat: f.field(s.optional(s.string()).refine((value) => value === "true" || value === undefined)),
+})
+
 export const home = {
 	middleware: [requireAuth()],
 	actions: {
@@ -20,19 +25,14 @@ export const home = {
 			let formData = get(FormData)
 			let user = getCurrentUser()
 
-			let schema = f.object({
-				letters: f.fields(s.array(s.string())),
-				cheat: f.field(s.string().refine((value) => value === "true" || value === undefined)),
-			})
-
-			let data = s.parseSafe(schema, formData)
+			let data = s.parseSafe(guessWordSchema, formData)
 
 			if (!data.success) {
 				session.flash("error", "Invalid input")
 				return createRedirectResponse(routes.home.index.href())
 			}
 
-			let guessedWord = data.value.letters.join("")
+			let guessedWord = data.value.letter.join("")
 			let error = await createGuess(user.id, guessedWord)
 
 			if (error) {

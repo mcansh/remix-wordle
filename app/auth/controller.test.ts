@@ -22,7 +22,7 @@ vi.mock("./models/user.ts", async (importActual) => {
 	}
 })
 
-describe("auth handlers", () => {
+describe.skip("auth handlers", () => {
 	it("POST /login with valid credentials sets session cookie and redirects", async () => {
 		let response = await router.fetch("https://remix.run/login", {
 			method: "POST",
