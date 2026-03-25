@@ -17,7 +17,7 @@ import { GameNotFound } from "./not-found-page.tsx"
 export let history = {
 	middleware: [requireAuth()],
 	actions: {
-		async index() {
+		async index({ url }) {
 			let user = getCurrentUser()
 
 			let games = await db.game.findMany({
@@ -30,19 +30,19 @@ export let history = {
 				return createHistoricalGameListItem(game)
 			})
 
-			return render(<HistoricalGameList games={formattedGames} />)
+			return render(<HistoricalGameList setup={{ url }} games={formattedGames} />)
 		},
 
-		async game({ params }) {
+		async game({ params, url }) {
 			let game = await getGameById(params.id)
 
 			if (!game) {
-				return render(<GameNotFound />, { status: 404 })
+				return render(<GameNotFound setup={{ url }} />, { status: 404 })
 			}
 
 			let showModal = isGameComplete(game.status)
 
-			return render(<HistoricalGame game={game} showModal={showModal} />)
+			return render(<HistoricalGame setup={{ url }} game={game} showModal={showModal} />)
 		},
 	},
 } satisfies Controller<typeof routes.history>

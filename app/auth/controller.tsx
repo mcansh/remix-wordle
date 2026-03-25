@@ -30,7 +30,7 @@ export const auth = {
 					})
 
 					return render(
-						<Document head={<title>Login - Remix Wordle</title>}>
+						<Document url={url} head={<title>Login - Remix Wordle</title>}>
 							<main class="h-dvh">
 								{error && typeof error === "string" ? (
 									<div class="text-red-500">{error}</div>
@@ -111,9 +111,9 @@ export const auth = {
 
 		register: {
 			actions: {
-				index() {
+				index({ url }) {
 					return render(
-						<Document head={<title>Login - Remix Wordle</title>}>>
+						<Document url={url} head={<title>Login - Remix Wordle</title>}>
 							<main class="h-dvh">
 								<form
 									method="POST"
@@ -181,7 +181,7 @@ export const auth = {
 					)
 				},
 
-				async action({ get }) {
+				async action({ get, url }) {
 					let session = get(Session)
 					let formData = get(FormData)
 					let result = parse(joinSchema, formData)
@@ -189,7 +189,7 @@ export const auth = {
 					// Check if user already exists
 					if (await getUserByEmail(result.email)) {
 						return render(
-							<Document head={<title>Login - Remix Wordle</title>}>
+							<Document url={url} head={<title>Login - Remix Wordle</title>}>
 								<div class="card" style="max-width: 500px; margin: 2rem auto;">
 									<div class="alert alert-error">An account with this email already exists.</div>
 									<p>
@@ -231,9 +231,9 @@ export const auth = {
 
 		forgotPassword: {
 			actions: {
-				index() {
+				index({ url }) {
 					return render(
-						<Document head={<title>Login - Remix Wordle</title>}>
+						<Document url={url} head={<title>Login - Remix Wordle</title>}>
 							<div class="card" style="max-width: 500px; margin: 2rem auto;">
 								<h1>Forgot Password</h1>
 								<p>Enter your email address and we'll send you a link to reset your password.</p>
@@ -257,13 +257,13 @@ export const auth = {
 					)
 				},
 
-				async action({ get }) {
+				async action({ get, url }) {
 					let formData = get(FormData)
 					let email = formData.get("email")?.toString() ?? ""
 					let token = createPasswordResetToken(email)
 
 					return render(
-						<Document head={<title>Login - Remix Wordle</title>}>
+						<Document url={url} head={<title>Login - Remix Wordle</title>}>
 							<div class="card" style="max-width: 500px; margin: 2rem auto;">
 								<div class="alert alert-success">Password reset link sent! Check your email.</div>
 
@@ -297,13 +297,13 @@ export const auth = {
 
 		resetPassword: {
 			actions: {
-				index({ get, params }) {
+				index({ get, params, url }) {
 					let session = get(Session)
 					let token = params.token
 					let error = session.get("error")
 
 					return render(
-						<Document head={<title>Login - Remix Wordle</title>}>
+						<Document url={url} head={<title>Login - Remix Wordle</title>}>
 							<div class="card" style="max-width: 500px; margin: 2rem auto;">
 								<h1>Reset Password</h1>
 								<p>Enter your new password below.</p>
@@ -346,7 +346,7 @@ export const auth = {
 					)
 				},
 
-				async action({ get, params }) {
+				async action({ get, params, url }) {
 					let session = get(Session)
 					let formData = get(FormData)
 					let password = formData.get("password")?.toString() ?? ""
@@ -365,7 +365,7 @@ export const auth = {
 					}
 
 					return render(
-						<Document head={<title>Login - Remix Wordle</title>}>
+						<Document url={url} head={<title>Login - Remix Wordle</title>}>
 							<div class="card" style="max-width: 500px; margin: 2rem auto;">
 								<div class="alert alert-success">
 									Password reset successfully! You can now login with your new password.

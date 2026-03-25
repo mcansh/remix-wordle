@@ -1,4 +1,5 @@
 import { clsx } from "clsx"
+import type { Handle } from "remix/component"
 
 import { Document } from "../components/document"
 import { GameOverModal } from "../components/game-over-modal"
@@ -6,10 +7,10 @@ import { TOTAL_GUESSES } from "../constants"
 import type { GameBoard } from "../models/game"
 import { LetterState } from "../utils/game"
 
-export function HistoricalGame() {
+export function HistoricalGame(_handle: Handle, { url }: { url: URL }) {
 	return ({ game, showModal }: { game: GameBoard; showModal: boolean }) => {
 		return (
-			<Document head={<title>Remix Wordle - Game {game.id}</title>}>
+			<Document url={url} head={<title>Remix Wordle - Game {game.id}</title>}>
 				{showModal ? (
 					<GameOverModal
 						currentGuess={game.currentGuess}

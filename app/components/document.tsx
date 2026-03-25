@@ -9,7 +9,8 @@ import appStylesHref from "../app.css?url"
 let assets = clientAssets.merge(serverAssets)
 
 export function Document() {
-	return ({ children, head }: { children: RemixNode; head?: RemixNode }) => {
+	return ({ children, url, head }: { children: RemixNode; head?: RemixNode; url: URL }) => {
+		let canonical = url.origin + url.pathname
 		return (
 			<html lang="en">
 				<head>
@@ -21,6 +22,8 @@ export function Document() {
 					))}
 
 					{head}
+
+					<link rel="canonical" href={canonical} />
 				</head>
 				<body>
 					{children}

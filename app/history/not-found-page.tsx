@@ -1,9 +1,11 @@
+import type { Handle } from "remix/component"
+
 import { Document } from "../components/document"
 
-export function GameNotFound() {
+export function GameNotFound(_handle: Handle, { url }: { url: URL }) {
 	return () => {
 		return (
-			<Document head={<title>Remix Wordle - Game Not Found</title>}>
+			<Document url={url} head={<title>Remix Wordle - Game Not Found</title>}>
 				<div class="mx-auto h-full max-w-sm">
 					<header>
 						<h1 class="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>

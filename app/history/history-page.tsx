@@ -1,4 +1,5 @@
 import { clsx } from "clsx"
+import type { Handle } from "remix/component"
 
 import { Document } from "../components/document"
 import type { Prisma } from "../generated/prisma/client"
@@ -33,10 +34,10 @@ export function createHistoricalGameListItem(game: HistoricalGame) {
 	}
 }
 
-export function HistoricalGameList() {
+export function HistoricalGameList(_handle: Handle, { url }: { url: URL }) {
 	return ({ games }: { games: Array<ReturnType<typeof createHistoricalGameListItem>> }) => {
 		return (
-			<Document head={<title>Remix Wordle Game History</title>}>
+			<Document url={url} head={<title>Remix Wordle Game History</title>}>
 				<div class="px-4 pt-8 sm:px-6 lg:px-8">
 					<div class="sm:flex sm:items-center">
 						<div class="sm:flex-auto">

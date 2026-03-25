@@ -76,7 +76,13 @@ export const home = {
 			}
 
 			return render(
-				<Page showModal={showModal} showWord={showWord} board={board} error={errorMessage} />,
+				<Page
+					setup={{ url }}
+					showModal={showModal}
+					showWord={showWord}
+					board={board}
+					error={errorMessage}
+				/>,
 			)
 		},
 	},
