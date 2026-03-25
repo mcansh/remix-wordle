@@ -2,7 +2,7 @@ import * as http from "node:http"
 
 import { createRequestListener } from "remix/node-fetch-server"
 
-// @ts-expect-error - no types for this
+// @ts-ignore - no types for this
 import ssr from "./dist/ssr/entry.server.js"
 
 let server = http.createServer(
