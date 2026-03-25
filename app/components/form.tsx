@@ -5,7 +5,7 @@ import { on } from "remix/component"
 
 import { routes } from "../routes"
 
-export function Form() {
+export function GuessForm() {
 	return ({ currentGuess, children }: { currentGuess: number; children: RemixNode }) => {
 		return () => (
 			<form

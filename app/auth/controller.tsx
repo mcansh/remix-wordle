@@ -3,8 +3,8 @@ import type { Controller } from "remix/fetch-router"
 import { createRedirectResponse as redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { Document } from "./components/document.tsx"
-import { loadAuth } from "./middleware/auth.ts"
+import { Document } from "../components/document.tsx"
+import { loadAuth } from "../middleware/auth.ts"
 import {
 	authenticateUser,
 	createPasswordResetToken,
@@ -13,9 +13,9 @@ import {
 	joinSchema,
 	loginSchema,
 	resetPassword,
-} from "./models/user.ts"
-import { routes } from "./routes.ts"
-import { render } from "./utils/render.ts"
+} from "../models/user.ts"
+import { routes } from "../routes.ts"
+import { render } from "../utils/render.ts"
 
 export const auth = {
 	middleware: [loadAuth()],

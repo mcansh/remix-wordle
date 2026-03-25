@@ -3,16 +3,16 @@ import type { Controller } from "remix/fetch-router"
 import { createRedirectResponse } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { Document } from "./components/document.tsx"
-import { Form } from "./components/form.tsx"
-import { GameOverModal } from "./components/game-over-modal.tsx"
-import { LetterInput } from "./components/letter-input.tsx"
-import { LETTER_INPUTS, TOTAL_GUESSES } from "./constants.ts"
-import { requireAuth } from "./middleware/auth.ts"
-import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "./models/game.ts"
-import { routes } from "./routes.ts"
-import { getCurrentUser } from "./utils/context.ts"
-import { render } from "./utils/render.ts"
+import { Document } from "../components/document.tsx"
+import { GuessForm } from "../components/form.tsx"
+import { GameOverModal } from "../components/game-over-modal.tsx"
+import { LetterInput } from "../components/letter-input.tsx"
+import { LETTER_INPUTS, TOTAL_GUESSES } from "../constants.ts"
+import { requireAuth } from "../middleware/auth.ts"
+import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "../models/game.ts"
+import { routes } from "../routes.ts"
+import { getCurrentUser } from "../utils/context.ts"
+import { render } from "../utils/render.ts"
 
 let REVEAL_WORD = "cheat"
 
@@ -85,7 +85,7 @@ export const home = {
 								{board.guesses.map((guess, guessIndex) => {
 									if (board.currentGuess === guessIndex) {
 										return (
-											<Form currentGuess={board.currentGuess}>
+											<GuessForm currentGuess={board.currentGuess}>
 												{showWord ? <input type="hidden" name="cheat" value="true" /> : null}
 												{LETTER_INPUTS.map((index) => (
 													<LetterInput
@@ -94,7 +94,7 @@ export const home = {
 														errorMessage={errorMessage}
 													/>
 												))}
-											</Form>
+											</GuessForm>
 										)
 									}
 

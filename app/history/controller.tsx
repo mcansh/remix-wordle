@@ -1,16 +1,16 @@
 import clsx from "clsx"
 import type { Controller } from "remix/fetch-router"
 
-import { Document } from "./components/document.tsx"
-import { GameOverModal } from "./components/game-over-modal.tsx"
-import { TOTAL_GUESSES } from "./constants.ts"
-import { db } from "./db.ts"
-import { requireAuth } from "./middleware/auth.ts"
-import { getGameById, isGameComplete } from "./models/game.ts"
-import { routes } from "./routes.ts"
-import { getCurrentUser } from "./utils/context.ts"
-import { LetterState } from "./utils/game.ts"
-import { render } from "./utils/render.ts"
+import { Document } from "../components/document.tsx"
+import { GameOverModal } from "../components/game-over-modal.tsx"
+import { TOTAL_GUESSES } from "../constants.ts"
+import { requireAuth } from "../middleware/auth.ts"
+import { getGameById, isGameComplete } from "../models/game.ts"
+import { routes } from "../routes.ts"
+import { getCurrentUser } from "../utils/context.ts"
+import { db } from "../utils/db.ts"
+import { LetterState } from "../utils/game.ts"
+import { render } from "../utils/render.ts"
 
 export let history = {
 	middleware: [requireAuth()],
