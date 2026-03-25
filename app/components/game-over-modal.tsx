@@ -1,7 +1,8 @@
 "use client"
 
 import clsx from "clsx"
-import { on, pressEvents, type Handle } from "remix/component"
+import { on, pressEvents } from "remix/component"
+import type { Handle } from "remix/component"
 
 import checkIconUrl from "../icons/check.svg"
 import xIconUrl from "../icons/x.svg"
@@ -66,11 +67,11 @@ export function GameOverModal(handle: Handle) {
 														let write = [new ClipboardItem({ [type]: blob })]
 														await window.navigator.clipboard.write(write)
 														copied = true
-														handle.update()
+														await handle.update()
 
-														setTimeout(() => {
+														setTimeout(async () => {
 															copied = false
-															handle.update()
+															await handle.update()
 														}, 2_000)
 													} catch {
 														// browser doesn't support clipboard api

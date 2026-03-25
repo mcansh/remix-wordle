@@ -77,7 +77,7 @@ export function createPasswordResetToken(email: string): string | undefined {
 	return token
 }
 
-export function resetPassword(token: string, newPassword: string): boolean {
+export function resetPassword(token: string, _newPassword: string): boolean {
 	// let tokenData = resetTokens.get(token)
 	// if (!tokenData || tokenData.expiresAt < new Date()) {
 	//   return false

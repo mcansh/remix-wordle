@@ -16,7 +16,7 @@ import {
 
 let TOTAL_GUESSES = 6
 
-let FULL_GAME_OPTIONS = {
+let FULL_GAME_SELECT = {
 	id: true,
 	createdAt: true,
 	updatedAt: true,
@@ -28,7 +28,7 @@ let FULL_GAME_OPTIONS = {
 	word: true,
 } satisfies Prisma.GameSelect
 
-export type FullGame = Prisma.GameGetPayload<{ select: typeof FULL_GAME_OPTIONS }>
+export type FullGame = Prisma.GameGetPayload<{ select: typeof FULL_GAME_SELECT }>
 
 export async function getTodaysGame(userId: User["id"]): Promise<FullGame> {
 	let now = new Date()
@@ -36,7 +36,7 @@ export async function getTodaysGame(userId: User["id"]): Promise<FullGame> {
 	let end = endOfDay(now)
 
 	let game = await db.game.findFirst({
-		select: FULL_GAME_OPTIONS,
+		select: FULL_GAME_SELECT,
 		where: {
 			userId,
 			createdAt: {
@@ -93,7 +93,7 @@ export async function createGame(userId: User["id"]): Promise<FullGame> {
 			word: getRandomWord(),
 			status: GameStatus.EMPTY,
 		},
-		select: FULL_GAME_OPTIONS,
+		select: FULL_GAME_SELECT,
 	})
 
 	return game
@@ -147,9 +147,9 @@ export async function createGuess(userId: User["id"], guessedWord: string): Prom
 	}
 }
 
-export async function getGameById(id: Game["id"]): Promise<ReturnType<typeof getFullBoard>> {
+export async function getGameById(id: Game["id"]): Promise<GameBoard> {
 	let game = await db.game.findUnique({
-		select: FULL_GAME_OPTIONS,
+		select: FULL_GAME_SELECT,
 		where: { id },
 	})
 

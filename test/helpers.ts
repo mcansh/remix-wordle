@@ -34,13 +34,10 @@ export function requestWithSession(
 ): Request {
 	let cookie = new Cookie({ session: sessionCookie })
 
-	return new Request(url, {
-		...init,
-		headers: {
-			...init?.headers,
-			Cookie: cookie.toString(),
-		},
-	})
+	let headers = new Headers(init?.headers)
+	headers.append("Cookie", cookie.toString())
+
+	return new Request(url, { ...init, headers })
 }
 
 /**

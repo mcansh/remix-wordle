@@ -7,7 +7,7 @@ import { routes } from "../routes"
 
 export function GuessForm() {
 	return ({ currentGuess, children }: { currentGuess: number; children: RemixNode }) => {
-		return () => (
+		return (
 			<form
 				method="POST"
 				action={routes.home.action.href()}
