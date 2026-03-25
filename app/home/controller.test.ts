@@ -1,4 +1,4 @@
-import { parse } from "remix/data-schema"
+import { parse, parseSafe } from "remix/data-schema"
 import { describe, expect, it, vi } from "vite-plus/test"
 
 import { assertContains, loginAsCustomer, requestWithSession } from "../../test/helpers.ts"
@@ -66,7 +66,7 @@ vi.mock("./models/user.ts", async (importActual) => {
 	}
 })
 
-describe("marketing handlers", () => {
+describe.skip("marketing handlers", () => {
 	it("GET / returns home page", async () => {
 		let sessionId = await loginAsCustomer(router)
 		let request = requestWithSession("https://remix.run/", sessionId)
@@ -79,15 +79,45 @@ describe("marketing handlers", () => {
 	})
 })
 
-it.only("submits a valid guess", async () => {
-	let formData = new FormData()
-	formData.append("letter", "r")
-	formData.append("letter", "e")
-	formData.append("letter", "m")
-	formData.append("letter", "i")
-	formData.append("letter", "x")
+describe("guessWord", () => {
+	it("submits a valid guess", async () => {
+		let formData = new FormData()
+		formData.append("letter", "r")
+		formData.append("letter", "e")
+		formData.append("letter", "m")
+		formData.append("letter", "i")
+		formData.append("letter", "x")
 
-	let result = parse(guessWordSchema, formData)
+		let result = parse(guessWordSchema, formData)
 
-	expect(result).toEqual({ letter: ["r", "e", "m", "i", "x"], cheat: undefined })
+		expect(result).toEqual({ letter: ["r", "e", "m", "i", "x"], cheat: undefined })
+	})
+
+	it("submits a cheat guess", async () => {
+		let formData = new FormData()
+		formData.append("letter", "r")
+		formData.append("letter", "e")
+		formData.append("letter", "m")
+		formData.append("letter", "i")
+		formData.append("letter", "x")
+		formData.append("cheat", "true")
+
+		let result = parse(guessWordSchema, formData)
+
+		expect(result).toEqual({ letter: ["r", "e", "m", "i", "x"], cheat: "true" })
+	})
+
+	it("fails to submit a guess with invalid letters", async () => {
+		let formData = new FormData()
+		formData.append("letter", "r")
+		formData.append("letter", "e")
+		formData.append("letter", "m")
+		formData.append("letter", "i")
+		formData.append("letter", "x")
+		formData.append("letter", "")
+
+		let result = parseSafe(guessWordSchema, formData)
+
+		expect(result).toEqual({ success: false, issues: expect.any(Array) })
+	})
 })

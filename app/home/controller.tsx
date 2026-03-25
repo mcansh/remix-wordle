@@ -4,7 +4,7 @@ import type { Controller } from "remix/fetch-router"
 import { createRedirectResponse } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { REVEAL_WORD } from "../constants.ts"
+import { REVEAL_WORD, WORD_LENGTH } from "../constants.ts"
 import { requireAuth } from "../middleware/auth.ts"
 import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "../models/game.ts"
 import { routes } from "../routes.ts"
@@ -12,8 +12,19 @@ import { getCurrentUser } from "../utils/context.ts"
 import { render } from "../utils/render.ts"
 import { Page } from "./page.tsx"
 
+export function maxLength(length: number): s.Check<Array<string>> {
+	return {
+		check(value) {
+			return value.length <= length
+		},
+		code: "array.max_length",
+		values: { max: length },
+		message: "Expected at most " + String(length) + " characters",
+	}
+}
+
 export const guessWordSchema = f.object({
-	letter: f.fields(s.array(s.string())),
+	letter: f.fields(s.array(s.string()).pipe(maxLength(WORD_LENGTH))),
 	cheat: f.field(s.optional(s.string()).refine((value) => value === "true" || value === undefined)),
 })
 
