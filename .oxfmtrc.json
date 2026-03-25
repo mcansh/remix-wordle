@@ -4,7 +4,7 @@
 	"experimentalSortImports": {},
 	"experimentalSortPackageJson": true,
 	"experimentalTailwindcss": {
-		"attributes": ["class"],
+		"attributes": ["class", "className"],
 		"functions": ["clsx", "cn"],
 		"preserveDuplicates": false,
 		"preserveWhitespace": false

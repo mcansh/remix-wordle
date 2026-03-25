@@ -1,21 +1,53 @@
 {
+	"name": "remix-wordle",
 	"private": true,
+	"description": "a wordle game made with Remix v3",
+	"license": "MIT",
 	"type": "module",
+	"sideEffects": false,
 	"scripts": {
-		"prepare": "husky",
-		"format": "oxfmt",
+		"build": "vite build",
+		"dev": "vite",
+		"start": "node ./server.ts",
 		"lint": "oxlint",
-		"dev": "pnpm --filter ./packages/wordle run dev",
-		"build": "pnpm --recursive run build",
-		"test": "pnpm --recursive run test",
-		"typecheck": "pnpm --recursive run typecheck"
+		"format": "oxfmt",
+		"test": "vitest",
+		"typecheck": "tsc"
 	},
 	"dependencies": {
 		"@mcansh/http-helmet": "catalog:",
+		"@prisma/adapter-pg": "catalog:",
+		"@prisma/client": "catalog:",
+		"bcryptjs": "catalog:",
+		"bullmq": "catalog:",
+		"clsx": "catalog:",
+		"date-fns": "catalog:",
+		"ioredis": "catalog:",
+		"remix": "catalog:"
+	},
+	"devDependencies": {
+		"@mcansh/remix-testing-library": "catalog:",
+		"@mcansh/vite-plugin-remix": "catalog:",
+		"@mcansh/vite-plugin-svg-sprite": "catalog:",
+		"@mswjs/http-middleware": "catalog:",
+		"@tailwindcss/vite": "catalog:",
+		"@total-typescript/tsconfig": "catalog:",
+		"@types/node": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
+		"happy-dom": "catalog:",
 		"husky": "catalog:",
 		"lint-staged": "catalog:",
+		"msw": "catalog:",
 		"oxfmt": "catalog:",
-		"oxlint": "catalog:"
+		"oxlint": "catalog:",
+		"prisma": "catalog:",
+		"tailwindcss": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:",
+		"vite-plugin-devtools-json": "catalog:",
+		"vitest": "catalog:"
 	},
-	"packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
+	"engines": {
+		"node": ">=20"
+	}
 }
