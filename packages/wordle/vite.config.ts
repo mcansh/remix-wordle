@@ -1,4 +1,4 @@
-import { remix } from "@jacob-ebey/vite-plugin-remix"
+import { remix } from "@mcansh/vite-plugin-remix"
 import { svgSprite } from "@mcansh/vite-plugin-svg-sprite"
 import tailwindcss from "@tailwindcss/vite"
 import { loadEnvFile } from "node:process"

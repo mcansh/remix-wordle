@@ -44,7 +44,8 @@
 		"zod": "catalog:"
 	},
 	"devDependencies": {
-		"@jacob-ebey/vite-plugin-remix": "workspace:^",
+		"@mcansh/remix-testing-library": "catalog:",
+		"@mcansh/vite-plugin-remix": "catalog:",
 		"@mcansh/vite-plugin-svg-sprite": "catalog:",
 		"@mswjs/http-middleware": "catalog:",
 		"@tailwindcss/vite": "catalog:",

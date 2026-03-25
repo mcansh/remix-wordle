@@ -4,7 +4,6 @@
 	"experimentalSortImports": {},
 	"experimentalSortPackageJson": true,
 	"experimentalTailwindcss": {
-		"stylesheet": "./packages/wordle/app/app.css",
 		"attributes": ["class"],
 		"functions": ["clsx", "cn"],
 		"preserveDuplicates": false,

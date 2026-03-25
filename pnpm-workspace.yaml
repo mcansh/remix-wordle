@@ -5,6 +5,8 @@ catalog:
   '@arethetypeswrong/core': ^0.18.2
   '@hiogawa/vite-plugin-fullstack': ^0.0.11
   '@mcansh/http-helmet': ^0.13.2
+  '@mcansh/remix-testing-library': ^0.0.1
+  '@mcansh/vite-plugin-remix': ^0.0.1
   '@mcansh/vite-plugin-svg-sprite': ^0.7.1
   '@mswjs/http-middleware': ^0.10.3
   '@prisma/adapter-pg': ^7.2.0

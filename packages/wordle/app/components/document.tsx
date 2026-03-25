@@ -1,14 +1,13 @@
 import type { Remix } from "@remix-run/dom"
 
-import { mergeAssets } from "@jacob-ebey/vite-plugin-remix/runtime"
-
+import "@mcansh/vite-plugin-remix/types"
 import appStylesHref from "../app.css?url"
 import clientAssets from "../entry.browser.ts?assets=client"
 import serverAssets from "../entry.server.tsx?assets=ssr"
 
-export function Document({ children }: { children: Remix.RemixNode }) {
-	const assets = mergeAssets(clientAssets, serverAssets)
+let assets = clientAssets.merge(serverAssets)
 
+export function Document({ children }: { children: Remix.RemixNode }) {
 	return (
 		<html lang="en">
 			<head>
