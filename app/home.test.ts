@@ -1,8 +1,7 @@
-import { describe, expect, it, vi } from "vitest"
-
-import type { FullGame } from "./models/game.ts"
+import { describe, expect, it, vi } from "vite-plus/test"
 
 import { assertContains, loginAsCustomer, requestWithSession } from "../test/helpers.ts"
+import type { FullGame } from "./models/game.ts"
 import { router } from "./router.ts"
 
 vi.mock("./models/game.ts", async (importActual) => {

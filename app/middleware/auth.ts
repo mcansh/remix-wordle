@@ -1,6 +1,5 @@
 import type { Middleware } from "remix/fetch-router"
 import type { Route } from "remix/fetch-router/routes"
-
 import { createRedirectResponse as redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 

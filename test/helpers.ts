@@ -1,5 +1,4 @@
 import type { Router } from "remix/fetch-router"
-
 import { Cookie, SetCookie } from "remix/headers"
 
 /**

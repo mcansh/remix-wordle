@@ -1,6 +1,5 @@
-import type { Middleware } from "remix/fetch-router"
-
 import { createSecureHeaders, mergeHeaders, type CreateSecureHeaders } from "@mcansh/http-helmet"
+import type { Middleware } from "remix/fetch-router"
 
 export type SecurityHeadersMiddleware = CreateSecureHeaders & {
 	skip?: (context: Parameters<Middleware>[0]) => boolean

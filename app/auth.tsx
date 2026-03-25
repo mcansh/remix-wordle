@@ -1,5 +1,4 @@
 import type { Controller } from "remix/fetch-router"
-
 import { createRedirectResponse as redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 

@@ -1,5 +1,4 @@
 import type { ComputedGuess } from "./game"
-
 import { LetterState } from "./game"
 
 function emojiRow(row: Array<ComputedGuess>) {

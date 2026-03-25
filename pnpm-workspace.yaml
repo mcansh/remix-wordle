@@ -17,19 +17,16 @@ catalog:
   date-fns: ^4.1.0
   express: ^5.2.1
   happy-dom: ^20.3.3
-  husky: ^9.1.7
   ioredis: ^5.9.2
-  lint-staged: ^16.2.7
   msw: ^2.12.7
-  oxfmt: ^0.26.0
-  oxlint: ^1.41.0
   prisma: ^7.2.0
   remix: github:remix-run/remix#preview/main&path:packages/remix
   tailwindcss: ^4.1.18
   typescript: ^5.9.3
-  vite: ^7.3.1
+  vite: npm:@voidzero-dev/vite-plus-core@latest
   vite-plugin-devtools-json: ^1.0.0
-  vitest: ^4.0.17
+  vitest: npm:@voidzero-dev/vite-plus-test@latest
+  vite-plus: latest
 
 catalogMode: strict
 
@@ -77,3 +74,13 @@ onlyBuiltDependencies:
   - remix
 
 shellEmulator: true
+overrides:
+  vite: "catalog:"
+  vitest: "catalog:"
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: "*"
+    vitest: "*"

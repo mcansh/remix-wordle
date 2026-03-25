@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest"
+import { describe, expect, it, vi } from "vite-plus/test"
 
 import { getSessionCookie, assertContains } from "../test/helpers.ts"
 import { router } from "./router.ts"

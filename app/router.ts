@@ -1,10 +1,12 @@
 import { NONE, SELF } from "@mcansh/http-helmet"
 import { asyncContext } from "remix/async-context-middleware"
+import { compression } from "remix/compression-middleware"
 import { createRouter } from "remix/fetch-router"
 import { formData } from "remix/form-data-middleware"
 import { logger } from "remix/logger-middleware"
 import { methodOverride } from "remix/method-override-middleware"
 import { session } from "remix/session-middleware"
+import { staticFiles } from "remix/static-middleware"
 
 import { auth } from "./auth.tsx"
 import { health } from "./health.tsx"
@@ -20,6 +22,14 @@ if (process.env.NODE_ENV === "development") {
 	middleware.push(logger())
 }
 
+middleware.push(compression())
+middleware.push(
+	staticFiles("./dist/client", {
+		cacheControl: "no-store, must-revalidate",
+		etag: false,
+		lastModified: false,
+	}),
+)
 middleware.push(formData())
 middleware.push(methodOverride())
 middleware.push(session(sessionCookie, sessionStorage))

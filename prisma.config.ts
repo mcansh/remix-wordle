@@ -1,4 +1,5 @@
 import { loadEnvFile } from "node:process"
+
 import { defineConfig, env } from "prisma/config"
 
 try {

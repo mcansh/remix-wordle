@@ -1,5 +1,4 @@
 import type { ConnectionOptions } from "bullmq"
-
 import { Queue, Worker } from "bullmq"
 import { startOfDay } from "date-fns"
 

@@ -1,5 +1,4 @@
 import type { HttpHandler } from "msw"
-
 import { http, passthrough } from "msw"
 
 function randomNumberBetween(min: number, max: number): number {

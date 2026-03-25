@@ -1,8 +1,7 @@
-import { describe, it, expect } from "vitest"
-
-import type { ComputedGuess } from "./game"
+import { describe, it, expect } from "vite-plus/test"
 
 import { boardToEmoji } from "./board-to-emoji"
+import type { ComputedGuess } from "./game"
 import { LetterState } from "./game"
 
 describe("boardToEmoji", () => {

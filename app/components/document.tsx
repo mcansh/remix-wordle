@@ -1,9 +1,10 @@
 import "@mcansh/vite-plugin-remix/types"
 import type { RemixNode } from "remix/component"
 
-import appStylesHref from "../app.css?url"
 import clientAssets from "../entry.browser.ts?assets=client"
 import serverAssets from "../entry.server.tsx?assets=ssr"
+
+import appStylesHref from "../app.css?url"
 
 let assets = clientAssets.merge(serverAssets)
 

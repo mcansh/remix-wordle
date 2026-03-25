@@ -1,6 +1,5 @@
-import type * as Remix from "remix/component"
-
 import { getContext } from "remix/async-context-middleware"
+import type * as Remix from "remix/component"
 import { renderToStream } from "remix/component/server"
 import { createHtmlResponse } from "remix/response/html"
 

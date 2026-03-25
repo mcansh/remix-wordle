@@ -3,12 +3,11 @@
 import clsx from "clsx"
 import { on, pressEvents, type Handle } from "remix/component"
 
-import type { ComputedGuess } from "../utils/game"
-
 import checkIconUrl from "../icons/check.svg"
 import xIconUrl from "../icons/x.svg"
 import { routes } from "../routes"
 import { boardToEmoji } from "../utils/board-to-emoji"
+import type { ComputedGuess } from "../utils/game"
 
 type GameOverModalProps = {
 	currentGuess: number

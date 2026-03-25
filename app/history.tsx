@@ -1,6 +1,5 @@
-import type { Controller } from "remix/fetch-router"
-
 import clsx from "clsx"
+import type { Controller } from "remix/fetch-router"
 
 import { Document } from "./components/document.tsx"
 import { GameOverModal } from "./components/game-over-modal.tsx"

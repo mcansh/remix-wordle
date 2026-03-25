@@ -6,12 +6,12 @@
 	"type": "module",
 	"sideEffects": false,
 	"scripts": {
-		"build": "vite build",
-		"dev": "vite",
+		"build": "vp build",
+		"dev": "vp dev",
 		"start": "node ./server.ts",
-		"lint": "oxlint",
-		"format": "oxfmt",
-		"test": "vitest",
+		"lint": "vp lint",
+		"format": "vp fmt",
+		"test": "vp test",
 		"typecheck": "tsc"
 	},
 	"dependencies": {
@@ -35,19 +35,17 @@
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"happy-dom": "catalog:",
-		"husky": "catalog:",
-		"lint-staged": "catalog:",
 		"msw": "catalog:",
-		"oxfmt": "catalog:",
-		"oxlint": "catalog:",
 		"prisma": "catalog:",
 		"tailwindcss": "catalog:",
 		"typescript": "catalog:",
 		"vite": "catalog:",
 		"vite-plugin-devtools-json": "catalog:",
+		"vite-plus": "catalog:",
 		"vitest": "catalog:"
 	},
 	"engines": {
 		"node": ">=20"
-	}
+	},
+	"packageManager": "pnpm@10.33.0"
 }

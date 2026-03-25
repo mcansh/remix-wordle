@@ -1,7 +1,6 @@
 "use client"
 
 import type { RemixNode } from "remix/component"
-
 import { on } from "remix/component"
 
 import { routes } from "../routes"
