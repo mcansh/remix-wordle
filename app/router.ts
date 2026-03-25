@@ -24,10 +24,13 @@ if (process.env.NODE_ENV === "development") {
 
 middleware.push(compression())
 middleware.push(
+	staticFiles("./dist/client/assets", {
+		cacheControl: "public, max-age=31536000, immutable",
+	}),
+)
+middleware.push(
 	staticFiles("./dist/client", {
-		cacheControl: "no-store, must-revalidate",
-		etag: false,
-		lastModified: false,
+		cacheControl: "public, max-age=3600",
 	}),
 )
 middleware.push(formData())
