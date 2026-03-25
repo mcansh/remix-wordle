@@ -90,7 +90,7 @@ describe("guessWord", () => {
 
 		let result = parse(guessWordSchema, formData)
 
-		expect(result).toEqual({ letter: ["r", "e", "m", "i", "x"], cheat: undefined })
+		expect(result).toEqual({ letters: ["r", "e", "m", "i", "x"], cheat: undefined })
 	})
 
 	it("submits a cheat guess", async () => {
@@ -104,7 +104,7 @@ describe("guessWord", () => {
 
 		let result = parse(guessWordSchema, formData)
 
-		expect(result).toEqual({ letter: ["r", "e", "m", "i", "x"], cheat: "true" })
+		expect(result).toEqual({ letters: ["r", "e", "m", "i", "x"], cheat: "true" })
 	})
 
 	it("fails to submit a guess with invalid letters", async () => {
@@ -115,6 +115,40 @@ describe("guessWord", () => {
 		formData.append("letter", "i")
 		formData.append("letter", "x")
 		formData.append("letter", "")
+
+		let result = parseSafe(guessWordSchema, formData)
+
+		expect(result).toEqual({ success: false, issues: expect.any(Array) })
+	})
+
+	it("fails to submit a guess with too many letters", async () => {
+		let formData = new FormData()
+		formData.append("letter", "r")
+		formData.append("letter", "e")
+		formData.append("letter", "m")
+		formData.append("letter", "i")
+		formData.append("letter", "x")
+		formData.append("letter", "y")
+
+		let result = parseSafe(guessWordSchema, formData)
+
+		expect(result).toEqual({ success: false, issues: expect.any(Array) })
+	})
+
+	it("fails to submit a guess with too few letters", async () => {
+		let formData = new FormData()
+		formData.append("letter", "r")
+		formData.append("letter", "e")
+		formData.append("letter", "m")
+		formData.append("letter", "i")
+
+		let result = parseSafe(guessWordSchema, formData)
+
+		expect(result).toEqual({ success: false, issues: expect.any(Array) })
+	})
+
+	it("fails to submit a guess with no form data", async () => {
+		let formData = new FormData()
 
 		let result = parseSafe(guessWordSchema, formData)
 

@@ -12,19 +12,21 @@ import { getCurrentUser } from "../utils/context.ts"
 import { render } from "../utils/render.ts"
 import { Page } from "./page.tsx"
 
-export function maxLength(length: number): s.Check<Array<string>> {
+export function validLength(length: number): s.Check<Array<string>> {
 	return {
 		check(value) {
-			return value.length <= length
+			return value.length === length
 		},
-		code: "array.max_length",
-		values: { max: length },
-		message: "Expected at most " + String(length) + " characters",
+		code: "array.valid_length",
+		values: { length },
+		message: "Expected " + String(length) + " characters",
 	}
 }
 
 export const guessWordSchema = f.object({
-	letter: f.fields(s.array(s.string()).pipe(maxLength(WORD_LENGTH))),
+	letters: f.fields(s.array(s.string()).pipe(validLength(WORD_LENGTH)), {
+		name: "letter",
+	}),
 	cheat: f.field(s.optional(s.string()).refine((value) => value === "true" || value === undefined)),
 })
 
@@ -43,7 +45,7 @@ export const home = {
 				return createRedirectResponse(routes.home.index.href())
 			}
 
-			let guessedWord = data.value.letter.join("")
+			let guessedWord = data.value.letters.join("")
 			let error = await createGuess(user.id, guessedWord)
 
 			if (error) {
