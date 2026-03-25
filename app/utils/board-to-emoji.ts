@@ -1,27 +1,25 @@
-import type { ComputedGuess } from "./game";
-import { LetterState } from "./game";
+import type { ComputedGuess } from "./game"
+import { LetterState } from "./game"
 
 function emojiRow(row: Array<ComputedGuess>) {
-  const emoji = row.map((letter) => {
-    switch (letter.state) {
-      case LetterState.Match:
-        return "🟩";
-      case LetterState.Present:
-        return "🟨";
-      case LetterState.Miss:
-        return "🟥";
-      case LetterState.Blank:
-        return "⬜️";
-      default:
-        throw new Error("Unknown letter state");
-    }
-  });
+	let emoji = row.map((letter) => {
+		switch (letter.state) {
+			case LetterState.Match:
+				return "🟩"
+			case LetterState.Present:
+				return "🟨"
+			case LetterState.Miss:
+				return "🟥"
+			case LetterState.Blank:
+				return "⬜️"
+			default:
+				throw new Error("Unknown letter state")
+		}
+	})
 
-  return emoji.join(" ");
+	return emoji.join(" ")
 }
 
-export function boardToEmoji(
-  guesses: Array<{ letters: Array<ComputedGuess> }>,
-): string {
-  return guesses.flatMap((row) => emojiRow(row.letters)).join("\n");
+export function boardToEmoji(guesses: Array<{ letters: Array<ComputedGuess> }>): string {
+	return guesses.flatMap((row) => emojiRow(row.letters)).join("\n")
 }

@@ -1,0 +1,24 @@
+name: remix-wordle
+icon: null
+processes:
+  Vitest:
+    command: vp test --ui
+    working_dir: null
+    auto_start: false
+    auto_restart: false
+    restart_when_changed: []
+    env: {}
+  Prisma Studio:
+    command: npx prisma studio
+    working_dir: null
+    auto_start: false
+    auto_restart: false
+    restart_when_changed: []
+    env: {}
+  dev:
+    command: npm run dev
+    working_dir: null
+    auto_start: false
+    auto_restart: true
+    restart_when_changed: []
+    env: {}

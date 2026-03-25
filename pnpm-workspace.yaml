@@ -1,0 +1,85 @@
+catalog:
+  "@mcansh/http-helmet": ^0.13.2
+  "@mcansh/remix-testing-library": ^0.0.1
+  "@mcansh/vite-plugin-remix": ^0.0.1
+  "@mcansh/vite-plugin-svg-sprite": ^0.7.1
+  "@mswjs/http-middleware": ^0.10.3
+  "@prisma/adapter-pg": ^7.2.0
+  "@prisma/client": ^7.2.0
+  "@tailwindcss/vite": ^4.1.18
+  "@total-typescript/tsconfig": ^1.0.4
+  "@types/node": ^25.0.9
+  "@vitest/coverage-v8": ^4.0.17
+  "@vitest/ui": 0.1.14
+  bcryptjs: ^3.0.3
+  bullmq: ^5.66.5
+  clsx: ^2.1.1
+  date-fns: ^4.1.0
+  happy-dom: ^20.3.3
+  ioredis: ^5.9.2
+  msw: ^2.12.7
+  prisma: ^7.2.0
+  remix: github:remix-run/remix#preview/main&path:packages/remix
+  tailwindcss: ^4.1.18
+  typescript: ^5.9.3
+  vite: npm:@voidzero-dev/vite-plus-core@latest
+  vite-plugin-devtools-json: ^1.0.0
+  vite-plus: latest
+  vitest: npm:@voidzero-dev/vite-plus-test@latest
+
+catalogMode: strict
+
+onlyBuiltDependencies:
+  - "@prisma/engines"
+  - "@remix-run/async-context-middleware"
+  - "@remix-run/auth"
+  - "@remix-run/auth-middleware"
+  - "@remix-run/component"
+  - "@remix-run/compression-middleware"
+  - "@remix-run/cookie"
+  - "@remix-run/cop-middleware"
+  - "@remix-run/cors-middleware"
+  - "@remix-run/csrf-middleware"
+  - "@remix-run/data-schema"
+  - "@remix-run/data-table"
+  - "@remix-run/data-table-mysql"
+  - "@remix-run/data-table-postgres"
+  - "@remix-run/data-table-sqlite"
+  - "@remix-run/fetch-proxy"
+  - "@remix-run/fetch-router"
+  - "@remix-run/file-storage"
+  - "@remix-run/file-storage-s3"
+  - "@remix-run/form-data-middleware"
+  - "@remix-run/form-data-parser"
+  - "@remix-run/fs"
+  - "@remix-run/headers"
+  - "@remix-run/html-template"
+  - "@remix-run/lazy-file"
+  - "@remix-run/logger-middleware"
+  - "@remix-run/method-override-middleware"
+  - "@remix-run/mime"
+  - "@remix-run/multipart-parser"
+  - "@remix-run/node-fetch-server"
+  - "@remix-run/response"
+  - "@remix-run/route-pattern"
+  - "@remix-run/session"
+  - "@remix-run/session-middleware"
+  - "@remix-run/session-storage-memcache"
+  - "@remix-run/session-storage-redis"
+  - "@remix-run/static-middleware"
+  - "@remix-run/tar-parser"
+  - msw
+  - prisma
+  - remix
+overrides:
+  vite: "catalog:"
+  vitest: "catalog:"
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: "*"
+    vitest: "*"
+
+shellEmulator: true
