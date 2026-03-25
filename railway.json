@@ -8,7 +8,7 @@
 		"restartPolicyType": "ON_FAILURE",
 		"restartPolicyMaxRetries": 3,
 		"preDeployCommand": "npx prisma migrate deploy",
-		"startCommand": "cd packages/wordle && ./scripts/start_with_migrations.sh",
+		"startCommand": "./scripts/start_with_migrations.sh",
 		"healthcheckPath": "/health"
 	}
 }
