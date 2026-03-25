@@ -11,6 +11,7 @@ catalog:
   "@types/express": ^5.0.6
   "@types/node": ^25.0.9
   "@vitest/coverage-v8": ^4.0.17
+  '@vitest/ui': 0.1.14
   bcryptjs: ^3.0.3
   bullmq: ^5.66.5
   clsx: ^2.1.1
@@ -25,8 +26,8 @@ catalog:
   typescript: ^5.9.3
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vite-plugin-devtools-json: ^1.0.0
-  vitest: npm:@voidzero-dev/vite-plus-test@latest
   vite-plus: latest
+  vitest: npm:@voidzero-dev/vite-plus-test@latest
 
 catalogMode: strict
 
@@ -72,8 +73,6 @@ onlyBuiltDependencies:
   - msw
   - prisma
   - remix
-
-shellEmulator: true
 overrides:
   vite: "catalog:"
   vitest: "catalog:"
@@ -84,3 +83,5 @@ peerDependencyRules:
   allowedVersions:
     vite: "*"
     vitest: "*"
+
+shellEmulator: true

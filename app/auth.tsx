@@ -1,3 +1,4 @@
+import { parse } from "remix/data-schema"
 import type { Controller } from "remix/fetch-router"
 import { createRedirectResponse as redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
@@ -92,7 +93,7 @@ export const auth = {
 				async action({ get, url }) {
 					let session = get(Session)
 					let formData = get(FormData)
-					let result = loginSchema.parse(Object.fromEntries(formData))
+					let result = parse(loginSchema, formData)
 					let returnTo = url.searchParams.get("returnTo")
 
 					let user = await authenticateUser(result.email, result.password)
@@ -183,7 +184,7 @@ export const auth = {
 				async action({ get }) {
 					let session = get(Session)
 					let formData = get(FormData)
-					let result = joinSchema.parse(Object.fromEntries(formData))
+					let result = parse(joinSchema, formData)
 
 					// Check if user already exists
 					if (await getUserByEmail(result.email)) {
