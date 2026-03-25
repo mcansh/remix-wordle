@@ -1,7 +1,13 @@
-# Visit https://soloterm.com to learn more
 name: remix-wordle
 icon: null
 processes:
+  Vitest:
+    command: vp test --ui
+    working_dir: null
+    auto_start: false
+    auto_restart: false
+    restart_when_changed: []
+    env: {}
   Prisma Studio:
     command: npx prisma studio
     working_dir: null
@@ -9,14 +15,7 @@ processes:
     auto_restart: false
     restart_when_changed: []
     env: {}
-  Vitest:
-    command: npx vitest --ui
-    working_dir: null
-    auto_start: false
-    auto_restart: false
-    restart_when_changed: []
-    env: {}
-  Remix:
+  dev:
     command: npm run dev
     working_dir: null
     auto_start: false
