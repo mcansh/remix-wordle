@@ -8,6 +8,8 @@ import { LetterInput } from "../components/letter-input"
 import { LETTER_INPUTS, TOTAL_GUESSES } from "../constants"
 import type { GameBoard } from "../models/game"
 
+let timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
 export function Page(_handle: Handle, { url }: { url: URL }) {
 	return ({
 		showModal,
@@ -32,7 +34,7 @@ export function Page(_handle: Handle, { url }: { url: URL }) {
 					/>
 				) : null}
 
-				<div class="h-full" aria-hidden={showModal ? true : undefined}>
+				<div class="h-full pb-8" aria-hidden={showModal ? true : undefined}>
 					<header>
 						<h1 class="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
 						{!showModal && showWord ? (
@@ -115,6 +117,10 @@ export function Page(_handle: Handle, { url }: { url: URL }) {
 						</div>
 					</main>
 				</div>
+
+				<footer class="fixed bottom-0 w-full py-2 text-center text-xs text-gray-600 dark:text-gray-300">
+					Daily word resets at midnight • {timezone}
+				</footer>
 			</Document>
 		)
 	}
