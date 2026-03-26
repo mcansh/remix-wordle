@@ -161,11 +161,8 @@ export async function getGame({
 	let game = await db.game.findFirst({
 		select: FULL_GAME_SELECT,
 		where: {
-			AND: [
-				{ userId },
-				{ createdAt: new Date(`${year}-${month}-${day}`) }
-			]
-		}
+			AND: [{ userId }, { createdAt: new Date(`${year}-${month}-${day}`) }],
+		},
 	})
 
 	if (!game) {
