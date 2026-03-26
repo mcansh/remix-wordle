@@ -31,6 +31,9 @@ export function createHistoricalGameListItem(game: HistoricalGame) {
 		guesses: game._count.guesses,
 		status: game.status,
 		word: game.word,
+		month: String(createdAt.getMonth() + 1).padStart(2, "0"),
+		day: String(createdAt.getDate()).padStart(2, "0"),
+		year: String(createdAt.getFullYear()),
 	}
 }
 
@@ -125,7 +128,11 @@ export function HistoricalGameList(_handle: Handle, { url }: { url: URL }) {
 													)}
 												>
 													<a
-														href={routes.history.game.href({ id: game.id })}
+														href={routes.history.game.href({
+															year: game.year,
+															month: game.month,
+															day: game.day,
+														})}
 														class="text-indigo-600 hover:text-indigo-900"
 													>
 														View<span class="sr-only">, {game.word}</span>
