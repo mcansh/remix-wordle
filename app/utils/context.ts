@@ -3,7 +3,7 @@ import { createContextKey } from "remix/fetch-router"
 
 import type { User } from "../generated/prisma/client"
 
-let USER_KEY = createContextKey<User>()
+const USER_KEY = createContextKey<User>()
 
 export function getCurrentUser(): User {
 	return getContext().get(USER_KEY)

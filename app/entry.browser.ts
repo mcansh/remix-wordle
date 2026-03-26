@@ -1,6 +1,6 @@
 import { run } from "remix/component"
 
-let app = run({
+const app = run({
 	async loadModule(moduleUrl, exportName) {
 		let chunks = JSON.parse(moduleUrl) as string[]
 		let [mod] = await Promise.all(chunks.map((chunk) => import(/* @vite-ignore */ chunk)))

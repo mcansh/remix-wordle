@@ -30,6 +30,7 @@
 		"@mcansh/vite-plugin-remix": "catalog:",
 		"@mcansh/vite-plugin-svg-sprite": "catalog:",
 		"@mswjs/http-middleware": "catalog:",
+		"@oxlint/plugins": "catalog:",
 		"@tailwindcss/vite": "catalog:",
 		"@total-typescript/tsconfig": "catalog:",
 		"@types/node": "catalog:",

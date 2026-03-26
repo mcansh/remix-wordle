@@ -2,7 +2,7 @@ import { setupServer } from "msw/node"
 
 import { handlers } from "./handlers.ts"
 
-let server = setupServer(...handlers)
+const server = setupServer(...handlers)
 server.listen({ onUnhandledRequest: "warn" })
 console.info("🔶 Mock server running")
 

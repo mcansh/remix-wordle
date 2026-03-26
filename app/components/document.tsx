@@ -6,7 +6,7 @@ import serverAssets from "../entry.server.tsx?assets=ssr"
 
 import appStylesHref from "../app.css?url"
 
-let assets = clientAssets.merge(serverAssets)
+const assets = clientAssets.merge(serverAssets)
 
 export function Document() {
 	return ({ children, url, head }: { children: RemixNode; head?: RemixNode; url: URL }) => {

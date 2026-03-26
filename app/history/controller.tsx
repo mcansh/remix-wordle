@@ -14,7 +14,7 @@ import {
 } from "./history-page.tsx"
 import { GameNotFound } from "./not-found-page.tsx"
 
-export let history = {
+export const history = {
 	middleware: [requireAuth()],
 	actions: {
 		async index({ url }) {

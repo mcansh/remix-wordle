@@ -5,7 +5,7 @@ import { createRequestListener } from "remix/node-fetch-server"
 // @ts-ignore - no types for this
 import ssr from "./dist/ssr/entry.server.js"
 
-let server = http.createServer(
+const server = http.createServer(
 	createRequestListener(async (request) => {
 		try {
 			return await ssr.fetch(request)
@@ -16,7 +16,7 @@ let server = http.createServer(
 	}),
 )
 
-let port = process.env.PORT ? parseInt(process.env.PORT, 10) : 44100
+const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 44100
 
 server.listen(port, () => {
 	console.log(`✅ App is running on http://localhost:${port}`)
