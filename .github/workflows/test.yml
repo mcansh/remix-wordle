@@ -14,30 +14,46 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
-    name: 🧪 Test
-    if: github.repository == 'mcansh/remix-wordle'
-
+  build:
+    name: ⚙️ Build
     runs-on: ubuntu-slim
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
-          node-version-file: ".node-version"
-
-      - uses: pnpm/action-setup@v4
-        name: 🟧 Install pnpm
-        with:
+          node-version-file: .node-version
           cache: true
 
-      - name: 🟧 Install dependencies
-        run: pnpm install --recursive --frozen-lockfile --strict-peer-dependencies
+      - name: ⚡️ Install Dependencies
+        run: vp install
 
-      - name: 🛠️ Build
-        run: pnpm run build
+      - name: ✅ Run Checks
+        run: vp check
+
+      - name: 🏗 Build
+        run: vp build
+
+  test:
+    name: 🧪 Test
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v6
+
+      - name: ⚡️ Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version-file: .node-version
+          cache: true
+
+      - name: ⚡️ Install Dependencies
+        run: vp install
+
+      - name: ✅ Run Checks
+        run: vp check
 
       - name: 🧪 Run Tests
-        run: pnpm run test
+        run: vp test
