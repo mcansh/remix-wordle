@@ -1,7 +1,7 @@
 import { endOfDay, startOfDay } from "date-fns"
 
 import { WORD_LENGTH } from "../constants"
-import type { Game, User } from "../generated/prisma/client"
+import type { User } from "../generated/prisma/client"
 import { GameStatus, Prisma } from "../generated/prisma/client"
 import { db } from "../utils/db"
 import type { ComputedGuess } from "../utils/game"
