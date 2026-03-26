@@ -2,6 +2,9 @@ import { form, get, post, route } from "remix/fetch-router/routes"
 
 export const routes = route({
 	home: form("/"),
+	frames: {
+		board: get("/game-board"),
+	},
 	health: get("health"),
 
 	history: route("history", {

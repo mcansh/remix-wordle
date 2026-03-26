@@ -1,6 +1,7 @@
 import { NONE, SELF } from "@mcansh/http-helmet"
 import { asyncContext } from "remix/async-context-middleware"
 import { compression } from "remix/compression-middleware"
+import type { Middleware } from "remix/fetch-router"
 import { createRouter } from "remix/fetch-router"
 import { formData } from "remix/form-data-middleware"
 import { logger } from "remix/logger-middleware"
@@ -9,6 +10,7 @@ import { session } from "remix/session-middleware"
 import { staticFiles } from "remix/static-middleware"
 
 import { auth } from "./auth/controller.tsx"
+import { framesController } from "./frames/controller.tsx"
 import { health } from "./health/controller.tsx"
 import { history } from "./history/controller.tsx"
 import { home } from "./home/controller.tsx"
@@ -16,7 +18,7 @@ import { securityHeaders } from "./middleware/security.ts"
 import { routes } from "./routes.ts"
 import { sessionCookie, sessionStorage } from "./utils/session.ts"
 
-const middleware = []
+const middleware: Array<Middleware<"ANY", {}, any>> = []
 
 if (process.env.NODE_ENV === "development") {
 	middleware.push(logger())
@@ -61,3 +63,4 @@ router.map(routes.home, home)
 router.map(routes.history, history)
 router.map(routes.auth, auth)
 router.map(routes.health, health)
+router.map(routes.frames, framesController)

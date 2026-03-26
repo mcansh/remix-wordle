@@ -1,14 +1,12 @@
 import { clsx } from "clsx"
-import type { Handle } from "remix/component"
 
-import { Document } from "../components/document"
-import { GuessForm } from "../components/form"
-import { GameOverModal } from "../components/game-over-modal"
-import { LetterInput } from "../components/letter-input"
-import { LETTER_INPUTS, TOTAL_GUESSES } from "../constants"
-import type { GameBoard } from "../models/game"
+import { GuessForm } from "../../components/form"
+import { GameOverModal } from "../../components/game-over-modal"
+import { LetterInput } from "../../components/letter-input"
+import { LETTER_INPUTS, TOTAL_GUESSES } from "../../constants"
+import type { GameBoard } from "../../models/game"
 
-export function Page(_handle: Handle, { url }: { url: URL }) {
+export function GameBoard() {
 	return ({
 		showModal,
 		showWord,
@@ -21,7 +19,7 @@ export function Page(_handle: Handle, { url }: { url: URL }) {
 		error?: string
 	}) => {
 		return (
-			<Document url={url} head={<title>Remix Wordle</title>}>
+			<>
 				{showModal ? (
 					<GameOverModal
 						currentGuess={board.currentGuess}
@@ -115,7 +113,7 @@ export function Page(_handle: Handle, { url }: { url: URL }) {
 						</div>
 					</main>
 				</div>
-			</Document>
+			</>
 		)
 	}
 }

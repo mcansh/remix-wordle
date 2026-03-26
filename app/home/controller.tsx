@@ -1,17 +1,18 @@
+import { Frame } from "remix/component"
 import * as s from "remix/data-schema"
 import * as f from "remix/data-schema/form-data"
 import type { Controller } from "remix/fetch-router"
 import { createRedirectResponse } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { REVEAL_WORD, WORD_LENGTH } from "../constants.ts"
+import { Document } from "../components/document.tsx"
+import { WORD_LENGTH } from "../constants.ts"
+import { GameBoard } from "../frames/board/index.tsx"
 import { requireAuth } from "../middleware/auth.ts"
-import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "../models/game.ts"
+import { createGuess } from "../models/game.ts"
 import { routes } from "../routes.ts"
 import { getCurrentUser } from "../utils/context.ts"
 import { render } from "../utils/render.ts"
-import { Page } from "./page.tsx"
-
 export function validLength(length: number): s.Check<Array<string>> {
 	return {
 		check(value) {
@@ -58,31 +59,32 @@ export const home = {
 			)
 		},
 
-		async index({ get, url }) {
-			let session = get(Session)
-			let user = getCurrentUser()
-
-			let game = await getTodaysGame(user.id)
-			let board = getFullBoard(game)
-
-			let showModal = isGameComplete(game.status)
-
-			let showWord = showModal || url.searchParams.has(REVEAL_WORD) ? board.word : undefined
-
-			let errorMessage = session.get("error") || undefined
-
-			if (typeof errorMessage !== "string") {
-				errorMessage = undefined
-			}
+		async index({ url }) {
+			let searchParamsObject = Object.fromEntries(url.searchParams.entries())
+			let showWord = searchParamsObject.cheat === "true"
 
 			return render(
-				<Page
-					setup={{ url }}
-					showModal={showModal}
-					showWord={showWord}
-					board={board}
-					error={errorMessage}
-				/>,
+				<Document url={url} head={<title>Remix Wordle</title>}>
+					<Frame
+						src={routes.frames.board.href(undefined, searchParamsObject)}
+						fallback={
+							<GameBoard
+								showModal={false}
+								showWord={showWord ? "" : undefined}
+								board={{
+									createdAt: new Date(),
+									currentGuess: 0,
+									guesses: [],
+									id: "placeholder",
+									status: "EMPTY",
+									updatedAt: new Date(),
+									word: "",
+									keyboardWithStatus: [],
+								}}
+							/>
+						}
+					/>
+				</Document>,
 			)
 		},
 	},

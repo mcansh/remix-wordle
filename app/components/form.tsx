@@ -1,11 +1,11 @@
 "use client"
 
-import type { RemixNode } from "remix/component"
+import type { Handle, RemixNode } from "remix/component"
 import { on } from "remix/component"
 
 import { routes } from "../routes"
 
-export function GuessForm() {
+export function GuessForm(handle: Handle) {
 	return ({ currentGuess, children }: { currentGuess: number; children: RemixNode }) => {
 		return (
 			<form
@@ -16,6 +16,26 @@ export function GuessForm() {
 				id="current-guess"
 				autoComplete="off"
 				mix={[
+					on("submit", async (event, signal) => {
+						event.preventDefault()
+
+						const formData = new FormData(event.currentTarget)
+
+						let response = await fetch(event.currentTarget.action, {
+							method: "POST",
+							body: formData,
+							credentials: "same-origin",
+							signal,
+						})
+
+						if (!response.ok) {
+							throw new Error("Failed to submit guess")
+						}
+
+						if (signal.aborted) return
+
+						await handle.frame.reload()
+					}),
 					on("input", (event) => {
 						let target = event.target
 						if (!(target instanceof HTMLInputElement)) return
