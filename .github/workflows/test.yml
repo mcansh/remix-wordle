@@ -42,10 +42,11 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v5
 
-      - name: ⎔ Setup VP
+      - name: ⚡️ Setup vp Vite+
         uses: voidzero-dev/setup-vp@v1
         with:
           cache: true
+          node-version-file: ".node-version"
 
       - name: 🧪 Run Tests
         run: vp test

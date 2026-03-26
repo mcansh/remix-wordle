@@ -43,6 +43,10 @@ export default defineConfig({
 		],
 		categories: {},
 		rules: {
+			"prefer-import-alias/prefer-import-alias": "error",
+			"remix-style/prefer-const-module-scope": "error",
+			"remix-style/prefer-let-locals": "error",
+			"import/extensions": ["error", "ignorePackages"],
 			"constructor-super": "warn",
 			"for-direction": "warn",
 			"no-async-promise-executor": "warn",
@@ -147,10 +151,6 @@ export default defineConfig({
 			"unicorn/no-useless-spread": "warn",
 			"unicorn/prefer-set-size": "warn",
 			"unicorn/prefer-string-starts-ends-with": "warn",
-			"prefer-import-alias/prefer-import-alias": "error",
-			"remix-style/prefer-const-module-scope": "error",
-			"remix-style/prefer-let-locals": "error",
-			"import/extensions": ["error", "ignorePackages"],
 		},
 		settings: {
 			"jsx-a11y": {
