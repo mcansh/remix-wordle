@@ -147,10 +147,25 @@ export async function createGuess(userId: User["id"], guessedWord: string): Prom
 	}
 }
 
-export async function getGameById(id: Game["id"]): Promise<GameBoard> {
-	let game = await db.game.findUnique({
+export async function getGame({
+	userId,
+	year,
+	month,
+	day,
+}: {
+	userId: string
+	year: string
+	month: string
+	day: string
+}): Promise<GameBoard> {
+	let game = await db.game.findFirst({
 		select: FULL_GAME_SELECT,
-		where: { id },
+		where: {
+			AND: [
+				{ userId },
+				{ createdAt: new Date(`${year}-${month}-${day}`) }
+			]
+		}
 	})
 
 	if (!game) {
