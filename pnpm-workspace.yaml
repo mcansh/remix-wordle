@@ -4,8 +4,8 @@ catalog:
   "@mcansh/vite-plugin-remix": ^0.0.1
   "@mcansh/vite-plugin-svg-sprite": ^0.7.1
   "@mswjs/http-middleware": ^0.10.3
-  "@prisma/adapter-pg": ^7.2.0
-  "@prisma/client": ^7.2.0
+  "@prisma/adapter-pg": ^7.6.0
+  "@prisma/client": ^7.6.0
   "@tailwindcss/vite": ^4.1.18
   "@total-typescript/tsconfig": ^1.0.4
   "@types/node": ^25.0.9
@@ -18,7 +18,7 @@ catalog:
   happy-dom: ^20.3.3
   ioredis: ^5.9.2
   msw: ^2.12.7
-  prisma: ^7.2.0
+  prisma: ^7.6.0
   remix: github:remix-run/remix#preview/main&path:packages/remix
   tailwindcss: ^4.1.18
   typescript: ^5.9.3
