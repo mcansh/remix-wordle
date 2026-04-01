@@ -5,12 +5,14 @@ import { Document } from "../components/document"
 import { GameOverModal } from "../components/game-over-modal"
 import { TOTAL_GUESSES } from "../constants"
 import type { GameBoard } from "../models/game"
+import { shortDateFormatter } from "../utils/format"
 import { LetterState } from "../utils/game"
 
 export function HistoricalGame(_handle: Handle, { url }: { url: URL }) {
 	return ({ game, showModal }: { game: GameBoard; showModal: boolean }) => {
+		let date = shortDateFormatter.format(game.createdAt)
 		return (
-			<Document url={url} head={<title>Remix Wordle - Game {game.id}</title>}>
+			<Document url={url} head={<title>Remix Wordle - Game {date}</title>}>
 				{showModal ? (
 					<GameOverModal
 						currentGuess={game.currentGuess}
