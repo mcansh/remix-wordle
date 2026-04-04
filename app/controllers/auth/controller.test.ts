@@ -29,11 +29,13 @@ vi.mock("#app/models/user.ts", async (importActual) => {
 			}
 			return null
 		}),
-		createUser: vi.fn().mockImplementation(async (data: { email: string; username: string; password: string }) => ({
-			id: "new-user-456",
-			email: data.email,
-			username: data.username,
-		})),
+		createUser: vi
+			.fn()
+			.mockImplementation(async (data: { email: string; username: string; password: string }) => ({
+				id: "new-user-456",
+				email: data.email,
+				username: data.username,
+			})),
 	}
 })
 
