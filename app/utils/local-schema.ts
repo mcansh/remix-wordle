@@ -695,6 +695,7 @@ export function object<shape extends ObjectShape>(
 		let unknownKeys = options?.unknownKeys ?? "strip"
 
 		for (let key of Object.keys(shape)) {
+			// @ts-expect-error
 			let result = shape[key]["~run"](input[key], {
 				path: withPath(context.path, key),
 				options: context.options,
@@ -967,6 +968,7 @@ export function tuple<items extends Schema<any, any>[]>(
 		let max = Math.min(value.length, items.length)
 
 		while (index < max) {
+			// @ts-expect-error
 			let result = items[index]["~run"](value[index], {
 				path: withPath(context.path, index),
 				options: context.options,
@@ -1066,6 +1068,7 @@ export function variant<
 		}
 
 		let schema = variants[tag as keyof variants]
+		// @ts-expect-error
 		return schema["~run"](value, context)
 	})
 }

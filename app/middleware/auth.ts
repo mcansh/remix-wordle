@@ -1,58 +1,94 @@
-import type { Middleware } from "remix/fetch-router"
-import type { Route } from "remix/fetch-router/routes"
-import { createRedirectResponse as redirect } from "remix/response/redirect"
-import { Session } from "remix/session"
+import { compare } from "bcryptjs"
+import { createCredentialsAuthProvider } from "remix/auth"
+import {
+	auth,
+	createSessionAuthScheme,
+	requireAuth as requireAuthenticated,
+} from "remix/auth-middleware"
+import { redirect } from "remix/response/redirect"
 
-import { getUserById } from "../models/user.ts"
-import { routes } from "../routes.ts"
-import { setCurrentUser } from "../utils/context.ts"
+import { routes } from "../routes"
+import {
+	normalizeEmail,
+	parseAuthSession,
+	type AuthIdentity,
+	type AuthSession,
+} from "../utils/auth-session.ts"
+import { db } from "../utils/db"
+import * as f from "../utils/local-form-schema.ts"
+import * as s from "../utils/local-schema.ts"
 
-/**
- * Middleware that optionally loads the current user if authenticated.
- * Does not redirect if not authenticated.
- * Attaches user (if any) to context.storage.
- */
-export function loadAuth(): Middleware {
-	return async ({ get }) => {
-		let session = get(Session)
-		let userId = session.get("userId")
+const loginSchema = f.object({
+	email: f.field(s.defaulted(s.string(), "")),
+	password: f.field(s.defaulted(s.string(), "")),
+})
 
-		// Only set current user if authenticated
-		if (typeof userId === "string") {
-			let user = await getUserById(userId)
-			if (user) {
-				setCurrentUser(user)
-			}
-		}
-	}
+export function loadAuth() {
+	return auth({
+		schemes: [
+			createSessionAuthScheme<AuthIdentity, AuthSession>({
+				read(session) {
+					return parseAuthSession(session.get("auth"))
+				},
+				async verify(value) {
+					let user = await db.user.findFirst({ where: { id: value.userId } })
+
+					if (user == null) {
+						return null
+					}
+
+					return { user }
+				},
+			}),
+		],
+	})
 }
 
-export type RequireAuthOptions = {
-	/**
-	 * Where to redirect if the user is not authenticated.
-	 * Defaults to the login page.
-	 */
-	redirectTo?: Route
-}
+export const passwordProvider = createCredentialsAuthProvider({
+	parse(context) {
+		let result = s.parse(loginSchema, context.get(FormData))
 
-/**
- * Middleware that requires a user to be authenticated.
- * Redirects to login if not authenticated.
- * Attaches user to context.storage.
- */
-export function requireAuth(options?: RequireAuthOptions): Middleware {
-	let redirectRoute = options?.redirectTo ?? routes.auth.login.index
+		return {
+			email: normalizeEmail(result.email),
+			password: result.password,
+		}
+	},
+	async verify(input) {
+		let user = await db.user.findFirst({ where: { email: input.email } })
 
-	return async ({ get, url }) => {
-		let session = get(Session)
-		let userId = session.get("userId")
-		let user = typeof userId === "string" ? await getUserById(userId) : null
-
-		if (!user) {
-			// Capture the current URL to redirect back to after login
-			return redirect(redirectRoute.href(undefined, { returnTo: url.pathname + url.search }), 302)
+		if (user == null) {
+			return null
 		}
 
-		setCurrentUser(user)
+		if (typeof user.password === "string" && user.password === "") {
+			let verified = await compare(input.password, user.password)
+			return verified ? user : null
+		}
+
+		return null
+	},
+})
+
+export const requireAuth = requireAuthenticated<AuthIdentity>({
+	onFailure() {
+		return redirect(routes.auth.login.index.href())
+	},
+})
+
+export function getPostAuthRedirect(url: URL, fallback = routes.home.index.href()): string {
+	return getSafeReturnTo(url.searchParams.get("returnTo")) ?? fallback
+}
+
+export function getReturnToQuery(url: URL): { returnTo?: string } {
+	let returnTo = getSafeReturnTo(url.searchParams.get("returnTo"))
+	return returnTo ? { returnTo } : {}
+}
+
+function getSafeReturnTo(returnTo: string | null): string | undefined {
+	if (returnTo == null || returnTo === "") {
+		return undefined
 	}
+
+	let isSafePath = returnTo.startsWith("/") && returnTo.startsWith("//") === false
+	return isSafePath ? returnTo : undefined
 }
