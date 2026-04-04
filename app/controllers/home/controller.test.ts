@@ -1,13 +1,13 @@
 import { parse, parseSafe } from "remix/data-schema"
 import { describe, expect, it, vi } from "vite-plus/test"
 
-import { assertContains, loginAsCustomer, requestWithSession } from "../../test/helpers.ts"
-import type { FullGame } from "../models/game.ts"
-import { router } from "../router.ts"
+import { assertContains, loginAsCustomer, requestWithSession } from "../../../test/helpers.ts"
+import type { FullGame } from "../../models/game.ts"
+import { router } from "../../router.ts"
 import { guessWordSchema } from "./controller.tsx"
 
 vi.mock("./models/game.ts", async (importActual) => {
-	let actual = await importActual<typeof import("../models/game.ts")>()
+	let actual = await importActual<typeof import("../../models/game.ts")>()
 
 	return {
 		...actual,
@@ -35,7 +35,7 @@ vi.mock("./models/game.ts", async (importActual) => {
 })
 
 vi.mock("./models/user.ts", async (importActual) => {
-	let actual = await importActual<typeof import("../models/user.ts")>()
+	let actual = await importActual<typeof import("../../models/user.ts")>()
 
 	return {
 		...actual,

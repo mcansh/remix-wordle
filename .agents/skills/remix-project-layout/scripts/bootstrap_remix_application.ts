@@ -1,125 +1,125 @@
 #!/usr/bin/env node
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import * as process from 'node:process'
-import { fileURLToPath } from 'node:url'
+import fs from "node:fs/promises"
+import path from "node:path"
+import * as process from "node:process"
+import { fileURLToPath } from "node:url"
 
 type ParsedArgs = {
-  appName: string | null
-  force: boolean
-  remixVersion: string | null
-  targetDir: string
+	appName: string | null
+	force: boolean
+	remixVersion: string | null
+	targetDir: string
 }
 
 type BootstrapConfig = {
-  appDisplayName: string
-  packageName: string
-  remixVersion: string
+	appDisplayName: string
+	packageName: string
+	remixVersion: string
 }
 
 type FileSpec = {
-  content: string
-  path: string
+	content: string
+	path: string
 }
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
-const defaultTsxVersion = '^4.20.6'
-const defaultTypesNodeVersion = '^24.6.0'
-const defaultTypescriptVersion = '^5.9.3'
+const defaultTsxVersion = "^4.20.6"
+const defaultTypesNodeVersion = "^24.6.0"
+const defaultTypescriptVersion = "^5.9.3"
 
 await main()
 
 async function main(): Promise<void> {
-  let parsed = parseArgs(process.argv.slice(2))
-  let targetDir = path.resolve(parsed.targetDir)
-  let rawAppName = parsed.appName ?? path.basename(targetDir)
-  if (rawAppName.length === 0) {
-    fail('Could not determine an app name from the target directory.')
-  }
+	let parsed = parseArgs(process.argv.slice(2))
+	let targetDir = path.resolve(parsed.targetDir)
+	let rawAppName = parsed.appName ?? path.basename(targetDir)
+	if (rawAppName.length === 0) {
+		fail("Could not determine an app name from the target directory.")
+	}
 
-  let config = {
-    appDisplayName: parsed.appName ?? humanizeName(rawAppName),
-    packageName: toPackageName(rawAppName),
-    remixVersion: parsed.remixVersion ?? (await readDefaultRemixVersion()),
-  } satisfies BootstrapConfig
+	let config = {
+		appDisplayName: parsed.appName ?? humanizeName(rawAppName),
+		packageName: toPackageName(rawAppName),
+		remixVersion: parsed.remixVersion ?? (await readDefaultRemixVersion()),
+	} satisfies BootstrapConfig
 
-  await ensureTargetDirectory(targetDir, parsed.force)
-  await writeDirectories(targetDir)
+	await ensureTargetDirectory(targetDir, parsed.force)
+	await writeDirectories(targetDir)
 
-  let files = createFiles(config)
-  for (let file of files) {
-    await writeFile(targetDir, file)
-  }
+	let files = createFiles(config)
+	for (let file of files) {
+		await writeFile(targetDir, file)
+	}
 
-  process.stdout.write(`Created ${config.appDisplayName} at ${targetDir}\n`)
+	process.stdout.write(`Created ${config.appDisplayName} at ${targetDir}\n`)
 }
 
 function parseArgs(argv: string[]): ParsedArgs {
-  if (argv.includes('-h') || argv.includes('--help')) {
-    printUsage()
-    process.exit(0)
-  }
+	if (argv.includes("-h") || argv.includes("--help")) {
+		printUsage()
+		process.exit(0)
+	}
 
-  let appName: string | null = null
-  let force = false
-  let remixVersion: string | null = null
-  let targetDir: string | null = null
-  let index = 0
+	let appName: string | null = null
+	let force = false
+	let remixVersion: string | null = null
+	let targetDir: string | null = null
+	let index = 0
 
-  while (index < argv.length) {
-    let arg = argv[index]
+	while (index < argv.length) {
+		let arg = argv[index]
 
-    if (arg === '--app-name') {
-      let next = argv[index + 1]
-      if (!next) {
-        fail('--app-name requires a value.')
-      }
+		if (arg === "--app-name") {
+			let next = argv[index + 1]
+			if (!next) {
+				fail("--app-name requires a value.")
+			}
 
-      appName = next
-      index += 2
-      continue
-    }
+			appName = next
+			index += 2
+			continue
+		}
 
-    if (arg === '--remix-version') {
-      let next = argv[index + 1]
-      if (!next) {
-        fail('--remix-version requires a value.')
-      }
+		if (arg === "--remix-version") {
+			let next = argv[index + 1]
+			if (!next) {
+				fail("--remix-version requires a value.")
+			}
 
-      remixVersion = next
-      index += 2
-      continue
-    }
+			remixVersion = next
+			index += 2
+			continue
+		}
 
-    if (arg === '--force') {
-      force = true
-      index++
-      continue
-    }
+		if (arg === "--force") {
+			force = true
+			index++
+			continue
+		}
 
-    if (arg.startsWith('--')) {
-      fail(`Unknown argument: ${arg}`)
-    }
+		if (arg.startsWith("--")) {
+			fail(`Unknown argument: ${arg}`)
+		}
 
-    if (targetDir != null) {
-      fail(`Unexpected extra argument: ${arg}`)
-    }
+		if (targetDir != null) {
+			fail(`Unexpected extra argument: ${arg}`)
+		}
 
-    targetDir = arg
-    index++
-  }
+		targetDir = arg
+		index++
+	}
 
-  if (targetDir == null) {
-    printUsage()
-    process.exit(1)
-  }
+	if (targetDir == null) {
+		printUsage()
+		process.exit(1)
+	}
 
-  let resolvedTargetDir = targetDir
-  return { appName, force, remixVersion, targetDir: resolvedTargetDir }
+	let resolvedTargetDir = targetDir
+	return { appName, force, remixVersion, targetDir: resolvedTargetDir }
 }
 
 function printUsage(): void {
-  process.stdout.write(`Usage:
+	process.stdout.write(`Usage:
   bootstrap_remix_application.ts <target-dir> [--app-name <name>] [--remix-version <version>] [--force]
 
 Examples:
@@ -131,120 +131,120 @@ Examples:
 }
 
 async function readDefaultRemixVersion(): Promise<string> {
-  let packageJsonPath = path.resolve(scriptDir, '../../../packages/remix/package.json')
-  let packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf8')) as {
-    version?: unknown
-  }
+	let packageJsonPath = path.resolve(scriptDir, "../../../packages/remix/package.json")
+	let packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf8")) as {
+		version?: unknown
+	}
 
-  if (typeof packageJson.version !== 'string' || packageJson.version.length === 0) {
-    fail(`Could not read a default remix version from ${packageJsonPath}.`)
-  }
+	if (typeof packageJson.version !== "string" || packageJson.version.length === 0) {
+		fail(`Could not read a default remix version from ${packageJsonPath}.`)
+	}
 
-  return packageJson.version
+	return packageJson.version
 }
 
 async function ensureTargetDirectory(targetDir: string, force: boolean): Promise<void> {
-  try {
-    let stats = await fs.stat(targetDir)
-    if (!stats.isDirectory()) {
-      fail(`Target path is not a directory: ${targetDir}`)
-    }
+	try {
+		let stats = await fs.stat(targetDir)
+		if (!stats.isDirectory()) {
+			fail(`Target path is not a directory: ${targetDir}`)
+		}
 
-    let entries = await fs.readdir(targetDir)
-    if (entries.length > 0 && !force) {
-      fail(`Target directory is not empty: ${targetDir}. Re-run with --force to continue.`)
-    }
-  } catch (error) {
-    let nodeError = error as NodeJS.ErrnoException
-    if (nodeError.code !== 'ENOENT') {
-      throw error
-    }
-  }
+		let entries = await fs.readdir(targetDir)
+		if (entries.length > 0 && !force) {
+			fail(`Target directory is not empty: ${targetDir}. Re-run with --force to continue.`)
+		}
+	} catch (error) {
+		let nodeError = error as NodeJS.ErrnoException
+		if (nodeError.code !== "ENOENT") {
+			throw error
+		}
+	}
 
-  await fs.mkdir(targetDir, { recursive: true })
+	await fs.mkdir(targetDir, { recursive: true })
 }
 
 async function writeDirectories(targetDir: string): Promise<void> {
-  let directories = [
-    'app/assets',
-    'app/controllers/account/settings',
-    'app/controllers/auth/login',
-    'app/controllers/cart/api',
-    'app/controllers/contact',
-    'app/data',
-    'app/middleware',
-    'app/ui',
-    'app/utils',
-    'db',
-    'public',
-    'test',
-    'tmp',
-  ]
+	let directories = [
+		"app/assets",
+		"app/controllers/account/settings",
+		"app/controllers/auth/login",
+		"app/controllers/cart/api",
+		"app/controllers/contact",
+		"app/data",
+		"app/middleware",
+		"app/ui",
+		"app/utils",
+		"db",
+		"public",
+		"test",
+		"tmp",
+	]
 
-  for (let directory of directories) {
-    await fs.mkdir(path.join(targetDir, directory), { recursive: true })
-  }
+	for (let directory of directories) {
+		await fs.mkdir(path.join(targetDir, directory), { recursive: true })
+	}
 }
 
 async function writeFile(targetDir: string, file: FileSpec): Promise<void> {
-  let filePath = path.join(targetDir, file.path)
-  await fs.mkdir(path.dirname(filePath), { recursive: true })
-  await fs.writeFile(filePath, file.content, 'utf8')
+	let filePath = path.join(targetDir, file.path)
+	await fs.mkdir(path.dirname(filePath), { recursive: true })
+	await fs.writeFile(filePath, file.content, "utf8")
 }
 
 function createFiles(config: BootstrapConfig): FileSpec[] {
-  return [
-    { path: '.gitignore', content: createGitIgnore() },
-    { path: 'README.md', content: createReadme(config) },
-    { path: 'package.json', content: createPackageJson(config) },
-    { path: 'server.ts', content: createServerFile() },
-    { path: 'tsconfig.json', content: createTsconfig() },
-    { path: 'app/routes.ts', content: createRoutesFile() },
-    { path: 'app/router.ts', content: createRouterFile() },
-    { path: 'app/utils/render.tsx', content: createRenderFile() },
-    { path: 'app/ui/document.tsx', content: createDocumentFile(config) },
-    { path: 'app/ui/layout.tsx', content: createLayoutFile() },
-    { path: 'app/controllers/home.tsx', content: createHomeFile(config) },
-    { path: 'app/controllers/about.tsx', content: createAboutFile() },
-    { path: 'app/controllers/search.tsx', content: createSearchFile() },
-    { path: 'app/controllers/uploads.tsx', content: createUploadsFile() },
-    { path: 'app/controllers/contact/page.tsx', content: createContactPageFile() },
-    {
-      path: 'app/controllers/contact/controller.tsx',
-      content: createContactControllerFile(),
-    },
-    { path: 'app/controllers/auth/controller.tsx', content: createAuthControllerFile() },
-    { path: 'app/controllers/auth/login/page.tsx', content: createLoginPageFile() },
-    {
-      path: 'app/controllers/auth/login/controller.tsx',
-      content: createLoginControllerFile(),
-    },
-    { path: 'app/controllers/account/page.tsx', content: createAccountPageFile() },
-    {
-      path: 'app/controllers/account/controller.tsx',
-      content: createAccountControllerFile(),
-    },
-    {
-      path: 'app/controllers/account/settings/page.tsx',
-      content: createSettingsPageFile(),
-    },
-    {
-      path: 'app/controllers/account/settings/controller.tsx',
-      content: createSettingsControllerFile(),
-    },
-    { path: 'app/controllers/cart/page.tsx', content: createCartPageFile() },
-    { path: 'app/controllers/cart/controller.tsx', content: createCartControllerFile() },
-    {
-      path: 'app/controllers/cart/api/controller.tsx',
-      content: createCartApiControllerFile(),
-    },
-    { path: 'test/helpers.ts', content: createTestHelpersFile() },
-    { path: 'app/controllers/home.test.ts', content: createHomeTestFile(config) },
-  ]
+	return [
+		{ path: ".gitignore", content: createGitIgnore() },
+		{ path: "README.md", content: createReadme(config) },
+		{ path: "package.json", content: createPackageJson(config) },
+		{ path: "server.ts", content: createServerFile() },
+		{ path: "tsconfig.json", content: createTsconfig() },
+		{ path: "app/routes.ts", content: createRoutesFile() },
+		{ path: "app/router.ts", content: createRouterFile() },
+		{ path: "app/utils/render.tsx", content: createRenderFile() },
+		{ path: "app/ui/document.tsx", content: createDocumentFile(config) },
+		{ path: "app/ui/layout.tsx", content: createLayoutFile() },
+		{ path: "app/controllers/home.tsx", content: createHomeFile(config) },
+		{ path: "app/controllers/about.tsx", content: createAboutFile() },
+		{ path: "app/controllers/search.tsx", content: createSearchFile() },
+		{ path: "app/controllers/uploads.tsx", content: createUploadsFile() },
+		{ path: "app/controllers/contact/page.tsx", content: createContactPageFile() },
+		{
+			path: "app/controllers/contact/controller.tsx",
+			content: createContactControllerFile(),
+		},
+		{ path: "app/controllers/auth/controller.tsx", content: createAuthControllerFile() },
+		{ path: "app/controllers/auth/login/page.tsx", content: createLoginPageFile() },
+		{
+			path: "app/controllers/auth/login/controller.tsx",
+			content: createLoginControllerFile(),
+		},
+		{ path: "app/controllers/account/page.tsx", content: createAccountPageFile() },
+		{
+			path: "app/controllers/account/controller.tsx",
+			content: createAccountControllerFile(),
+		},
+		{
+			path: "app/controllers/account/settings/page.tsx",
+			content: createSettingsPageFile(),
+		},
+		{
+			path: "app/controllers/account/settings/controller.tsx",
+			content: createSettingsControllerFile(),
+		},
+		{ path: "app/controllers/cart/page.tsx", content: createCartPageFile() },
+		{ path: "app/controllers/cart/controller.tsx", content: createCartControllerFile() },
+		{
+			path: "app/controllers/cart/api/controller.tsx",
+			content: createCartApiControllerFile(),
+		},
+		{ path: "test/helpers.ts", content: createTestHelpersFile() },
+		{ path: "app/controllers/home.test.ts", content: createHomeTestFile(config) },
+	]
 }
 
 function createGitIgnore(): string {
-  return `node_modules/
+	return `node_modules/
 db/*.sqlite
 tmp/
 .DS_Store
@@ -252,7 +252,7 @@ tmp/
 }
 
 function createReadme(config: BootstrapConfig): string {
-  return `# ${config.appDisplayName}
+	return `# ${config.appDisplayName}
 
 A Remix application starter that follows the Remix application layout conventions.
 
@@ -292,35 +292,35 @@ npm test
 }
 
 function createPackageJson(config: BootstrapConfig): string {
-  return (
-    JSON.stringify(
-      {
-        name: config.packageName,
-        private: true,
-        type: 'module',
-        scripts: {
-          dev: 'tsx watch server.ts',
-          start: 'tsx server.ts',
-          test: 'NODE_ENV=test tsx --test',
-          typecheck: 'tsc --noEmit',
-        },
-        dependencies: {
-          remix: config.remixVersion,
-          tsx: defaultTsxVersion,
-        },
-        devDependencies: {
-          '@types/node': defaultTypesNodeVersion,
-          typescript: defaultTypescriptVersion,
-        },
-      },
-      null,
-      2,
-    ) + '\n'
-  )
+	return (
+		JSON.stringify(
+			{
+				name: config.packageName,
+				private: true,
+				type: "module",
+				scripts: {
+					dev: "tsx watch server.ts",
+					start: "tsx server.ts",
+					test: "NODE_ENV=test tsx --test",
+					typecheck: "tsc --noEmit",
+				},
+				dependencies: {
+					remix: config.remixVersion,
+					tsx: defaultTsxVersion,
+				},
+				devDependencies: {
+					"@types/node": defaultTypesNodeVersion,
+					typescript: defaultTypescriptVersion,
+				},
+			},
+			null,
+			2,
+		) + "\n"
+	)
 }
 
 function createTsconfig(): string {
-  return `{
+	return `{
   "compilerOptions": {
     "strict": true,
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
@@ -343,7 +343,7 @@ function createTsconfig(): string {
 }
 
 function createServerFile(): string {
-  return `import * as http from 'node:http'
+	return `import * as http from 'node:http'
 
 import { createRequestListener } from 'remix/node-fetch-server'
 
@@ -385,7 +385,7 @@ process.on('SIGTERM', shutdown)
 }
 
 function createRoutesFile(): string {
-  return `import { form, get, post, route } from 'remix/fetch-router/routes'
+	return `import { form, get, post, route } from 'remix/fetch-router/routes'
 
 export let routes = route({
   home: '/',
@@ -416,7 +416,7 @@ export let routes = route({
 }
 
 function createRouterFile(): string {
-  return `import { createRouter } from 'remix/fetch-router'
+	return `import { createRouter } from 'remix/fetch-router'
 
 import accountController from './controllers/account/controller.tsx'
 import authController from './controllers/auth/controller.tsx'
@@ -443,7 +443,7 @@ router.map(routes.cart, cartController)
 }
 
 function createRenderFile(): string {
-  return `import type { RemixNode } from 'remix/component'
+	return `import type { RemixNode } from 'remix/component'
 import { renderToStream } from 'remix/component/server'
 
 export function render(node: RemixNode, init?: ResponseInit) {
@@ -458,7 +458,7 @@ export function render(node: RemixNode, init?: ResponseInit) {
 }
 
 function createDocumentFile(config: BootstrapConfig): string {
-  return `import type { RemixNode } from 'remix/component'
+	return `import type { RemixNode } from 'remix/component'
 
 export interface DocumentProps {
   children?: RemixNode
@@ -481,7 +481,7 @@ export function Document() {
 }
 
 function createLayoutFile(): string {
-  return `import type { RemixNode } from 'remix/component'
+	return `import type { RemixNode } from 'remix/component'
 
 import { routes } from '../routes.ts'
 import { Document } from './document.tsx'
@@ -513,7 +513,7 @@ export function Layout() {
 }
 
 function createHomeFile(config: BootstrapConfig): string {
-  return `import type { BuildAction } from 'remix/fetch-router'
+	return `import type { BuildAction } from 'remix/fetch-router'
 
 import { routes } from '../routes.ts'
 import { Layout } from '../ui/layout.tsx'
@@ -538,7 +538,7 @@ function HomePage() {
 }
 
 function createAboutFile(): string {
-  return `import type { BuildAction } from 'remix/fetch-router'
+	return `import type { BuildAction } from 'remix/fetch-router'
 
 import { routes } from '../routes.ts'
 import { Layout } from '../ui/layout.tsx'
@@ -565,7 +565,7 @@ function AboutPage() {
 }
 
 function createSearchFile(): string {
-  return `import type { BuildAction } from 'remix/fetch-router'
+	return `import type { BuildAction } from 'remix/fetch-router'
 
 import { routes } from '../routes.ts'
 import { Layout } from '../ui/layout.tsx'
@@ -598,7 +598,7 @@ function SearchPage() {
 }
 
 function createUploadsFile(): string {
-  return `import type { BuildAction } from 'remix/fetch-router'
+	return `import type { BuildAction } from 'remix/fetch-router'
 
 import { routes } from '../routes.ts'
 import { Layout } from '../ui/layout.tsx'
@@ -626,7 +626,7 @@ function UploadsPage() {
 }
 
 function createContactPageFile(): string {
-  return `import { routes } from '../../routes.ts'
+	return `import { routes } from '../../routes.ts'
 import { Layout } from '../../ui/layout.tsx'
 
 export function ContactPage() {
@@ -655,7 +655,7 @@ export function ContactSuccessPage() {
 }
 
 function createContactControllerFile(): string {
-  return `import type { Controller } from 'remix/fetch-router'
+	return `import type { Controller } from 'remix/fetch-router'
 
 import { routes } from '../../routes.ts'
 import { render } from '../../utils/render.tsx'
@@ -676,7 +676,7 @@ export default {
 }
 
 function createAuthControllerFile(): string {
-  return `import type { Controller } from 'remix/fetch-router'
+	return `import type { Controller } from 'remix/fetch-router'
 
 import { routes } from '../../routes.ts'
 import loginController from './login/controller.tsx'
@@ -690,7 +690,7 @@ export default {
 }
 
 function createLoginPageFile(): string {
-  return `import { routes } from '../../../routes.ts'
+	return `import { routes } from '../../../routes.ts'
 import { Layout } from '../../../ui/layout.tsx'
 
 export function LoginPage() {
@@ -719,7 +719,7 @@ export function LoginSuccessPage() {
 }
 
 function createLoginControllerFile(): string {
-  return `import type { Controller } from 'remix/fetch-router'
+	return `import type { Controller } from 'remix/fetch-router'
 
 import { routes } from '../../../routes.ts'
 import { render } from '../../../utils/render.tsx'
@@ -740,7 +740,7 @@ export default {
 }
 
 function createAccountPageFile(): string {
-  return `import { routes } from '../../routes.ts'
+	return `import { routes } from '../../routes.ts'
 import { Layout } from '../../ui/layout.tsx'
 
 export function AccountPage() {
@@ -758,7 +758,7 @@ export function AccountPage() {
 }
 
 function createAccountControllerFile(): string {
-  return `import type { Controller } from 'remix/fetch-router'
+	return `import type { Controller } from 'remix/fetch-router'
 
 import { routes } from '../../routes.ts'
 import { render } from '../../utils/render.tsx'
@@ -778,7 +778,7 @@ export default {
 }
 
 function createSettingsPageFile(): string {
-  return `import { routes } from '../../../routes.ts'
+	return `import { routes } from '../../../routes.ts'
 import { Layout } from '../../../ui/layout.tsx'
 
 export function SettingsPage() {
@@ -807,7 +807,7 @@ export function SettingsSavedPage() {
 }
 
 function createSettingsControllerFile(): string {
-  return `import type { Controller } from 'remix/fetch-router'
+	return `import type { Controller } from 'remix/fetch-router'
 
 import { routes } from '../../../routes.ts'
 import { render } from '../../../utils/render.tsx'
@@ -828,7 +828,7 @@ export default {
 }
 
 function createCartPageFile(): string {
-  return `import { routes } from '../../routes.ts'
+	return `import { routes } from '../../routes.ts'
 import { Layout } from '../../ui/layout.tsx'
 
 export function CartPage() {
@@ -852,7 +852,7 @@ export function CartPage() {
 }
 
 function createCartControllerFile(): string {
-  return `import type { Controller } from 'remix/fetch-router'
+	return `import type { Controller } from 'remix/fetch-router'
 
 import { routes } from '../../routes.ts'
 import { render } from '../../utils/render.tsx'
@@ -872,7 +872,7 @@ export default {
 }
 
 function createCartApiControllerFile(): string {
-  return `import type { Controller } from 'remix/fetch-router'
+	return `import type { Controller } from 'remix/fetch-router'
 
 import { routes } from '../../../routes.ts'
 
@@ -895,7 +895,7 @@ export default {
 }
 
 function createTestHelpersFile(): string {
-  return `import { router } from '../app/router.ts'
+	return `import { router } from '../app/router.ts'
 
 export function createTestRouter() {
   return router
@@ -904,7 +904,7 @@ export function createTestRouter() {
 }
 
 function createHomeTestFile(config: BootstrapConfig): string {
-  return `import * as assert from 'node:assert/strict'
+	return `import * as assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import { createTestRouter } from '../../test/helpers.ts'
@@ -927,39 +927,39 @@ describe('home handler', () => {
 }
 
 function humanizeName(value: string): string {
-  let parts = value.split(/[-_\s]+/).filter(Boolean)
-  if (parts.length === 0) {
-    return 'Remix App'
-  }
+	let parts = value.split(/[-_\s]+/).filter(Boolean)
+	if (parts.length === 0) {
+		return "Remix App"
+	}
 
-  return parts
-    .map((part) => {
-      let head = part.slice(0, 1).toUpperCase()
-      let tail = part.slice(1)
-      return `${head}${tail}`
-    })
-    .join(' ')
+	return parts
+		.map((part) => {
+			let head = part.slice(0, 1).toUpperCase()
+			let tail = part.slice(1)
+			return `${head}${tail}`
+		})
+		.join(" ")
 }
 
 function toPackageName(value: string): string {
-  let packageName = value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+	let packageName = value
+		.trim()
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/^-+|-+$/g, "")
 
-  if (packageName.length === 0) {
-    fail(`Could not derive a valid package name from "${value}".`)
-  }
+	if (packageName.length === 0) {
+		fail(`Could not derive a valid package name from "${value}".`)
+	}
 
-  return packageName
+	return packageName
 }
 
 function escapeRegExp(value: string): string {
-  return value.replace(/[|\\{}()[\]^$+*?.-]/g, '\\$&')
+	return value.replace(/[|\\{}()[\]^$+*?.-]/g, "\\$&")
 }
 
 function fail(message: string): never {
-  process.stderr.write(`${message}\n`)
-  process.exit(1)
+	process.stderr.write(`${message}\n`)
+	process.exit(1)
 }

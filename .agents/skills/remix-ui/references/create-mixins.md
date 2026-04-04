@@ -21,21 +21,21 @@ Treat these as constraints, not suggestions:
 
 ```tsx
 createMixin<NodeType>((handle) => {
-  handle.addEventListener('insert', (event) => {
-    // event.node is the mounted host node for this lifecycle.
-  })
+	handle.addEventListener("insert", (event) => {
+		// event.node is the mounted host node for this lifecycle.
+	})
 
-  handle.addEventListener('remove', () => {
-    // Clean up listeners, timers, observers, and async work here.
-  })
+	handle.addEventListener("remove", () => {
+		// Clean up listeners, timers, observers, and async work here.
+	})
 
-  return (props) => {
-    handle.queueTask((node) => {
-      // Post-commit work that needs the concrete host node.
-    })
+	return (props) => {
+		handle.queueTask((node) => {
+			// Post-commit work that needs the concrete host node.
+		})
 
-    return <handle.element {...props} />
-  }
+		return <handle.element {...props} />
+	}
 })
 ```
 
@@ -63,7 +63,7 @@ the same handle, or extra host lifecycles hidden behind one handle), remove that
 
 ```tsx
 let withTitle = createMixin((handle) => (title: string, props: { title?: string }) => (
-  <handle.element {...props} title={title} />
+	<handle.element {...props} title={title} />
 ))
 ```
 
@@ -71,11 +71,11 @@ let withTitle = createMixin((handle) => (title: string, props: { title?: string 
 
 ```tsx
 let withFocus = createMixin<HTMLElement>((handle) => {
-  handle.addEventListener('insert', (event) => {
-    event.node.focus()
-  })
+	handle.addEventListener("insert", (event) => {
+		event.node.focus()
+	})
 
-  return (props) => <handle.element {...props} />
+	return (props) => <handle.element {...props} />
 })
 ```
 
@@ -83,8 +83,8 @@ let withFocus = createMixin<HTMLElement>((handle) => {
 
 ```tsx
 handle.queueTask((node) => {
-  node.removeEventListener(prevType, stableHandler, prevCapture)
-  node.addEventListener(nextType, stableHandler, nextCapture)
+	node.removeEventListener(prevType, stableHandler, prevCapture)
+	node.addEventListener(nextType, stableHandler, nextCapture)
 })
 ```
 

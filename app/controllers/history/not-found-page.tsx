@@ -1,6 +1,6 @@
 import type { Handle } from "remix/component"
 
-import { Document } from "../components/document"
+import { Document } from "../../components/document"
 
 export function GameNotFound(_handle: Handle, { url }: { url: URL }) {
 	return () => {

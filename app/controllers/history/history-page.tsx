@@ -1,9 +1,9 @@
 import { clsx } from "clsx"
 import type { Handle } from "remix/component"
 
-import { Document } from "../components/document"
-import type { Prisma } from "../generated/prisma/client"
-import { routes } from "../routes"
+import { Document } from "../../components/document"
+import type { Prisma } from "../../generated/prisma/client"
+import { routes } from "../../routes"
 
 let shortDateFormatter = new Intl.DateTimeFormat("en-US", {
 	dateStyle: "short",

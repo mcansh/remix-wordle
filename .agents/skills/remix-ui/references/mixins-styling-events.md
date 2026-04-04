@@ -26,13 +26,13 @@ Use `mix={[on(type, handler)]}` for DOM listeners.
 
 ```tsx
 <form
-  mix={[
-    on('submit', async (event, signal) => {
-      event.preventDefault()
-      let formData = new FormData(event.currentTarget)
-      await submit(formData, { signal })
-    }),
-  ]}
+	mix={[
+		on("submit", async (event, signal) => {
+			event.preventDefault()
+			let formData = new FormData(event.currentTarget)
+			await submit(formData, { signal })
+		}),
+	]}
 />
 ```
 
@@ -56,15 +56,15 @@ Prefer the `css(...)` mixin for static stylesheet-like rules and `style` for dyn
 
 ```tsx
 <button
-  mix={[
-    css({
-      color: 'white',
-      backgroundColor: 'blue',
-      '&:hover': { backgroundColor: 'darkblue' },
-      '@media (max-width: 768px)': { width: '100%' },
-    }),
-  ]}
-  style={{ opacity: disabled ? 0.5 : 1 }}
+	mix={[
+		css({
+			color: "white",
+			backgroundColor: "blue",
+			"&:hover": { backgroundColor: "darkblue" },
+			"@media (max-width: 768px)": { width: "100%" },
+		}),
+	]}
+	style={{ opacity: disabled ? 0.5 : 1 }}
 />
 ```
 
@@ -77,12 +77,12 @@ Use animation mixins instead of the removed `animate` prop:
 
 ```tsx
 <div
-  key={item.id}
-  mix={[
-    animateEntrance({ opacity: 0, transform: 'scale(0.98)' }),
-    animateExit({ opacity: 0 }),
-    animateLayout(),
-  ]}
+	key={item.id}
+	mix={[
+		animateEntrance({ opacity: 0, transform: "scale(0.98)" }),
+		animateExit({ opacity: 0 }),
+		animateLayout(),
+	]}
 />
 ```
 

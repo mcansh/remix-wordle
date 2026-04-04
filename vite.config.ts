@@ -11,6 +11,9 @@ try {
 } catch {}
 
 export default defineConfig({
+	staged: {
+		"*": "vp check --fix",
+	},
 	fmt: {
 		ignorePatterns: ["app/generated/**"],
 		experimentalSortImports: {},
