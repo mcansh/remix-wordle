@@ -4,7 +4,7 @@ import { createRedirectResponse, redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
 import { REVEAL_WORD, WORD_LENGTH } from "../constants.ts"
-import { requireAuth } from "../middleware/auth.ts"
+import { getReturnToQuery, requireAuth } from "../middleware/auth.ts"
 import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "../models/game.ts"
 import { routes } from "../routes.ts"
 import type { AuthIdentity } from "../utils/auth-session.ts"
@@ -43,7 +43,7 @@ export const home = {
 		async action(context) {
 			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
 			if (auth.ok === false) {
-				return redirect(routes.auth.login.index.href())
+				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
 			}
 
 			let session = context.get(Session)
