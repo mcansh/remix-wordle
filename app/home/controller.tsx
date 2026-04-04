@@ -72,7 +72,7 @@ export const home = {
 		async index(context) {
 			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
 			if (auth.ok === false) {
-				return redirect(routes.auth.login.index.href())
+				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
 			}
 
 			let session = context.get(Session)
