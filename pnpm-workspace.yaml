@@ -7,7 +7,7 @@ catalog:
   "@prisma/adapter-pg": ^7.2.0
   "@prisma/client": ^7.2.0
   "@standard-schema/spec": ^1.1.0
-  "@tailwindcss/vite": ^4.1.18
+  "@tailwindcss/vite": ^4.2.2
   "@total-typescript/tsconfig": ^1.0.4
   "@types/node": ^25.0.9
   "@vitest/coverage-v8": ^4.0.17
@@ -21,7 +21,7 @@ catalog:
   msw: ^2.12.7
   prisma: ^7.2.0
   remix: github:remix-run/remix#preview/main&path:packages/remix
-  tailwindcss: ^4.1.18
+  tailwindcss: ^4.2.2
   typescript: ^5.9.3
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vite-plugin-devtools-json: ^1.0.0
