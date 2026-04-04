@@ -251,7 +251,7 @@ describe("auth handlers", () => {
 			expect(response.headers.get("Location")).toBe("/")
 		})
 
-		it("returns error when email already exists", async () => {
+		it("redirects back to register when email already exists", async () => {
 			let response = await router.fetch("https://wordle.mcan.sh/register", {
 				method: "POST",
 				body: new URLSearchParams({
@@ -262,8 +262,30 @@ describe("auth handlers", () => {
 				redirect: "manual",
 			})
 
-			expect(response.status).toBe(400)
-			let html = await response.text()
+			expect(response.status).toBe(302)
+			let location = response.headers.get("Location")!
+			expect(location.startsWith("/register")).toBe(true)
+		})
+
+		it("shows error when attempting to register with an existing email", async () => {
+			let firstResponse = await router.fetch("https://wordle.mcan.sh/register", {
+				method: "POST",
+				body: new URLSearchParams({
+					email: "testuser@example.com",
+					username: "testuser",
+					password: "supersecretpassword",
+				}),
+				redirect: "manual",
+			})
+
+			let sessionCookie = getSessionCookie(firstResponse)!
+			let location = firstResponse.headers.get("Location")!
+
+			let followUp = await router.fetch("https://wordle.mcan.sh" + location, {
+				headers: { Cookie: `session=${sessionCookie}` },
+			})
+
+			let html = await followUp.text()
 			assertContains(html, "already exists")
 		})
 	})

@@ -10,7 +10,10 @@ import { render } from "#app/utils/render.ts"
 
 export const registerController = {
 	actions: {
-		index({ url }) {
+		index({ get, url }) {
+			let session = get(Session)
+			let error = session.get("error")
+
 			return render(
 				<Document url={url} head={<title>Register - Remix Wordle</title>}>
 					<main class="h-dvh">
@@ -19,6 +22,9 @@ export const registerController = {
 							action={routes.auth.register.action.href()}
 							class="mx-auto flex h-full w-full max-w-md flex-col items-center justify-center space-y-6 px-8"
 						>
+							{error && typeof error === "string" ? (
+								<div class="w-full text-center text-red-500">{error}</div>
+							) : null}
 							<div class="w-full">
 								<label class="block text-sm font-medium text-gray-700" for="email">
 									Email address
@@ -85,28 +91,9 @@ export const registerController = {
 			let formData = get(FormData)
 			let result = parse(joinSchema, formData)
 
-			// Check if user already exists
 			if (await getUserByEmail(result.email)) {
-				return render(
-					<Document url={url} head={<title>Register - Remix Wordle</title>}>
-						<div class="card" style="max-width: 500px; margin: 2rem auto;">
-							<div class="alert alert-error">An account with this email already exists.</div>
-							<p>
-								<a href={routes.auth.register.index.href()} class="btn">
-									Back to Register
-								</a>
-								<a
-									href={routes.auth.login.index.href()}
-									class="btn btn-secondary"
-									style="margin-left: 0.5rem;"
-								>
-									Login
-								</a>
-							</p>
-						</div>
-					</Document>,
-					{ status: 400 },
-				)
+				session.flash("error", "An account with this email already exists.")
+				return redirect(routes.auth.register.index.href())
 			}
 
 			let user = await createUser({
