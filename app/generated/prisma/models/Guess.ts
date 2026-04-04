@@ -158,7 +158,7 @@ export type GuessGroupByOutputType = {
   _max: GuessMaxAggregateOutputType | null
 }
 
-type GetGuessGroupByPayload<T extends GuessGroupByArgs> = Prisma.PrismaPromise<
+export type GetGuessGroupByPayload<T extends GuessGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<GuessGroupByOutputType, T['by']> &
       {
@@ -1128,6 +1128,11 @@ export type GuessFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Skip the first `n` Guesses.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Guesses.
+   */
   distinct?: Prisma.GuessScalarFieldEnum | Prisma.GuessScalarFieldEnum[]
 }
 

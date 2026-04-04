@@ -102,7 +102,7 @@ export const auth = {
 						return redirect(routes.auth.login.index.href(undefined, { returnTo }))
 					}
 
-					session.set("userId", user.id)
+					session.set("auth", {userId: user.id})
 
 					return redirect(returnTo ?? routes.home.index.href())
 				},
@@ -216,7 +216,7 @@ export const auth = {
 						password: result.password,
 					})
 
-					session.set("userId", user.id)
+					session.set("auth", {auth: user.id})
 
 					return redirect(routes.home.index.href())
 				},
