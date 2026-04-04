@@ -86,7 +86,7 @@ export const registerController = {
 			)
 		},
 
-		async action({ get, url }) {
+		async action({ get }) {
 			let session = get(Session)
 			let formData = get(FormData)
 			let result = parse(joinSchema, formData)
