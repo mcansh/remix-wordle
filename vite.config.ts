@@ -28,7 +28,7 @@ export default defineConfig({
 		useTabs: true,
 		overrides: [
 			{
-				files: ["./app/home/local-schema.ts", "./app/home/local-form-schema.ts"],
+				files: ["./app/utils/local-schema.ts", "./app/utils/local-form-schema.ts"],
 				options: {
 					singleQuote: true,
 				},
@@ -37,8 +37,11 @@ export default defineConfig({
 	},
 	lint: {
 		plugins: ["unicorn", "typescript", "oxc"],
+		jsPlugins: ["./oxlint-plugins/prefer-let-locals-plugin.ts"],
 		categories: {},
 		rules: {
+			"remix-style/prefer-const-module-scope": "error",
+			"remix-style/prefer-let-locals": "error",
 			"constructor-super": "warn",
 			"for-direction": "warn",
 			"no-async-promise-executor": "warn",

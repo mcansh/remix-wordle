@@ -14,9 +14,9 @@ import {
 	LetterState,
 } from "../utils/game"
 
-let TOTAL_GUESSES = 6
+const TOTAL_GUESSES = 6
 
-let FULL_GAME_SELECT = {
+const FULL_GAME_SELECT = {
 	id: true,
 	createdAt: true,
 	updatedAt: true,

@@ -9,7 +9,7 @@ async function delay(delay: number | undefined): Promise<void> {
 	return new Promise((resolve) => setTimeout(resolve, delay))
 }
 
-export let handlers = [
+export const handlers = [
 	// Intercept all HTTP requests.
 	http.all("*", async () => {
 		// Apply random delay to them.

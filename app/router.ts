@@ -17,7 +17,7 @@ import { securityHeaders } from "./middleware/security.ts"
 import { routes } from "./routes.ts"
 import { sessionCookie, sessionStorage } from "./utils/session.ts"
 
-let middleware = []
+const middleware = []
 
 if (process.env.NODE_ENV === "development") {
 	middleware.push(logger())
@@ -57,7 +57,7 @@ middleware.push(
 )
 middleware.push(loadAuth())
 
-export let router = createRouter({ middleware })
+export const router = createRouter({ middleware })
 
 router.map(routes.home, home)
 router.map(routes.history, history)

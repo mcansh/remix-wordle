@@ -5,11 +5,11 @@ import { Document } from "../../components/document"
 import type { Prisma } from "../../generated/prisma/client"
 import { routes } from "../../routes"
 
-let shortDateFormatter = new Intl.DateTimeFormat("en-US", {
+const shortDateFormatter = new Intl.DateTimeFormat("en-US", {
 	dateStyle: "short",
 })
 
-export let HISTORICAL_GAME_SELECT = {
+export const HISTORICAL_GAME_SELECT = {
 	id: true,
 	createdAt: true,
 	updatedAt: true,

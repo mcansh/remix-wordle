@@ -1,6 +1,6 @@
 import { form, get, post, route } from "remix/fetch-router/routes"
 
-export let routes = route({
+export const routes = route({
 	home: form("/"),
 	health: get("health"),
 
