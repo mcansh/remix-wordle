@@ -24,10 +24,12 @@
 		"@standard-schema/spec": "catalog:",
 		"bcryptjs": "catalog:",
 		"bullmq": "catalog:",
+		"class-variance-authority": "catalog:",
 		"clsx": "catalog:",
 		"date-fns": "catalog:",
 		"ioredis": "catalog:",
-		"remix": "github:remix-run/remix#preview/main&path:packages/remix"
+		"remix": "github:remix-run/remix#preview/main&path:packages/remix",
+		"tailwind-merge": "catalog:"
 	},
 	"devDependencies": {
 		"@mcansh/remix-testing-library": "catalog:",
@@ -44,7 +46,9 @@
 		"happy-dom": "catalog:",
 		"msw": "catalog:",
 		"prisma": "catalog:",
+		"shadcn": "catalog:",
 		"tailwindcss": "catalog:",
+		"tw-animate-css": "catalog:",
 		"typescript": "catalog:",
 		"vite": "npm:@voidzero-dev/vite-plus-core@latest",
 		"vite-plugin-devtools-json": "catalog:",
