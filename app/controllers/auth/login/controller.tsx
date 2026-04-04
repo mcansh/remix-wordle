@@ -1,35 +1,37 @@
+import { completeAuth, verifyCredentials } from "remix/auth"
 import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
 import { Document } from "#app/components/document.tsx"
-import { authenticateUser } from "#app/models/user.ts"
+import { getPostAuthRedirect, getReturnToQuery, passwordProvider } from "#app/middleware/auth.ts"
 import { routes } from "#app/routes.ts"
-import * as s from "#app/utils/local-schema.ts"
 import { render } from "#app/utils/render.ts"
-
-const loginSchema = s.object({
-	email: s.string(),
-	password: s.string(),
-})
 
 export const loginController = {
 	actions: {
-		async action({ get, url }) {
-			let session = get(Session)
-			let formData = get(FormData)
-			let result = s.parse(loginSchema, formData)
-			let returnTo = url.searchParams.get("returnTo")
+		async action(context) {
+			try {
+				let user = await verifyCredentials(passwordProvider, context)
 
-			let user = await authenticateUser(result.email, result.password)
-			if (!user) {
-				session.flash("error", "Invalid email or password. Please try again.")
-				return redirect(routes.auth.login.index.href(undefined, { returnTo }))
+				if (user == null) {
+					let session = context.get(Session)
+					session.flash("error", "Invalid email or password. Please try again.")
+					return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+				}
+
+				let session = completeAuth(context)
+				session.set("auth", {
+					userId: user.id,
+					loginMethod: "credentials",
+				})
+
+				return redirect(getPostAuthRedirect(context.url))
+			} catch {
+				let session = context.get(Session)
+				session.flash("error", "We could not complete that sign-in request.")
+				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
 			}
-
-			session.set("auth", { userId: user.id })
-
-			return redirect(returnTo ?? routes.home.index.href())
 		},
 		index({ get, url }) {
 			let session = get(Session)

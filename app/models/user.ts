@@ -32,26 +32,6 @@ export async function createUser(user: {
 	})
 }
 
-export async function deleteUserByEmail(email: User["email"]) {
-	return db.user.delete({ where: { email } })
-}
-
-export async function authenticateUser(email: User["email"], password: User["password"]) {
-	let user = await db.user.findUnique({
-		where: { email },
-	})
-
-	if (!user || !user.password) return null
-
-	let isValid = await bcrypt.compare(password, user.password)
-
-	if (!isValid) return null
-
-	let { password: _password, ...userWithoutPassword } = user
-
-	return userWithoutPassword
-}
-
 export function createPasswordResetToken(email: string): string | undefined {
 	let user = getUserByEmail(email)
 	if (!user) return undefined
