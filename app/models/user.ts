@@ -5,23 +5,13 @@ import * as f from "remix/data-schema/form-data"
 
 import type { User } from "../generated/prisma/client"
 import { db } from "../utils/db"
+
 export const joinSchema = f.object({
 	email: f.field(s.string().pipe(email())),
 	username: f.field(s.string().pipe(minLength(1))),
 	password: f.field(s.string().pipe(minLength(10))),
 })
 
-export type JoinData = s.InferOutput<typeof joinSchema>
-export type LoginData = s.InferOutput<typeof loginSchema>
-
-export const loginSchema = f.object({
-	email: f.field(s.string().pipe(email())),
-	password: f.field(s.string().pipe(minLength(10))),
-})
-
-export async function getUserById(id: User["id"]) {
-	return db.user.findUnique({ where: { id } })
-}
 
 export async function getUserByEmail(email: User["email"]) {
 	return db.user.findUnique({ where: { email } })
