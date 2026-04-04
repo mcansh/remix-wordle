@@ -31,7 +31,7 @@ export function loadAuth() {
 					return parseAuthSession(session.get("auth"))
 				},
 				async verify(value) {
-					let user = await db.user.findFirst({ where: { id: value.userId } })
+					let user = await db.user.findFirst({ where: { id: value.userId }, omit: { password: true } })
 
 					if (user == null) {
 						return null

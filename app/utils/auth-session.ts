@@ -10,7 +10,7 @@ export interface AuthSession {
 }
 
 export interface AuthIdentity {
-	user: User
+	user: Omit<User, "password">
 }
 
 const authSessionSchema = s.object({
