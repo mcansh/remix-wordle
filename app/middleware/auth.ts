@@ -1,4 +1,4 @@
-import { compare } from "bcryptjs"
+import bcrypt from "bcryptjs"
 import { createCredentialsAuthProvider } from "remix/auth"
 import {
 	auth,
@@ -60,8 +60,8 @@ export const passwordProvider = createCredentialsAuthProvider({
 			return null
 		}
 
-		if (typeof user.password === "string" && user.password === "") {
-			let verified = await compare(input.password, user.password)
+		if (typeof user.password === "string" && user.password !== "") {
+			let verified = await bcrypt.compare(input.password, user.password)
 			return verified ? user : null
 		}
 
