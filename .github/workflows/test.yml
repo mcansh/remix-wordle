@@ -20,7 +20,7 @@ jobs:
     name: ✅ Check
     if: github.repository == 'mcansh/remix-wordle'
 
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v5
