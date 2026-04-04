@@ -40,9 +40,6 @@ middleware.push(session(sessionCookie, sessionStorage))
 middleware.push(asyncContext())
 middleware.push(
 	securityHeaders({
-		skip(context) {
-			return context.method !== "GET"
-		},
 		"Content-Security-Policy": {
 			"default-src": [NONE],
 			"script-src": [SELF],
