@@ -1,4 +1,4 @@
-name: 🧪 Test
+name: 🛠️ CI
 
 on:
   push:
@@ -38,6 +38,28 @@ jobs:
 
       - name: 🛠️ Build
         run: pnpm run build
+
+  build:
+    name: 🛠️ Build
+    if: github.repository == 'mcansh/remix-wordle'
+
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v5
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ".node-version"
+
+      - uses: pnpm/action-setup@v4
+        name: 🟧 Install pnpm
+        with:
+          cache: true
+
+      - name: 🟧 Install dependencies
+        run: pnpm install --recursive --frozen-lockfile --strict-peer-dependencies
 
       - name: 🧪 Run Tests
         run: pnpm run test
