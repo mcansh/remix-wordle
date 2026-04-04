@@ -41,10 +41,10 @@
 		"prisma": "catalog:",
 		"tailwindcss": "catalog:",
 		"typescript": "catalog:",
-		"vite": "catalog:",
+		"vite": "npm:@voidzero-dev/vite-plus-core@latest",
 		"vite-plugin-devtools-json": "catalog:",
 		"vite-plus": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "npm:@voidzero-dev/vite-plus-test@latest"
 	},
 	"engines": {
 		"node": ">=20"
