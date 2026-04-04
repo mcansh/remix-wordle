@@ -1,11 +1,13 @@
+import * as s from "remix/data-schema"
+import * as f from "remix/data-schema/form-data"
 import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { Document } from "../../../components/document"
-import { resetPassword } from "../../../models/user"
-import { routes } from "../../../routes"
-import { render } from "../../../utils/render"
+import { Document } from "#app/components/document.tsx"
+import { resetPassword } from "#app/models/user.ts"
+import { routes } from "#app/routes.ts"
+import { render } from "#app/utils/render.ts"
 
 export const resetPasswordController = {
 	actions: {
@@ -61,15 +63,20 @@ export const resetPasswordController = {
 		async action({ get, params, url }) {
 			let session = get(Session)
 			let formData = get(FormData)
-			let password = formData.get("password")?.toString() ?? ""
-			let confirmPassword = formData.get("confirmPassword")?.toString() ?? ""
 
-			if (password !== confirmPassword) {
+			let resetPasswordSchema = f.object({
+				password: f.field(s.string()),
+				confirmPassword: f.field(s.string()),
+			})
+
+			let parsed = s.parse(resetPasswordSchema, formData)
+
+			if (parsed.password !== parsed.confirmPassword) {
 				session.flash("error", "Passwords do not match.")
 				return redirect(routes.auth.resetPassword.index.href({ token: params.token }))
 			}
 
-			let success = resetPassword(params.token, password)
+			let success = resetPassword(params.token, parsed.password)
 
 			if (!success) {
 				session.flash("error", "Invalid or expired reset token.")

@@ -1,7 +1,7 @@
 import { createCookie } from "remix/cookie"
 import { createCookieSessionStorage } from "remix/session/cookie-storage"
 
-import { env } from "../constants"
+import { env } from "#app/constants.ts"
 
 export const sessionCookie = createCookie("session", {
 	secrets: [env.SESSION_SECRET],

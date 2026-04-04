@@ -7,16 +7,16 @@ import {
 } from "remix/auth-middleware"
 import { redirect } from "remix/response/redirect"
 
-import { routes } from "../routes"
+import { routes } from "#app/routes.ts"
 import {
 	normalizeEmail,
 	parseAuthSession,
 	type AuthIdentity,
 	type AuthSession,
-} from "../utils/auth-session.ts"
-import { db } from "../utils/db"
-import * as f from "../utils/local-form-schema.ts"
-import * as s from "../utils/local-schema.ts"
+} from "#app/utils/auth-session.ts"
+import { db } from "#app/utils/db.ts"
+import * as f from "#app/utils/local-form-schema.ts"
+import * as s from "#app/utils/local-schema.ts"
 
 const loginSchema = f.object({
 	email: f.field(s.defaulted(s.string(), "")),

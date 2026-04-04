@@ -2,17 +2,15 @@ import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { Document } from "../../../components/document"
-import { authenticateUser } from "../../../models/user"
-import { routes } from "../../../routes"
-import { render } from "../../../utils/render"
-import * as localSchema from "../../home/local-schema"
+import { Document } from "#app/components/document.tsx"
+import { authenticateUser } from "#app/models/user.ts"
+import { routes } from "#app/routes.ts"
+import * as s from "#app/utils/local-schema.ts"
+import { render } from "#app/utils/render.ts"
 
-const { parse } = localSchema
-
-const loginSchema = localSchema.object({
-	email: localSchema.string(),
-	password: localSchema.string(),
+const loginSchema = s.object({
+	email: s.string(),
+	password: s.string(),
 })
 
 export const loginController = {
@@ -20,7 +18,7 @@ export const loginController = {
 		async action({ get, url }) {
 			let session = get(Session)
 			let formData = get(FormData)
-			let result = parse(loginSchema, formData)
+			let result = s.parse(loginSchema, formData)
 			let returnTo = url.searchParams.get("returnTo")
 
 			let user = await authenticateUser(result.email, result.password)

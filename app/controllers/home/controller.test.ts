@@ -1,9 +1,10 @@
 import { parse, parseSafe } from "remix/data-schema"
 import { describe, expect, it, vi } from "vite-plus/test"
 
-import { assertContains, loginAsCustomer, requestWithSession } from "../../../test/helpers.ts"
-import type { FullGame } from "../../models/game.ts"
-import { router } from "../../router.ts"
+import type { FullGame } from "#app/models/game.ts"
+import { router } from "#app/router.ts"
+import { assertContains, loginAsCustomer, requestWithSession } from "#test/helpers.ts"
+
 import { guessWordSchema } from "./controller.tsx"
 
 vi.mock("./models/game.ts", async (importActual) => {

@@ -1,10 +1,10 @@
 import { endOfDay, startOfDay } from "date-fns"
 
-import { WORD_LENGTH } from "../constants"
-import type { Game, User } from "../generated/prisma/client"
-import { GameStatus, Prisma } from "../generated/prisma/client"
-import { db } from "../utils/db"
-import type { ComputedGuess } from "../utils/game"
+import { WORD_LENGTH } from "#app/constants.ts"
+import type { Game, User } from "#app/generated/prisma/client.ts"
+import { GameStatus, Prisma } from "#app/generated/prisma/client.ts"
+import { db } from "#app/utils/db.ts"
+import type { ComputedGuess } from "#app/utils/game.ts"
 import {
 	computeGuess,
 	createEmptyLetter,
@@ -12,7 +12,7 @@ import {
 	isValidWord,
 	keyboardWithStatus,
 	LetterState,
-} from "../utils/game"
+} from "#app/utils/game.ts"
 
 const TOTAL_GUESSES = 6
 

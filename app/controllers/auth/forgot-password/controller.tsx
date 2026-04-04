@@ -1,9 +1,11 @@
+import * as s from "remix/data-schema"
+import * as f from "remix/data-schema/form-data"
 import type { Controller } from "remix/fetch-router"
 
-import { Document } from "../../../components/document"
-import { createPasswordResetToken } from "../../../models/user"
-import { routes } from "../../../routes"
-import { render } from "../../../utils/render"
+import { Document } from "#app/components/document.tsx"
+import { createPasswordResetToken } from "#app/models/user.ts"
+import { routes } from "#app/routes.ts"
+import { render } from "#app/utils/render.ts"
 
 export const forgotPasswordController = {
 	actions: {
@@ -35,13 +37,22 @@ export const forgotPasswordController = {
 
 		async action({ get, url }) {
 			let formData = get(FormData)
-			let email = formData.get("email")?.toString() ?? ""
-			let token = createPasswordResetToken(email)
+
+			let forgotPasswordSchema = f.object({
+				email: f.field(s.defaulted(s.string(), "")),
+			})
+
+			let parsed = s.parse(forgotPasswordSchema, formData)
+
+			let token = createPasswordResetToken(parsed.email)
 
 			return render(
 				<Document url={url} head={<title>Login - Remix Wordle</title>}>
 					<div class="card" style="max-width: 500px; margin: 2rem auto;">
-						<div class="alert alert-success">Password reset link sent! Check your email.</div>
+						<div class="alert alert-success">
+							Password reset link sent! If we have found a user with that email, you will receive a
+							link to reset your password.
+						</div>
 
 						{token ? (
 							<div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">

@@ -2,11 +2,11 @@ import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { Document } from "../../../components/document"
-import { joinSchema, getUserByEmail, createUser } from "../../../models/user"
-import { routes } from "../../../routes"
-import { render } from "../../../utils/render"
-import { parse } from "../../home/local-schema"
+import { Document } from "#app/components/document.tsx"
+import { createUser, getUserByEmail, joinSchema } from "#app/models/user.ts"
+import { routes } from "#app/routes.ts"
+import { parse } from "#app/utils/local-schema.ts"
+import { render } from "#app/utils/render.ts"
 
 export const registerController = {
 	actions: {

@@ -1,12 +1,13 @@
 import type { Handle } from "remix/component"
 
-import { Document } from "../../components/document"
-import { GuessForm } from "../../components/form"
-import { GameOverModal } from "../../components/game-over-modal"
-import { Keyboard } from "../../components/keyboard"
-import { LetterInput } from "../../components/letter-input"
-import { LETTER_INPUTS, TOTAL_GUESSES } from "../../constants"
-import type { GameBoard } from "../../models/game"
+import { Document } from "#app/components/document.tsx"
+import { GuessForm } from "#app/components/form.tsx"
+import { GameOverModal } from "#app/components/game-over-modal.tsx"
+import { Keyboard } from "#app/components/keyboard.tsx"
+import { LetterInput } from "#app/components/letter-input.tsx"
+import { LETTER_INPUTS, TOTAL_GUESSES } from "#app/constants.ts"
+import type { GameBoard } from "#app/models/game.ts"
+
 export function Page(_handle: Handle, { url }: { url: URL }) {
 	return ({
 		showModal,

@@ -5,6 +5,9 @@
 	"license": "MIT",
 	"type": "module",
 	"sideEffects": false,
+	"imports": {
+		"#*": "./*"
+	},
 	"scripts": {
 		"build": "vp build",
 		"dev": "vp dev",

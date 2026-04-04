@@ -1,12 +1,12 @@
 import { clsx } from "clsx"
 import type { Handle } from "remix/component"
 
-import { Document } from "../../components/document"
-import { GameOverModal } from "../../components/game-over-modal"
-import { Keyboard } from "../../components/keyboard"
-import { TOTAL_GUESSES } from "../../constants"
-import type { GameBoard } from "../../models/game"
-import { LetterState } from "../../utils/game"
+import { Document } from "#app/components/document.tsx"
+import { GameOverModal } from "#app/components/game-over-modal.tsx"
+import { Keyboard } from "#app/components/keyboard.tsx"
+import { TOTAL_GUESSES } from "#app/constants.ts"
+import type { GameBoard } from "#app/models/game.ts"
+import { LetterState } from "#app/utils/game.ts"
 
 export function HistoricalGame(_handle: Handle, { url }: { url: URL }) {
 	return ({ game, showModal }: { game: GameBoard; showModal: boolean }) => {
