@@ -1,15 +1,16 @@
+import { Auth, type BadAuth, type GoodAuth } from "remix/auth-middleware"
 import type { Controller } from "remix/fetch-router"
-import { createRedirectResponse } from "remix/response/redirect"
+import { createRedirectResponse, redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
 import { REVEAL_WORD, WORD_LENGTH } from "../constants.ts"
-import { requireAuth } from "../middleware/auth.ts"
+import { getReturnToQuery, requireAuth } from "../middleware/auth.ts"
 import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "../models/game.ts"
 import { routes } from "../routes.ts"
-import { getCurrentUser } from "../utils/context.ts"
+import type { AuthIdentity } from "../utils/auth-session.ts"
+import * as f from "../utils/local-form-schema.ts"
+import * as s from "../utils/local-schema.ts"
 import { render } from "../utils/render.ts"
-import * as f from "./local-form-schema.ts"
-import * as s from "./local-schema.ts"
 import { Page } from "./page.tsx"
 
 export function validLength(length: number): s.Check<Array<string>> {
@@ -37,12 +38,16 @@ export const guessWordSchema = f.object({
 })
 
 export const home = {
-	middleware: [requireAuth()],
+	middleware: [requireAuth],
 	actions: {
-		async action({ get }) {
-			let session = get(Session)
-			let formData = get(FormData)
-			let user = getCurrentUser()
+		async action(context) {
+			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
+			if (auth.ok === false) {
+				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+			}
+
+			let session = context.get(Session)
+			let formData = context.get(FormData)
 
 			let data = s.parseSafe(guessWordSchema, formData)
 
@@ -52,7 +57,7 @@ export const home = {
 			}
 
 			let guessedWord = data.value.letters.join("")
-			let error = await createGuess(user.id, guessedWord)
+			let error = await createGuess(auth.identity.user.id, guessedWord)
 
 			if (error) {
 				console.error({ error })
@@ -64,16 +69,20 @@ export const home = {
 			)
 		},
 
-		async index({ get, url }) {
-			let session = get(Session)
-			let user = getCurrentUser()
+		async index(context) {
+			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
+			if (auth.ok === false) {
+				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+			}
 
-			let game = await getTodaysGame(user.id)
+			let session = context.get(Session)
+
+			let game = await getTodaysGame(auth.identity.user.id)
 			let board = getFullBoard(game)
 
 			let showModal = isGameComplete(game.status)
 
-			let showWord = showModal || url.searchParams.has(REVEAL_WORD) ? board.word : undefined
+			let showWord = showModal || context.url.searchParams.has(REVEAL_WORD) ? board.word : undefined
 
 			let errorMessage = session.get("error") || undefined
 
@@ -83,7 +92,7 @@ export const home = {
 
 			return render(
 				<Page
-					setup={{ url }}
+					setup={{ url: context.url }}
 					showModal={showModal}
 					showWord={showWord}
 					board={board}

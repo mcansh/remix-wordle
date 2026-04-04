@@ -1,46 +1,43 @@
+import { completeAuth, verifyCredentials } from "remix/auth"
 import { parse } from "remix/data-schema"
 import type { Controller } from "remix/fetch-router"
-import { createRedirectResponse as redirect } from "remix/response/redirect"
+import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
 import { Document } from "../components/document.tsx"
-import { loadAuth } from "../middleware/auth.ts"
+import { getPostAuthRedirect, getReturnToQuery, passwordProvider } from "../middleware/auth.ts"
 import {
-	authenticateUser,
 	createPasswordResetToken,
 	createUser,
 	getUserByEmail,
 	joinSchema,
-	loginSchema,
 	resetPassword,
 } from "../models/user.ts"
 import { routes } from "../routes.ts"
 import { render } from "../utils/render.ts"
 
 export const auth = {
-	middleware: [loadAuth()],
+	middleware: [],
 	actions: {
 		login: {
 			actions: {
 				index({ get, url }) {
 					let session = get(Session)
 					let error = session.get("error")
-					let formAction = routes.auth.login.action.href(undefined, {
-						returnTo: url.searchParams.get("returnTo"),
-					})
+					let formAction = routes.auth.login.action.href(undefined, getReturnToQuery(url))
 
 					return render(
 						<Document url={url} head={<title>Login - Remix Wordle</title>}>
 							<main class="h-dvh">
-								{error && typeof error === "string" ? (
-									<div class="text-red-500">{error}</div>
-								) : null}
 								<form
 									method="post"
 									class="mx-auto flex h-full w-full max-w-md flex-col items-center justify-center space-y-6 px-8"
 									action={formAction}
-								>
+									>
 									<div class="w-full">
+									{error && typeof error === "string" ? (
+										<div class="text-red-500 mb-1">{error}</div>
+									) : null}
 										<label htmlFor="email" class="block text-sm font-medium text-gray-700">
 											Email address
 										</label>
@@ -90,28 +87,36 @@ export const auth = {
 					)
 				},
 
-				async action({ get, url }) {
-					let session = get(Session)
-					let formData = get(FormData)
-					let result = parse(loginSchema, formData)
-					let returnTo = url.searchParams.get("returnTo")
+				async action(context) {
+					try {
+						let user = await verifyCredentials(passwordProvider, context)
 
-					let user = await authenticateUser(result.email, result.password)
-					if (!user) {
-						session.flash("error", "Invalid email or password. Please try again.")
-						return redirect(routes.auth.login.index.href(undefined, { returnTo }))
+						if (user == null) {
+							let session = context.get(Session)
+							session.flash("error", "Invalid email or password. Please try again.")
+							return redirect(
+								routes.auth.login.index.href(undefined, getReturnToQuery(context.url)),
+							)
+						}
+
+						let session = completeAuth(context)
+						session.set("auth", { userId: user.id })
+						return redirect(getPostAuthRedirect(context.url))
+					} catch (error) {
+						let session = context.get(Session)
+						session.flash("error", "We could not complete that sign-in request.")
+						return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
 					}
-
-					session.set("auth", {userId: user.id})
-
-					return redirect(returnTo ?? routes.home.index.href())
 				},
 			},
 		},
 
 		register: {
 			actions: {
-				index({ url }) {
+				index({ get, url }) {
+					let session = get(Session)
+					let error = session.get("error")
+
 					return render(
 						<Document url={url} head={<title>Login - Remix Wordle</title>}>
 							<main class="h-dvh">
@@ -119,7 +124,10 @@ export const auth = {
 									method="POST"
 									action={routes.auth.register.action.href()}
 									class="mx-auto flex h-full w-full max-w-md flex-col items-center justify-center space-y-6 px-8"
-								>
+									>
+									{error && typeof error === "string" ? (
+										<div class="text-red-500 mb-1">{error}</div>
+									) : null}
 									<div class="w-full">
 										<label class="block text-sm font-medium text-gray-700" for="email">
 											Email address
@@ -188,44 +196,23 @@ export const auth = {
 
 					// Check if user already exists
 					if (await getUserByEmail(result.email)) {
-						return render(
-							<Document url={url} head={<title>Login - Remix Wordle</title>}>
-								<div class="card" style="max-width: 500px; margin: 2rem auto;">
-									<div class="alert alert-error">An account with this email already exists.</div>
-									<p>
-										<a href={routes.auth.register.index.href()} class="btn">
-											Back to Register
-										</a>
-										<a
-											href={routes.auth.login.index.href()}
-											class="btn btn-secondary"
-											style="margin-left: 0.5rem;"
-										>
-											Login
-										</a>
-									</p>
-								</div>
-							</Document>,
-							{ status: 400 },
-						)
+						session.flash("error", "An account with this email already exists.")
+						return redirect(routes.auth.register.index.href(undefined, getReturnToQuery(url)))
 					}
 
-					let user = await createUser({
-						email: result.email,
-						username: result.username,
-						password: result.password,
-					})
+					let user = await createUser(result)
 
-					session.set("auth", {auth: user.id})
+					session.set("auth", { userId: user.id })
 
 					return redirect(routes.home.index.href())
 				},
 			},
 		},
 
-		logout({ get }) {
-			let session = get(Session)
-			session.destroy()
+		logout(context) {
+			let session = context.get(Session)
+			session.unset("auth")
+			session.regenerateId(true)
 			return redirect(routes.home.index.href())
 		},
 
