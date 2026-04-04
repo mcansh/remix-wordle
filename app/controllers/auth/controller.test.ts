@@ -29,6 +29,16 @@ vi.mock("#app/models/user.ts", async (importActual) => {
 			}
 			return null
 		}),
+		getUserByEmail: vi.fn().mockImplementation(async (email: string) => {
+			if (email === "testuser@example.com") {
+				return Promise.resolve({
+					id: "user-123",
+					email: "testuser@example.com",
+					username: "testuser",
+				})
+			}
+			return Promise.resolve(null)
+		}),
 		createUser: vi
 			.fn()
 			.mockImplementation(async (data: { email: string; username: string; password: string }) => ({
@@ -48,7 +58,7 @@ vi.mock("bcryptjs", () => ({
 	},
 }))
 
-vi.mock("../utils/db.ts", () => ({
+vi.mock("#app/utils/db.ts", () => ({
 	redis: {
 		get: vi.fn().mockResolvedValue(null),
 		set: vi.fn().mockResolvedValue("OK"),
@@ -241,7 +251,7 @@ describe("auth handlers", () => {
 			expect(response.headers.get("Location")).toBe("/")
 		})
 
-		it("redirects back to register when email already exists", async () => {
+		it("returns error when email already exists", async () => {
 			let response = await router.fetch("https://wordle.mcan.sh/register", {
 				method: "POST",
 				body: new URLSearchParams({
@@ -252,30 +262,8 @@ describe("auth handlers", () => {
 				redirect: "manual",
 			})
 
-			expect(response.status).toBe(302)
-			let location = response.headers.get("Location")!
-			expect(location.startsWith("/register")).toBe(true)
-		})
-
-		it("shows error when attempting to register with an existing email", async () => {
-			let firstResponse = await router.fetch("https://wordle.mcan.sh/register", {
-				method: "POST",
-				body: new URLSearchParams({
-					email: "testuser@example.com",
-					username: "testuser",
-					password: "supersecretpassword",
-				}),
-				redirect: "manual",
-			})
-
-			let sessionCookie = getSessionCookie(firstResponse)
-			let location = firstResponse.headers.get("Location")!
-
-			let followUp = await router.fetch("https://wordle.mcan.sh" + location, {
-				headers: { Cookie: `session=${sessionCookie}` },
-			})
-
-			let html = await followUp.text()
+			expect(response.status).toBe(400)
+			let html = await response.text()
 			assertContains(html, "already exists")
 		})
 	})
