@@ -46,6 +46,52 @@ vi.mock("bcryptjs", () => ({
 	},
 }))
 
+vi.mock("../utils/db.ts", () => ({
+	redis: {
+		get: vi.fn().mockResolvedValue(null),
+		set: vi.fn().mockResolvedValue("OK"),
+		del: vi.fn().mockResolvedValue(1),
+	},
+	db: {
+		user: {
+			findFirst: vi.fn().mockImplementation(async ({ where }: { where: Record<string, unknown> }) => {
+				if (where.email === "testuser@example.com") {
+					return {
+						id: "user-123",
+						email: "testuser@example.com",
+						username: "testuser",
+						password: "hashed-mytestaccountpassword",
+					}
+				}
+				if (where.id === "user-123") {
+					return {
+						id: "user-123",
+						email: "testuser@example.com",
+						username: "testuser",
+					}
+				}
+				return null
+			}),
+			findUnique: vi.fn().mockImplementation(async ({ where }: { where: Record<string, unknown> }) => {
+				if (where.email === "testuser@example.com") {
+					return {
+						id: "user-123",
+						email: "testuser@example.com",
+						username: "testuser",
+						password: "hashed-mytestaccountpassword",
+					}
+				}
+				return null
+			}),
+			create: vi.fn().mockImplementation(async ({ data }: { data: Record<string, unknown> }) => ({
+				id: "new-user-456",
+				email: data.email,
+				username: data.username,
+				password: data.password,
+			})),
+		},
+	},
+}))
 describe("auth handlers", () => {
 	describe("GET /login", () => {
 		it("renders the login page", async () => {
