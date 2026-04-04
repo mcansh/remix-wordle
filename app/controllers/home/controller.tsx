@@ -8,9 +8,9 @@ import { getReturnToQuery, requireAuth } from "../../middleware/auth.ts"
 import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "../../models/game.ts"
 import { routes } from "../../routes.ts"
 import type { AuthIdentity } from "../../utils/auth-session.ts"
+import * as f from "../../utils/local-form-schema.ts"
+import * as s from "../../utils/local-schema.ts"
 import { render } from "../../utils/render.ts"
-import * as f from "./local-form-schema.ts"
-import * as s from "./local-schema.ts"
 import { Page } from "./page.tsx"
 
 export function validLength(length: number): s.Check<Array<string>> {
