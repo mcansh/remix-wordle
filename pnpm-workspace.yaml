@@ -71,6 +71,7 @@ onlyBuiltDependencies:
   - "@remix-run/static-middleware"
   - "@remix-run/tar-parser"
   - "@remix-run/test"
+  - esbuild
   - msw
   - prisma
   - remix
