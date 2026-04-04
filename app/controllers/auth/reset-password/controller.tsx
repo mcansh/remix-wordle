@@ -17,7 +17,7 @@ export const resetPasswordController = {
 			let error = session.get("error")
 
 			return render(
-				<Document url={url} head={<title>Login - Remix Wordle</title>}>
+				<Document url={url} head={<title>Reset Password - Remix Wordle</title>}>
 					<div class="card" style="max-width: 500px; margin: 2rem auto;">
 						<h1>Reset Password</h1>
 						<p>Enter your new password below.</p>
@@ -84,7 +84,7 @@ export const resetPasswordController = {
 			}
 
 			return render(
-				<Document url={url} head={<title>Login - Remix Wordle</title>}>
+				<Document url={url} head={<title>Reset Password - Remix Wordle</title>}>
 					<div class="card" style="max-width: 500px; margin: 2rem auto;">
 						<div class="alert alert-success">
 							Password reset successfully! You can now login with your new password.

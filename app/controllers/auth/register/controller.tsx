@@ -12,7 +12,7 @@ export const registerController = {
 	actions: {
 		index({ url }) {
 			return render(
-				<Document url={url} head={<title>Login - Remix Wordle</title>}>
+				<Document url={url} head={<title>Register - Remix Wordle</title>}>
 					<main class="h-dvh">
 						<form
 							method="POST"
@@ -88,7 +88,7 @@ export const registerController = {
 			// Check if user already exists
 			if (await getUserByEmail(result.email)) {
 				return render(
-					<Document url={url} head={<title>Login - Remix Wordle</title>}>
+					<Document url={url} head={<title>Register - Remix Wordle</title>}>
 						<div class="card" style="max-width: 500px; margin: 2rem auto;">
 							<div class="alert alert-error">An account with this email already exists.</div>
 							<p>
