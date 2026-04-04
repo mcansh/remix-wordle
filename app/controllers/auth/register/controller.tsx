@@ -10,12 +10,12 @@ import { render } from "#app/utils/render.ts"
 
 export const registerController = {
 	actions: {
-		index({ get, url }) {
-			let session = get(Session)
+		index(context) {
+			let session = context.get(Session)
 			let error = session.get("error")
 
 			return render(
-				<Document url={url} head={<title>Register - Remix Wordle</title>}>
+				<Document url={context.url} head={<title>Register - Remix Wordle</title>}>
 					<main class="h-dvh">
 						<form
 							method="POST"
@@ -86,9 +86,9 @@ export const registerController = {
 			)
 		},
 
-		async action({ get }) {
-			let session = get(Session)
-			let formData = get(FormData)
+		async action(context) {
+			let session = context.get(Session)
+			let formData = context.get(FormData)
 			let result = parse(joinSchema, formData)
 
 			if (await getUserByEmail(result.email)) {

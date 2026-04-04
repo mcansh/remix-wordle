@@ -11,13 +11,13 @@ import { render } from "#app/utils/render.ts"
 
 export const resetPasswordController = {
 	actions: {
-		index({ get, params, url }) {
-			let session = get(Session)
-			let token = params.token
+		index(context) {
+			let session = context.get(Session)
+			let token = context.params.token
 			let error = session.get("error")
 
 			return render(
-				<Document url={url} head={<title>Reset Password - Remix Wordle</title>}>
+				<Document url={context.url} head={<title>Reset Password - Remix Wordle</title>}>
 					<div class="card" style="max-width: 500px; margin: 2rem auto;">
 						<h1>Reset Password</h1>
 						<p>Enter your new password below.</p>
@@ -60,9 +60,9 @@ export const resetPasswordController = {
 			)
 		},
 
-		async action({ get, params, url }) {
-			let session = get(Session)
-			let formData = get(FormData)
+		async action(context) {
+			let session = context.get(Session)
+			let formData = context.get(FormData)
 
 			let resetPasswordSchema = f.object({
 				password: f.field(s.string()),
@@ -73,18 +73,18 @@ export const resetPasswordController = {
 
 			if (parsed.password !== parsed.confirmPassword) {
 				session.flash("error", "Passwords do not match.")
-				return redirect(routes.auth.resetPassword.index.href({ token: params.token }))
+				return redirect(routes.auth.resetPassword.index.href({ token: context.params.token }))
 			}
 
-			let success = resetPassword(params.token, parsed.password)
+			let success = resetPassword(context.params.token, parsed.password)
 
 			if (!success) {
 				session.flash("error", "Invalid or expired reset token.")
-				return redirect(routes.auth.resetPassword.index.href({ token: params.token }))
+				return redirect(routes.auth.resetPassword.index.href({ token: context.params.token }))
 			}
 
 			return render(
-				<Document url={url} head={<title>Reset Password - Remix Wordle</title>}>
+				<Document url={context.url} head={<title>Reset Password - Remix Wordle</title>}>
 					<div class="card" style="max-width: 500px; margin: 2rem auto;">
 						<div class="alert alert-success">
 							Password reset successfully! You can now login with your new password.
