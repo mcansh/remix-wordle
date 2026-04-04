@@ -24,9 +24,7 @@ describe("getReturnToQuery", () => {
 	})
 
 	it("returns an empty object for an absolute http URL", () => {
-		let url = new URL(
-			"https://example.com/login?returnTo=" + encodeURIComponent("http://evil.com"),
-		)
+		let url = new URL("https://example.com/login?returnTo=" + encodeURIComponent("http://evil.com"))
 		expect(getReturnToQuery(url)).toEqual({})
 	})
 
@@ -50,9 +48,7 @@ describe("getReturnToQuery", () => {
 	})
 
 	it("preserves hash fragments in the returnTo path", () => {
-		let url = new URL(
-			"https://example.com/login?returnTo=" + encodeURIComponent("/page#section"),
-		)
+		let url = new URL("https://example.com/login?returnTo=" + encodeURIComponent("/page#section"))
 		expect(getReturnToQuery(url)).toEqual({ returnTo: "/page#section" })
 	})
 
@@ -64,7 +60,9 @@ describe("getReturnToQuery", () => {
 	})
 
 	it("returns returnTo for a nested path", () => {
-		let url = new URL("https://example.com/login?returnTo=" + encodeURIComponent("/history/game-123"))
+		let url = new URL(
+			"https://example.com/login?returnTo=" + encodeURIComponent("/history/game-123"),
+		)
 		expect(getReturnToQuery(url)).toEqual({ returnTo: "/history/game-123" })
 	})
 })
@@ -108,9 +106,7 @@ describe("getPostAuthRedirect", () => {
 	})
 
 	it("uses a custom fallback when returnTo is unsafe", () => {
-		let url = new URL(
-			"https://example.com/login?returnTo=" + encodeURIComponent("//evil.com"),
-		)
+		let url = new URL("https://example.com/login?returnTo=" + encodeURIComponent("//evil.com"))
 		expect(getPostAuthRedirect(url, "/safe-fallback")).toBe("/safe-fallback")
 	})
 
