@@ -12,7 +12,6 @@ export const joinSchema = f.object({
 	password: f.field(s.string().pipe(minLength(10))),
 })
 
-
 export async function getUserByEmail(email: User["email"]) {
 	return db.user.findUnique({ where: { email } })
 }
