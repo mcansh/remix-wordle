@@ -6,6 +6,7 @@ catalog:
   "@mswjs/http-middleware": ^0.10.3
   "@prisma/adapter-pg": ^7.2.0
   "@prisma/client": ^7.2.0
+  "@standard-schema/spec": ^1.1.0
   "@tailwindcss/vite": ^4.1.18
   "@total-typescript/tsconfig": ^1.0.4
   "@types/node": ^25.0.9

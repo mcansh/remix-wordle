@@ -100,28 +100,27 @@ export async function createGame(userId: User["id"]): Promise<FullGame> {
 }
 
 export async function createGuess(userId: User["id"], guessedWord: string): Promise<string | null> {
-	let normalized = guessedWord.toLowerCase()
 	let game = await getTodaysGame(userId)
 
 	if (game.guesses.length >= TOTAL_GUESSES || isGameComplete(game.status)) {
 		return `Game is already complete`
 	}
 
-	if (normalized.length !== WORD_LENGTH) {
+	if (guessedWord.length !== WORD_LENGTH) {
 		return `You must guess a word of length ${WORD_LENGTH}`
 	}
 
-	if (!isValidWord(normalized)) {
-		return `${normalized.toUpperCase()} is not a valid word`
+	if (!isValidWord(guessedWord)) {
+		return `${guessedWord.toUpperCase()} is not a valid word`
 	}
 
 	try {
-		let computedGuess = computeGuess(normalized, game.word)
+		let computedGuess = computeGuess(guessedWord, game.word)
 		let won = computedGuess.every((l) => l.state === LetterState.Match)
 		await db.game.update({
 			where: { id: game.id },
 			data: {
-				guesses: { create: { guess: normalized } },
+				guesses: { create: { guess: guessedWord } },
 				status: won
 					? GameStatus.WON
 					: game.guesses.length + 1 >= TOTAL_GUESSES
@@ -134,7 +133,7 @@ export async function createGuess(userId: User["id"], guessedWord: string): Prom
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			if (error.code === "P2002") {
-				return `You already guessed "${normalized.toUpperCase()}"`
+				return `You already guessed "${guessedWord.toUpperCase()}"`
 			}
 		}
 

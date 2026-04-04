@@ -1,5 +1,3 @@
-import * as s from "remix/data-schema"
-import * as f from "remix/data-schema/form-data"
 import type { Controller } from "remix/fetch-router"
 import { createRedirectResponse } from "remix/response/redirect"
 import { Session } from "remix/session"
@@ -10,6 +8,8 @@ import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "../mod
 import { routes } from "../routes.ts"
 import { getCurrentUser } from "../utils/context.ts"
 import { render } from "../utils/render.ts"
+import * as f from "./local-form-schema.ts"
+import * as s from "./local-schema.ts"
 import { Page } from "./page.tsx"
 
 export function validLength(length: number): s.Check<Array<string>> {
@@ -24,10 +24,16 @@ export function validLength(length: number): s.Check<Array<string>> {
 }
 
 export const guessWordSchema = f.object({
-	letters: f.fields(s.array(s.string()).pipe(validLength(WORD_LENGTH)), {
-		name: "letter",
-	}),
-	cheat: f.field(s.optional(s.string()).refine((value) => value === "true" || value === undefined)),
+	letters: f.fields(
+		s
+			.array(s.string())
+			.pipe(validLength(WORD_LENGTH))
+			.transform((value) => {
+				return value.map((letter) => letter.toLowerCase())
+			}),
+		{ name: "letter" },
+	),
+	cheat: f.field(s.optional(s.string()).transform((value) => value === "true")),
 })
 
 export const home = {

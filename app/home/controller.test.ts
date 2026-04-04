@@ -90,7 +90,7 @@ describe("guessWord", () => {
 
 		let result = parse(guessWordSchema, formData)
 
-		expect(result).toEqual({ letters: ["r", "e", "m", "i", "x"], cheat: undefined })
+		expect(result).toEqual({ letters: ["r", "e", "m", "i", "x"], cheat: false })
 	})
 
 	it("submits a cheat guess", async () => {
@@ -104,7 +104,7 @@ describe("guessWord", () => {
 
 		let result = parse(guessWordSchema, formData)
 
-		expect(result).toEqual({ letters: ["r", "e", "m", "i", "x"], cheat: "true" })
+		expect(result).toEqual({ letters: ["r", "e", "m", "i", "x"], cheat: true })
 	})
 
 	it("fails to submit a guess with invalid letters", async () => {

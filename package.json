@@ -18,6 +18,7 @@
 		"@mcansh/http-helmet": "catalog:",
 		"@prisma/adapter-pg": "catalog:",
 		"@prisma/client": "catalog:",
+		"@standard-schema/spec": "catalog:",
 		"bcryptjs": "catalog:",
 		"bullmq": "catalog:",
 		"clsx": "catalog:",
