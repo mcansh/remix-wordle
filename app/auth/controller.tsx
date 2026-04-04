@@ -29,15 +29,15 @@ export const auth = {
 					return render(
 						<Document url={url} head={<title>Login - Remix Wordle</title>}>
 							<main class="h-dvh">
-								{error && typeof error === "string" ? (
-									<div class="text-red-500">{error}</div>
-								) : null}
 								<form
 									method="post"
 									class="mx-auto flex h-full w-full max-w-md flex-col items-center justify-center space-y-6 px-8"
 									action={formAction}
-								>
+									>
 									<div class="w-full">
+									{error && typeof error === "string" ? (
+										<div class="text-red-500 mb-1">{error}</div>
+									) : null}
 										<label htmlFor="email" class="block text-sm font-medium text-gray-700">
 											Email address
 										</label>
@@ -113,7 +113,10 @@ export const auth = {
 
 		register: {
 			actions: {
-				index({ url }) {
+				index({ get, url }) {
+					let session = get(Session)
+					let error = session.get("error")
+
 					return render(
 						<Document url={url} head={<title>Login - Remix Wordle</title>}>
 							<main class="h-dvh">
@@ -121,7 +124,10 @@ export const auth = {
 									method="POST"
 									action={routes.auth.register.action.href()}
 									class="mx-auto flex h-full w-full max-w-md flex-col items-center justify-center space-y-6 px-8"
-								>
+									>
+									{error && typeof error === "string" ? (
+										<div class="text-red-500 mb-1">{error}</div>
+									) : null}
 									<div class="w-full">
 										<label class="block text-sm font-medium text-gray-700" for="email">
 											Email address
