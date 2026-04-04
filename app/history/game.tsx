@@ -3,6 +3,7 @@ import type { Handle } from "remix/component"
 
 import { Document } from "../components/document"
 import { GameOverModal } from "../components/game-over-modal"
+import { Keyboard } from "../components/keyboard"
 import { TOTAL_GUESSES } from "../constants"
 import type { GameBoard } from "../models/game"
 import { LetterState } from "../utils/game"
@@ -61,13 +62,7 @@ export function HistoricalGame(_handle: Handle, { url }: { url: URL }) {
 								)
 							})}
 
-							<input
-								form="current-guess"
-								enterKeyHint="send"
-								type="submit"
-								class="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
-								value="Submit Guess"
-							/>
+							<Keyboard board={game.keyboardWithStatus} />
 						</div>
 					</main>
 				</div>

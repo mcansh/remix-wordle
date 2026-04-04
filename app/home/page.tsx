@@ -1,13 +1,12 @@
-import { clsx } from "clsx"
 import type { Handle } from "remix/component"
 
 import { Document } from "../components/document"
 import { GuessForm } from "../components/form"
 import { GameOverModal } from "../components/game-over-modal"
+import { Keyboard } from "../components/keyboard"
 import { LetterInput } from "../components/letter-input"
 import { LETTER_INPUTS, TOTAL_GUESSES } from "../constants"
 import type { GameBoard } from "../models/game"
-
 export function Page(_handle: Handle, { url }: { url: URL }) {
 	return ({
 		showModal,
@@ -72,6 +71,7 @@ export function Page(_handle: Handle, { url }: { url: URL }) {
 													type="text"
 													pattern="[a-zA-Z]{1}"
 													maxLength={1}
+													tabIndex={-1}
 													name="letter"
 													aria-label={`letter ${guessIndex + 1}`}
 												/>
@@ -90,29 +90,7 @@ export function Page(_handle: Handle, { url }: { url: URL }) {
 							/>
 						</div>
 
-						<div class="mx-auto max-w-md pt-10">
-							{board.keyboardWithStatus.map((row, index) => {
-								let letters = row.map((letter) => letter.letter).join("")
-								return (
-									<div
-										key={`keyboard-row-${letters}`}
-										class={clsx("flex justify-center gap-2", { "mt-2": index > 0 })}
-									>
-										{row.map((letter) => {
-											return (
-												<div
-													data-state={letter.state}
-													class={`flex size-10 items-center justify-center rounded text-center text-white uppercase data-[state=Blank]:bg-gray-400 data-[state=Match]:bg-green-500 data-[state=Miss]:bg-red-500 data-[state=Present]:bg-yellow-500`}
-													key={`keyboard-letter-${letter.letter}`}
-												>
-													{letter.letter}
-												</div>
-											)
-										})}
-									</div>
-								)
-							})}
-						</div>
+						<Keyboard board={board.keyboardWithStatus} />
 					</main>
 				</div>
 			</Document>
