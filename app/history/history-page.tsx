@@ -4,10 +4,7 @@ import type { Handle } from "remix/component"
 import { Document } from "../components/document"
 import type { Prisma } from "../generated/prisma/client"
 import { routes } from "../routes"
-
-let shortDateFormatter = new Intl.DateTimeFormat("en-US", {
-	dateStyle: "short",
-})
+import { shortDateFormatter } from "../utils/format"
 
 export let HISTORICAL_GAME_SELECT = {
 	id: true,
@@ -21,16 +18,15 @@ export let HISTORICAL_GAME_SELECT = {
 export type HistoricalGame = Prisma.GameGetPayload<{ select: typeof HISTORICAL_GAME_SELECT }>
 
 export function createHistoricalGameListItem(game: HistoricalGame) {
-	let createdAt = new Date(game.createdAt)
-	let updatedAt = new Date(game.updatedAt)
-	let date = updatedAt > createdAt ? updatedAt : createdAt
-
 	return {
 		id: game.id,
-		date: shortDateFormatter.format(date),
+		date: shortDateFormatter.format(game.createdAt),
 		guesses: game._count.guesses,
 		status: game.status,
 		word: game.word,
+		month: String(game.createdAt.getMonth() + 1).padStart(2, "0"),
+		day: String(game.createdAt.getDate()).padStart(2, "0"),
+		year: String(game.createdAt.getFullYear()),
 	}
 }
 
@@ -125,7 +121,11 @@ export function HistoricalGameList(_handle: Handle, { url }: { url: URL }) {
 													)}
 												>
 													<a
-														href={routes.history.game.href({ id: game.id })}
+														href={routes.history.game.href({
+															year: game.year,
+															month: game.month,
+															day: game.day,
+														})}
 														class="text-indigo-600 hover:text-indigo-900"
 													>
 														View<span class="sr-only">, {game.word}</span>

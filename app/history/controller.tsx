@@ -1,7 +1,7 @@
 import type { Controller } from "remix/fetch-router"
 
 import { requireAuth } from "../middleware/auth.ts"
-import { getGameById, isGameComplete } from "../models/game.ts"
+import { getGame, isGameComplete } from "../models/game.ts"
 import { routes } from "../routes.ts"
 import { getCurrentUser } from "../utils/context.ts"
 import { db } from "../utils/db.ts"
@@ -34,7 +34,8 @@ export let history = {
 		},
 
 		async game({ params, url }) {
-			let game = await getGameById(params.id)
+			let user = getCurrentUser()
+			let game = await getGame({ ...params, userId: user.id })
 
 			if (!game) {
 				return render(<GameNotFound setup={{ url }} />, { status: 404 })
