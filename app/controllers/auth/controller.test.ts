@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vite-plus/test"
 import { router } from "#app/router.ts"
 import { assertContains, getSessionCookie } from "#test/helpers.ts"
 
-vi.mock("./models/user.ts", async (importActual) => {
+vi.mock("#app/models/user.ts", async (importActual) => {
 	let actual = await importActual<typeof import("../../models/user.ts")>()
 	return {
 		...actual,

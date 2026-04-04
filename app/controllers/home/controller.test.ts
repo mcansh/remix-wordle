@@ -7,8 +7,8 @@ import { assertContains, loginAsCustomer, requestWithSession } from "#test/helpe
 
 import { guessWordSchema } from "./controller.tsx"
 
-vi.mock("./models/game.ts", async (importActual) => {
-	let actual = await importActual<typeof import("../../models/game.ts")>()
+vi.mock("#app/models/game.ts", async (importActual) => {
+	let actual = await importActual<typeof import("#app/models/game.ts")>()
 
 	return {
 		...actual,
@@ -35,8 +35,8 @@ vi.mock("./models/game.ts", async (importActual) => {
 	}
 })
 
-vi.mock("./models/user.ts", async (importActual) => {
-	let actual = await importActual<typeof import("../../models/user.ts")>()
+vi.mock("#app/models/user.ts", async (importActual) => {
+	let actual = await importActual<typeof import("#app/models/user.ts")>()
 
 	return {
 		...actual,
