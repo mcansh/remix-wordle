@@ -8,16 +8,16 @@ import { methodOverride } from "remix/method-override-middleware"
 import { session } from "remix/session-middleware"
 import { staticFiles } from "remix/static-middleware"
 
-import { auth } from "./auth/controller.tsx"
-import { health } from "./health/controller.tsx"
-import { history } from "./history/controller.tsx"
-import { home } from "./home/controller.tsx"
+import { auth } from "./controllers/auth/controller.tsx"
+import { health } from "./controllers/health.tsx"
+import { history } from "./controllers/history/controller.tsx"
+import { home } from "./controllers/home/controller.tsx"
 import { loadAuth } from "./middleware/auth.ts"
 import { securityHeaders } from "./middleware/security.ts"
 import { routes } from "./routes.ts"
 import { sessionCookie, sessionStorage } from "./utils/session.ts"
 
-let middleware = []
+const middleware = []
 
 if (process.env.NODE_ENV === "development") {
 	middleware.push(logger())
@@ -57,7 +57,7 @@ middleware.push(
 )
 middleware.push(loadAuth())
 
-export let router = createRouter({ middleware })
+export const router = createRouter({ middleware })
 
 router.map(routes.home, home)
 router.map(routes.history, history)

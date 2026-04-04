@@ -11,6 +11,9 @@ try {
 } catch {}
 
 export default defineConfig({
+	staged: {
+		"*": "vp check --fix",
+	},
 	fmt: {
 		ignorePatterns: ["app/generated/**"],
 		experimentalSortImports: {},
@@ -25,7 +28,7 @@ export default defineConfig({
 		useTabs: true,
 		overrides: [
 			{
-				files: ["./app/home/local-schema.ts", "./app/home/local-form-schema.ts"],
+				files: ["./app/utils/local-schema.ts", "./app/utils/local-form-schema.ts"],
 				options: {
 					singleQuote: true,
 				},
@@ -34,6 +37,10 @@ export default defineConfig({
 	},
 	lint: {
 		plugins: ["unicorn", "typescript", "oxc"],
+		jsPlugins: [
+			"./oxlint-plugins/prefer-let-locals-plugin.ts",
+			"./oxlint-plugins/prefer-import-alias-plugin.ts",
+		],
 		categories: {},
 		rules: {
 			"constructor-super": "warn",
@@ -140,6 +147,10 @@ export default defineConfig({
 			"unicorn/no-useless-spread": "warn",
 			"unicorn/prefer-set-size": "warn",
 			"unicorn/prefer-string-starts-ends-with": "warn",
+			"prefer-import-alias/prefer-import-alias": "error",
+			"remix-style/prefer-const-module-scope": "error",
+			"remix-style/prefer-let-locals": "error",
+			"import/extensions": ["error", "ignorePackages"],
 		},
 		settings: {
 			"jsx-a11y": {

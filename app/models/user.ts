@@ -1,10 +1,10 @@
 import bcrypt from "bcryptjs"
-import * as s from "remix/data-schema"
 import { email, minLength } from "remix/data-schema/checks"
 import * as f from "remix/data-schema/form-data"
 
-import type { User } from "../generated/prisma/client"
-import { db } from "../utils/db"
+import type { User } from "#app/generated/prisma/client.ts"
+import { db } from "#app/utils/db.ts"
+import * as s from "#app/utils/local-schema.ts"
 
 export const joinSchema = f.object({
 	email: f.field(s.string().pipe(email())),
@@ -30,26 +30,6 @@ export async function createUser(user: {
 			password: hashedPassword,
 		},
 	})
-}
-
-export async function deleteUserByEmail(email: User["email"]) {
-	return db.user.delete({ where: { email } })
-}
-
-export async function authenticateUser(email: User["email"], password: User["password"]) {
-	let user = await db.user.findUnique({
-		where: { email },
-	})
-
-	if (!user || !user.password) return null
-
-	let isValid = await bcrypt.compare(password, user.password)
-
-	if (!isValid) return null
-
-	let { password: _password, ...userWithoutPassword } = user
-
-	return userWithoutPassword
 }
 
 export function createPasswordResetToken(email: string): string | undefined {

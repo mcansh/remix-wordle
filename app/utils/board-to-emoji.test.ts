@@ -6,7 +6,7 @@ import { LetterState } from "./game"
 
 describe("boardToEmoji", () => {
 	it("converts all Match states to green squares", () => {
-		const guesses = [
+		let guesses = [
 			{
 				letters: [
 					{ id: "1", letter: "t", state: LetterState.Match },
@@ -18,12 +18,12 @@ describe("boardToEmoji", () => {
 			},
 		]
 
-		const result = boardToEmoji(guesses)
+		let result = boardToEmoji(guesses)
 		expect(result).toBe("🟩 🟩 🟩 🟩 🟩")
 	})
 
 	it("converts all Miss states to red squares", () => {
-		const guesses = [
+		let guesses = [
 			{
 				letters: [
 					{ id: "1", letter: "w", state: LetterState.Miss },
@@ -35,12 +35,12 @@ describe("boardToEmoji", () => {
 			},
 		]
 
-		const result = boardToEmoji(guesses)
+		let result = boardToEmoji(guesses)
 		expect(result).toBe("🟥 🟥 🟥 🟥 🟥")
 	})
 
 	it("converts all Present states to yellow squares", () => {
-		const guesses = [
+		let guesses = [
 			{
 				letters: [
 					{ id: "1", letter: "c", state: LetterState.Present },
@@ -52,12 +52,12 @@ describe("boardToEmoji", () => {
 			},
 		]
 
-		const result = boardToEmoji(guesses)
+		let result = boardToEmoji(guesses)
 		expect(result).toBe("🟨 🟨 🟨 🟨 🟨")
 	})
 
 	it("converts all Blank states to white squares", () => {
-		const guesses = [
+		let guesses = [
 			{
 				letters: [
 					{ id: "1", letter: "", state: LetterState.Blank },
@@ -69,12 +69,12 @@ describe("boardToEmoji", () => {
 			},
 		]
 
-		const result = boardToEmoji(guesses)
+		let result = boardToEmoji(guesses)
 		expect(result).toBe("⬜️ ⬜️ ⬜️ ⬜️ ⬜️")
 	})
 
 	it("handles mixed letter states correctly", () => {
-		const guesses = [
+		let guesses = [
 			{
 				letters: [
 					{ id: "1", letter: "b", state: LetterState.Match },
@@ -86,12 +86,12 @@ describe("boardToEmoji", () => {
 			},
 		]
 
-		const result = boardToEmoji(guesses)
+		let result = boardToEmoji(guesses)
 		expect(result).toBe("🟩 🟥 🟨 🟥 🟩")
 	})
 
 	it("handles multiple rows with newline separation", () => {
-		const guesses = [
+		let guesses = [
 			{
 				letters: [
 					{ id: "1", letter: "f", state: LetterState.Miss },
@@ -112,18 +112,18 @@ describe("boardToEmoji", () => {
 			},
 		]
 
-		const result = boardToEmoji(guesses)
+		let result = boardToEmoji(guesses)
 		expect(result).toBe("🟥 🟨 🟥 🟩 🟥\n🟩 🟩 🟩 🟩 🟥")
 	})
 
 	it("handles empty guesses array", () => {
-		const guesses: Array<{ letters: Array<ComputedGuess> }> = []
-		const result = boardToEmoji(guesses)
+		let guesses: Array<{ letters: Array<ComputedGuess> }> = []
+		let result = boardToEmoji(guesses)
 		expect(result).toBe("")
 	})
 
 	it("handles typical game progression (6 rows)", () => {
-		const guesses = [
+		let guesses = [
 			{
 				letters: [
 					{ id: "1", letter: "s", state: LetterState.Present },
@@ -153,12 +153,12 @@ describe("boardToEmoji", () => {
 			},
 		]
 
-		const result = boardToEmoji(guesses)
+		let result = boardToEmoji(guesses)
 		expect(result).toBe("🟨 🟥 🟥 🟨 🟥\n🟩 🟥 🟥 🟥 🟨\n🟩 🟩 🟩 🟩 🟩")
 	})
 
 	it("handles rows with blank letters (incomplete guesses)", () => {
-		const guesses = [
+		let guesses = [
 			{
 				letters: [
 					{ id: "1", letter: "t", state: LetterState.Match },
@@ -179,12 +179,12 @@ describe("boardToEmoji", () => {
 			},
 		]
 
-		const result = boardToEmoji(guesses)
+		let result = boardToEmoji(guesses)
 		expect(result).toBe("🟩 🟨 🟥 🟥 🟨\n⬜️ ⬜️ ⬜️ ⬜️ ⬜️")
 	})
 
 	it("throws error for unknown letter state", () => {
-		const guesses = [
+		let guesses = [
 			{
 				letters: [{ id: "1", letter: "x", state: "Invalid" as any }] satisfies Array<ComputedGuess>,
 			},

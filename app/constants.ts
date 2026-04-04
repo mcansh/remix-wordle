@@ -1,7 +1,8 @@
-import * as s from "remix/data-schema"
 import { minLength } from "remix/data-schema/checks"
 
-let envSchema = s.object({
+import * as s from "./utils/local-schema.ts"
+
+const envSchema = s.object({
 	SESSION_SECRET: s.string().pipe(minLength(1)),
 	DATABASE_URL: s.string().pipe(minLength(1)),
 	REDIS_URL: s.string().pipe(minLength(1)),

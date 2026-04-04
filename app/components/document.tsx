@@ -1,12 +1,12 @@
 import "@mcansh/vite-plugin-remix/types"
 import type { RemixNode } from "remix/component"
 
-import clientAssets from "../entry.browser.ts?assets=client"
-import serverAssets from "../entry.server.tsx?assets=ssr"
+import clientAssets from "#app/entry.browser.ts?assets=client"
+import serverAssets from "#app/entry.server.tsx?assets=ssr"
 
-import appStylesHref from "../app.css?url"
+import appStylesHref from "#app/app.css?url"
 
-let assets = clientAssets.merge(serverAssets)
+const assets = clientAssets.merge(serverAssets)
 
 export function Document() {
 	return ({ children, url, head }: { children: RemixNode; head?: RemixNode; url: URL }) => {

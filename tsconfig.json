@@ -4,6 +4,7 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "remix/component",
 		"strict": true,
+		"types": ["node", "vite/client"],
 		"allowImportingTsExtensions": true
 	}
 }

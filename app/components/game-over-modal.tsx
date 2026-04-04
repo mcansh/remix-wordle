@@ -1,14 +1,14 @@
 "use client"
 
 import clsx from "clsx"
-import { on, pressEvents } from "remix/component"
 import type { Handle } from "remix/component"
+import { on, pressEvents } from "remix/component"
 
-import checkIconUrl from "../icons/check.svg"
-import xIconUrl from "../icons/x.svg"
-import { routes } from "../routes"
-import { boardToEmoji } from "../utils/board-to-emoji"
-import type { ComputedGuess } from "../utils/game"
+import checkIconUrl from "#app/icons/check.svg"
+import xIconUrl from "#app/icons/x.svg"
+import { routes } from "#app/routes.ts"
+import { boardToEmoji } from "#app/utils/board-to-emoji.ts"
+import type { ComputedGuess } from "#app/utils/game.ts"
 
 type GameOverModalProps = {
 	currentGuess: number

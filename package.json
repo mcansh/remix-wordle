@@ -5,6 +5,9 @@
 	"license": "MIT",
 	"type": "module",
 	"sideEffects": false,
+	"imports": {
+		"#*": "./*"
+	},
 	"scripts": {
 		"build": "vp build",
 		"dev": "vp dev",
@@ -31,6 +34,8 @@
 		"@mcansh/vite-plugin-remix": "catalog:",
 		"@mcansh/vite-plugin-svg-sprite": "catalog:",
 		"@mswjs/http-middleware": "catalog:",
+		"@oxlint/plugins": "catalog:",
+		"@remix-run/cli": "catalog:",
 		"@tailwindcss/vite": "catalog:",
 		"@total-typescript/tsconfig": "catalog:",
 		"@types/node": "catalog:",

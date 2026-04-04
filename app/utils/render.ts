@@ -3,7 +3,7 @@ import type * as Remix from "remix/component"
 import { renderToStream } from "remix/component/server"
 import { createHtmlResponse } from "remix/response/html"
 
-import { router } from "../router.ts"
+import { router } from "#app/router.ts"
 
 export function render(node: Remix.RemixNode, init?: ResponseInit) {
 	let context = getContext()

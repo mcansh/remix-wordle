@@ -1,15 +1,15 @@
 import { clsx } from "clsx"
 import type { Handle } from "remix/component"
 
-import { Document } from "../components/document"
-import type { Prisma } from "../generated/prisma/client"
-import { routes } from "../routes"
+import { Document } from "#app/components/document.tsx"
+import type { Prisma } from "#app/generated/prisma/client.ts"
+import { routes } from "#app/routes.ts"
 
-let shortDateFormatter = new Intl.DateTimeFormat("en-US", {
+const shortDateFormatter = new Intl.DateTimeFormat("en-US", {
 	dateStyle: "short",
 })
 
-export let HISTORICAL_GAME_SELECT = {
+export const HISTORICAL_GAME_SELECT = {
 	id: true,
 	createdAt: true,
 	updatedAt: true,

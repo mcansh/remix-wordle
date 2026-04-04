@@ -35,15 +35,15 @@ export function computeGuess(guess: string, answer: string): Array<ComputedGuess
 	let guessLetters = [...segmenter.segment(guess)].map((s) => s.segment)
 
 	let answerLetterCount: Record<string, number> = {}
-	for (const letter of answerLetters) {
+	for (let letter of answerLetters) {
 		answerLetterCount[letter] = (answerLetterCount[letter] ?? 0) + 1
 	}
 
-	for (const [index, guessLetter] of guessLetters.entries()) {
-		const answerLetter = answerLetters.at(index)
+	for (let [index, guessLetter] of guessLetters.entries()) {
+		let answerLetter = answerLetters.at(index)
 		if (!answerLetter) continue
 
-		const id = genId()
+		let id = genId()
 
 		if (guessLetter === answerLetter) {
 			result.push({ id, letter: guessLetter, state: LetterState.Match })
@@ -53,12 +53,12 @@ export function computeGuess(guess: string, answer: string): Array<ComputedGuess
 		}
 	}
 
-	for (const [index, item] of result.entries()) {
+	for (let [index, item] of result.entries()) {
 		if (item.state !== LetterState.Present) {
 			continue
 		}
 
-		const letter = guessLetters.at(index)
+		let letter = guessLetters.at(index)
 		if (!letter) continue
 
 		if ((answerLetterCount[letter] ?? 0) > 0) {
@@ -72,10 +72,10 @@ export function computeGuess(guess: string, answer: string): Array<ComputedGuess
 }
 
 export function getRandomWord(): string {
-	const validWords = wordBank.valid
+	let validWords = wordBank.valid
 	if (validWords.length === 0) throw new Error("No valid words available")
-	const index = Math.floor(Math.random() * validWords.length)
-	const word = validWords.at(index)
+	let index = Math.floor(Math.random() * validWords.length)
+	let word = validWords.at(index)
 	if (!word) throw new Error("Failed to select a random word")
 	return word
 }

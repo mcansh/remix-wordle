@@ -3,7 +3,7 @@
 import type { RemixNode } from "remix/component"
 import { on } from "remix/component"
 
-import { routes } from "../routes"
+import { routes } from "#app/routes.ts"
 
 export function GuessForm() {
 	return ({ currentGuess, children }: { currentGuess: number; children: RemixNode }) => {

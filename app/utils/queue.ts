@@ -2,8 +2,9 @@ import type { ConnectionOptions } from "bullmq"
 import { Queue, Worker } from "bullmq"
 import { startOfDay } from "date-fns"
 
-import { env } from "../constants"
-import { db } from "./db"
+import { env } from "#app/constants.ts"
+
+import { db } from "./db.ts"
 
 const connection = { url: env.REDIS_URL } satisfies ConnectionOptions
 

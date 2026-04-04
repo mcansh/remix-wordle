@@ -2,12 +2,13 @@ import { Auth, type BadAuth, type GoodAuth } from "remix/auth-middleware"
 import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 
-import { getReturnToQuery, requireAuth } from "../middleware/auth.ts"
-import { getGameById, isGameComplete } from "../models/game.ts"
-import { routes } from "../routes.ts"
-import type { AuthIdentity } from "../utils/auth-session.ts"
-import { db } from "../utils/db.ts"
-import { render } from "../utils/render.ts"
+import { getReturnToQuery, requireAuth } from "#app/middleware/auth.ts"
+import { getGameById, isGameComplete } from "#app/models/game.ts"
+import { routes } from "#app/routes.ts"
+import type { AuthIdentity } from "#app/utils/auth-session.ts"
+import { db } from "#app/utils/db.ts"
+import { render } from "#app/utils/render.ts"
+
 import { HistoricalGame } from "./game.tsx"
 import {
 	createHistoricalGameListItem,
@@ -16,7 +17,7 @@ import {
 } from "./history-page.tsx"
 import { GameNotFound } from "./not-found-page.tsx"
 
-export let history = {
+export const history = {
 	middleware: [requireAuth],
 	actions: {
 		async index(context) {
