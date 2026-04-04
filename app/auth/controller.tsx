@@ -107,7 +107,7 @@ export const auth = {
 						session.flash("error", "We could not complete that sign-in request.")
 						return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
 					}
-				}
+				},
 			},
 		},
 
