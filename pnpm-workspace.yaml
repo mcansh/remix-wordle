@@ -31,6 +31,7 @@ catalogMode: strict
 
 onlyBuiltDependencies:
   - "@prisma/engines"
+  - "@remix-run/assert"
   - "@remix-run/async-context-middleware"
   - "@remix-run/auth"
   - "@remix-run/auth-middleware"
@@ -68,6 +69,7 @@ onlyBuiltDependencies:
   - "@remix-run/session-storage-redis"
   - "@remix-run/static-middleware"
   - "@remix-run/tar-parser"
+  - "@remix-run/test"
   - msw
   - prisma
   - remix

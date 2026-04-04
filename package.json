@@ -23,7 +23,7 @@
 		"clsx": "catalog:",
 		"date-fns": "catalog:",
 		"ioredis": "catalog:",
-		"remix": "catalog:"
+		"remix": "github:remix-run/remix#preview/main&path:packages/remix"
 	},
 	"devDependencies": {
 		"@mcansh/remix-testing-library": "catalog:",
