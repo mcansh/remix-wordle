@@ -6,6 +6,7 @@ catalog:
   "@mswjs/http-middleware": ^0.10.3
   "@prisma/adapter-pg": ^7.6.0
   "@prisma/client": ^7.6.0
+  '@remix-run/cli': github:remix-run/remix#preview/pr-11204&path:packages/cli
   "@standard-schema/spec": ^1.1.0
   "@tailwindcss/vite": ^4.2.2
   "@total-typescript/tsconfig": ^1.0.4

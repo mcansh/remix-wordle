@@ -27,6 +27,9 @@ catalogs:
     '@prisma/client':
       specifier: ^7.6.0
       version: 7.6.0
+    '@remix-run/cli':
+      specifier: github:remix-run/remix#preview/pr-11204&path:packages/cli
+      version: 0.0.0
     '@standard-schema/spec':
       specifier: ^1.1.0
       version: 1.1.0
@@ -133,6 +136,9 @@ importers:
       '@mswjs/http-middleware':
         specifier: 'catalog:'
         version: 0.10.3(msw@2.12.14(@types/node@25.5.2)(typescript@6.0.2))
+      '@remix-run/cli':
+        specifier: 'catalog:'
+        version: https://codeload.github.com/remix-run/remix/tar.gz/5c20da47a677c3c3b1ccf4bce7b942bd8dc5ad14#path:packages/cli
       '@tailwindcss/vite':
         specifier: 'catalog:'
         version: 4.2.2(@voidzero-dev/vite-plus-core@0.1.15(@types/node@25.5.2)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.2))
@@ -964,6 +970,11 @@ packages:
     resolution: {path: packages/auth, tarball: https://codeload.github.com/remix-run/remix/tar.gz/edcf0c00fc38c2767a954bdfdff6248943279211}
     version: 0.1.0
 
+  '@remix-run/cli@https://codeload.github.com/remix-run/remix/tar.gz/5c20da47a677c3c3b1ccf4bce7b942bd8dc5ad14#path:packages/cli':
+    resolution: {path: packages/cli, tarball: https://codeload.github.com/remix-run/remix/tar.gz/5c20da47a677c3c3b1ccf4bce7b942bd8dc5ad14}
+    version: 0.0.0
+    hasBin: true
+
   '@remix-run/component@0.6.0':
     resolution: {integrity: sha512-hmIUdPnBtONeOH8bbLuOVGSgFD/MAUNvpH0Xwgo27GByBIjQhOm25Tt9R04HQslDhHAzwNVnWeQkr3j9eyXYhQ==}
 
@@ -1118,6 +1129,10 @@ packages:
   '@remix-run/static-middleware@https://codeload.github.com/remix-run/remix/tar.gz/edcf0c00fc38c2767a954bdfdff6248943279211#path:packages/static-middleware':
     resolution: {path: packages/static-middleware, tarball: https://codeload.github.com/remix-run/remix/tar.gz/edcf0c00fc38c2767a954bdfdff6248943279211}
     version: 0.4.5
+
+  '@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/5c20da47a677c3c3b1ccf4bce7b942bd8dc5ad14#path:packages/tar-parser':
+    resolution: {path: packages/tar-parser, tarball: https://codeload.github.com/remix-run/remix/tar.gz/5c20da47a677c3c3b1ccf4bce7b942bd8dc5ad14}
+    version: 0.7.0
 
   '@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/edcf0c00fc38c2767a954bdfdff6248943279211#path:packages/tar-parser':
     resolution: {path: packages/tar-parser, tarball: https://codeload.github.com/remix-run/remix/tar.gz/edcf0c00fc38c2767a954bdfdff6248943279211}
@@ -3400,6 +3415,11 @@ snapshots:
       '@remix-run/fetch-router': https://codeload.github.com/remix-run/remix/tar.gz/edcf0c00fc38c2767a954bdfdff6248943279211#path:packages/fetch-router
       '@remix-run/session': https://codeload.github.com/remix-run/remix/tar.gz/edcf0c00fc38c2767a954bdfdff6248943279211#path:packages/session
 
+  '@remix-run/cli@https://codeload.github.com/remix-run/remix/tar.gz/5c20da47a677c3c3b1ccf4bce7b942bd8dc5ad14#path:packages/cli':
+    dependencies:
+      '@remix-run/tar-parser': https://codeload.github.com/remix-run/remix/tar.gz/5c20da47a677c3c3b1ccf4bce7b942bd8dc5ad14#path:packages/tar-parser
+      semver: 7.7.4
+
   '@remix-run/component@0.6.0':
     dependencies:
       '@types/dom-navigation': 1.0.7
@@ -3541,6 +3561,8 @@ snapshots:
       '@remix-run/html-template': https://codeload.github.com/remix-run/remix/tar.gz/edcf0c00fc38c2767a954bdfdff6248943279211#path:packages/html-template
       '@remix-run/mime': https://codeload.github.com/remix-run/remix/tar.gz/edcf0c00fc38c2767a954bdfdff6248943279211#path:packages/mime
       '@remix-run/response': https://codeload.github.com/remix-run/remix/tar.gz/edcf0c00fc38c2767a954bdfdff6248943279211#path:packages/response
+
+  '@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/5c20da47a677c3c3b1ccf4bce7b942bd8dc5ad14#path:packages/tar-parser': {}
 
   '@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/edcf0c00fc38c2767a954bdfdff6248943279211#path:packages/tar-parser': {}
 
