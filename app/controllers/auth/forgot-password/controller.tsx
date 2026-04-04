@@ -9,9 +9,9 @@ import { render } from "#app/utils/render.ts"
 
 export const forgotPasswordController = {
 	actions: {
-		index({ url }) {
+		index(context) {
 			return render(
-				<Document url={url} head={<title>Login - Remix Wordle</title>}>
+				<Document url={context.url} head={<title>Login - Remix Wordle</title>}>
 					<div class="card" style="max-width: 500px; margin: 2rem auto;">
 						<h1>Forgot Password</h1>
 						<p>Enter your email address and we'll send you a link to reset your password.</p>
@@ -35,8 +35,8 @@ export const forgotPasswordController = {
 			)
 		},
 
-		async action({ get, url }) {
-			let formData = get(FormData)
+		async action(context) {
+			let formData = context.get(FormData)
 
 			let forgotPasswordSchema = f.object({
 				email: f.field(s.defaulted(s.string(), "")),
@@ -47,7 +47,7 @@ export const forgotPasswordController = {
 			let token = createPasswordResetToken(parsed.email)
 
 			return render(
-				<Document url={url} head={<title>Login - Remix Wordle</title>}>
+				<Document url={context.url} head={<title>Login - Remix Wordle</title>}>
 					<div class="card" style="max-width: 500px; margin: 2rem auto;">
 						<div class="alert alert-success">
 							Password reset link sent! If we have found a user with that email, you will receive a

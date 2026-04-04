@@ -7,6 +7,14 @@ import { assertContains, loginAsCustomer, requestWithSession } from "#test/helpe
 
 import { guessWordSchema } from "./controller.tsx"
 
+vi.mock("#app/utils/db.ts", () => ({
+	redis: {
+		get: vi.fn().mockResolvedValue(null),
+		set: vi.fn().mockResolvedValue("OK"),
+		del: vi.fn().mockResolvedValue(1),
+	},
+}))
+
 vi.mock("#app/models/game.ts", async (importActual) => {
 	let actual = await importActual<typeof import("#app/models/game.ts")>()
 

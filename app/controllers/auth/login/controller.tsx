@@ -33,15 +33,15 @@ export const loginController = {
 				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
 			}
 		},
-		index({ get, url }) {
-			let session = get(Session)
+		index(context) {
+			let session = context.get(Session)
 			let error = session.get("error")
 			let formAction = routes.auth.login.action.href(undefined, {
-				returnTo: url.searchParams.get("returnTo"),
+				returnTo: context.url.searchParams.get("returnTo"),
 			})
 
 			return render(
-				<Document url={url} head={<title>Login - Remix Wordle</title>}>
+				<Document url={context.url} head={<title>Login - Remix Wordle</title>}>
 					<main class="h-dvh">
 						{error && typeof error === "string" ? <div class="text-red-500">{error}</div> : null}
 						<form

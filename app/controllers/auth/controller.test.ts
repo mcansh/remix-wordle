@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vite-plus/test"
 
 import { router } from "#app/router.ts"
-import { assertContains, getSessionCookie } from "#test/helpers.ts"
+import { assertContains, assertNotContains, getSessionCookie } from "#test/helpers.ts"
 
 vi.mock("#app/models/user.ts", async (importActual) => {
 	let actual = await importActual<typeof import("../../models/user.ts")>()
@@ -13,251 +13,343 @@ vi.mock("#app/models/user.ts", async (importActual) => {
 					id: "user-123",
 					email,
 					username: "testuser",
-					password: "hashed-password", // In real case, this would be hashed
+					password: "hashed-password",
 				}
 			}
 
 			return null
 		}),
+		getUserById: vi.fn().mockImplementation(async (id: string) => {
+			if (id === "user-123") {
+				return {
+					id: "user-123",
+					email: "testuser@example.com",
+					username: "testuser",
+				}
+			}
+			return null
+		}),
+		getUserByEmail: vi.fn().mockImplementation(async (email: string) => {
+			if (email === "testuser@example.com") {
+				return Promise.resolve({
+					id: "user-123",
+					email: "testuser@example.com",
+					username: "testuser",
+				})
+			}
+			return Promise.resolve(null)
+		}),
+		createUser: vi
+			.fn()
+			.mockImplementation(async (data: { email: string; username: string; password: string }) => ({
+				id: "new-user-456",
+				email: data.email,
+				username: data.username,
+			})),
 	}
 })
 
-describe.skip("auth handlers", () => {
-	it("POST /login with valid credentials sets session cookie and redirects", async () => {
-		let response = await router.fetch("https://remix.run/login", {
-			method: "POST",
-			body: new URLSearchParams({
-				email: "testuser@example.com",
-				password: "mytestaccountpassword",
-			}),
-			redirect: "manual",
+vi.mock("bcryptjs", () => ({
+	default: {
+		compare: vi.fn().mockImplementation(async (plain: string, hashed: string) => {
+			return hashed === `hashed-${plain}`
+		}),
+		hash: vi.fn().mockImplementation(async (plain: string) => `hashed-${plain}`),
+	},
+}))
+
+vi.mock("#app/utils/db.ts", () => ({
+	redis: {
+		get: vi.fn().mockResolvedValue(null),
+		set: vi.fn().mockResolvedValue("OK"),
+		del: vi.fn().mockResolvedValue(1),
+	},
+	db: {
+		user: {
+			findFirst: vi
+				.fn()
+				.mockImplementation(async ({ where }: { where: Record<string, unknown> }) => {
+					if (where.email === "testuser@example.com") {
+						return {
+							id: "user-123",
+							email: "testuser@example.com",
+							username: "testuser",
+							password: "hashed-mytestaccountpassword",
+						}
+					}
+					if (where.id === "user-123") {
+						return {
+							id: "user-123",
+							email: "testuser@example.com",
+							username: "testuser",
+						}
+					}
+					return null
+				}),
+			findUnique: vi
+				.fn()
+				.mockImplementation(async ({ where }: { where: Record<string, unknown> }) => {
+					if (where.email === "testuser@example.com") {
+						return {
+							id: "user-123",
+							email: "testuser@example.com",
+							username: "testuser",
+							password: "hashed-mytestaccountpassword",
+						}
+					}
+					return null
+				}),
+			create: vi.fn().mockImplementation(async ({ data }: { data: Record<string, unknown> }) => ({
+				id: "new-user-456",
+				email: data.email,
+				username: data.username,
+				password: data.password,
+			})),
+		},
+	},
+}))
+describe("auth handlers", () => {
+	describe("GET /login", () => {
+		it("renders the login page", async () => {
+			let response = await router.fetch("https://wordle.mcan.sh/login")
+			expect(response.status).toBe(200)
+			let html = await response.text()
+			assertContains(html, "Email address")
 		})
-
-		expect(response.status).toBe(302)
-		expect(response.headers.get("Location")).toBe("/")
-
-		let sessionId = getSessionCookie(response)
-		expect(sessionId).toBeTruthy()
 	})
 
-	it("POST /login with invalid credentials redirects back to login with error", async () => {
-		let response = await router.fetch("https://remix.run/login", {
-			method: "POST",
-			body: new URLSearchParams({
-				email: "wrong@example.com",
-				password: "wrongpassword",
-			}),
-			redirect: "manual",
-		})
-
-		expect.assert.equal(response.status, 302)
-		expect.assert.equal(response.headers.get("Location"), "/login")
-
-		// Follow redirect to see the error message
-		let sessionCookie = getSessionCookie(response)
-		let followUpResponse = await router.fetch("https://remix.run/login", {
-			headers: {
-				Cookie: `session=${sessionCookie}`,
-			},
-		})
-
-		let html = await followUpResponse.text()
-		// assertContains(html, 'Invalid email or password')
-	})
-
-	it.skip("flash error message is cleared after being displayed once", async () => {
-		// POST invalid credentials to trigger flash message
-		let response = await router.fetch("https://remix.run/login", {
-			method: "POST",
-			body: new URLSearchParams({
-				email: "wrong@example.com",
-				password: "wrongpassword",
-			}),
-			redirect: "manual",
-		})
-
-		expect.assert.equal(response.status, 302)
-		expect.assert.equal(response.headers.get("Location"), "/login")
-
-		// Follow redirect to see the error message (first request)
-		let sessionCookie = getSessionCookie(response)
-		let firstFollowUp = await router.fetch("https://remix.run/login", {
-			headers: {
-				Cookie: `session=${sessionCookie}`,
-			},
-		})
-
-		let firstHtml = await firstFollowUp.text()
-		// assertContains(firstHtml, 'Invalid email or password')
-
-		// Get updated session cookie (session should be updated to clear flash)
-		let updatedSessionCookie = getSessionCookie(firstFollowUp) || sessionCookie
-
-		// Refresh the page (second request) - error should NOT be shown
-		let secondFollowUp = await router.fetch("https://remix.run/login", {
-			headers: {
-				Cookie: `session=${updatedSessionCookie}`,
-			},
-		})
-
-		let secondHtml = await secondFollowUp.text()
-		expect.assert.ok(
-			!secondHtml.includes("Invalid email or password"),
-			"Expected flash error to be cleared after first display",
-		)
-	})
-
-	it.skip("POST /register creates new user and sets session", async () => {
-		let uniqueEmail = `newuser-${Date.now()}@example.com`
-
-		let response = await router.fetch("https://remix.run/register", {
-			method: "POST",
-			body: new URLSearchParams({
-				name: "New User",
-				email: uniqueEmail,
-				password: "password123",
-			}),
-			redirect: "manual",
-		})
-
-		expect.assert.equal(response.status, 302)
-		expect.assert.equal(response.headers.get("Location"), "/account")
-
-		let sessionId = getSessionCookie(response)
-		expect.assert.ok(sessionId, "Expected session cookie to be set")
-	})
-
-	it("accessing protected route redirects to login with returnTo parameter", async () => {
-		let response = await router.fetch("https://remix.run/history", { redirect: "manual" })
-
-		expect(response.status).toBe(302)
-		let location = response.headers.get("Location")
-		expect(location).toBeTruthy()
-		expect(location!.startsWith("/login?returnTo="), "Expected redirect to login with returnTo")
-		expect(
-			location!.includes(encodeURIComponent("/checkout")),
-			"Expected returnTo to contain /checkout",
-		)
-	})
-
-	it("successful login with returnTo redirects to original destination", async () => {
-		let response = await router.fetch(
-			"https://v2.wordle.mcan.sh/login?returnTo=" + encodeURIComponent("/checkout"),
-			{
+	describe("POST /login", () => {
+		it("redirects to home on valid credentials", async () => {
+			let response = await router.fetch("https://wordle.mcan.sh/login", {
 				method: "POST",
 				body: new URLSearchParams({
 					email: "testuser@example.com",
 					password: "mytestaccountpassword",
 				}),
 				redirect: "manual",
-			},
-		)
+			})
 
-		expect(response.status).toBe(302)
-		expect(response.headers.get("Location")).toBe("/checkout")
+			expect(response.status).toBe(302)
+			expect(response.headers.get("Location")).toBe("/")
+			let sessionCookie = getSessionCookie(response)
+			expect(sessionCookie).toBeTruthy()
+		})
 
-		let sessionId = getSessionCookie(response)
-		expect(sessionId).toBeTruthy()
-	})
-
-	it("failed login with returnTo preserves returnTo parameter", async () => {
-		let response = await router.fetch(
-			"https://remix.run/login?returnTo=" + encodeURIComponent("/checkout"),
-			{
+		it("redirects back to login on invalid credentials", async () => {
+			let response = await router.fetch("https://wordle.mcan.sh/login", {
 				method: "POST",
 				body: new URLSearchParams({
 					email: "wrong@example.com",
 					password: "wrongpassword",
 				}),
 				redirect: "manual",
-			},
-		)
+			})
 
-		expect.assert.equal(response.status, 302)
-		let location = response.headers.get("Location")
-		expect.assert.ok(location, "Expected Location header")
-		expect.assert.ok(
-			location.includes("returnTo=" + encodeURIComponent("/checkout")),
-			"Expected returnTo to be preserved in redirect",
-		)
-
-		// Follow redirect to verify error message is shown
-		let sessionCookie = getSessionCookie(response)
-		let followUpResponse = await router.fetch("https://remix.run" + location, {
-			headers: {
-				Cookie: `session=${sessionCookie}`,
-			},
+			expect(response.status).toBe(302)
+			let location = response.headers.get("Location")
+			expect(location).toBeTruthy()
+			expect(location!.startsWith("/login")).toBe(true)
 		})
 
-		let html = await followUpResponse.text()
-		// assertContains(html, 'Invalid email or password')
-		assertContains(html, "returnTo=" + encodeURIComponent("/checkout"))
+		it("shows error message after failed login", async () => {
+			let response = await router.fetch("https://wordle.mcan.sh/login", {
+				method: "POST",
+				body: new URLSearchParams({
+					email: "wrong@example.com",
+					password: "wrongpassword",
+				}),
+				redirect: "manual",
+			})
+
+			let sessionCookie = getSessionCookie(response)
+			let location = response.headers.get("Location")!
+
+			let followUp = await router.fetch("https://wordle.mcan.sh" + location, {
+				headers: { Cookie: `session=${sessionCookie}` },
+			})
+
+			let html = await followUp.text()
+			assertContains(html, "Invalid email or password")
+		})
+
+		it("redirects to returnTo destination on successful login", async () => {
+			let response = await router.fetch(
+				"https://wordle.mcan.sh/login?returnTo=" + encodeURIComponent("/history"),
+				{
+					method: "POST",
+					body: new URLSearchParams({
+						email: "testuser@example.com",
+						password: "mytestaccountpassword",
+					}),
+					redirect: "manual",
+				},
+			)
+
+			expect(response.status).toBe(302)
+			expect(response.headers.get("Location")).toBe("/history")
+		})
+
+		it("preserves a safe returnTo param on failed login", async () => {
+			let response = await router.fetch(
+				"https://wordle.mcan.sh/login?returnTo=" + encodeURIComponent("/history"),
+				{
+					method: "POST",
+					body: new URLSearchParams({
+						email: "wrong@example.com",
+						password: "wrongpassword",
+					}),
+					redirect: "manual",
+				},
+			)
+
+			expect(response.status).toBe(302)
+			let location = response.headers.get("Location")!
+			expect(location).toContain("returnTo=")
+			expect(location).toContain(encodeURIComponent("/history"))
+		})
+
+		it("does not redirect to an unsafe open-redirect returnTo on success", async () => {
+			let response = await router.fetch(
+				"https://wordle.mcan.sh/login?returnTo=" + encodeURIComponent("//evil.com"),
+				{
+					method: "POST",
+					body: new URLSearchParams({
+						email: "testuser@example.com",
+						password: "mytestaccountpassword",
+					}),
+					redirect: "manual",
+				},
+			)
+
+			expect(response.status).toBe(302)
+			expect(response.headers.get("Location")).toBe("/")
+		})
 	})
 
-	it.skip("POST /reset-password with mismatched passwords redirects back with error", async () => {
-		// First, request a password reset to get a token
-		let forgotPasswordResponse = await router.fetch("https://remix.run/forgot-password", {
-			method: "POST",
-			body: new URLSearchParams({
-				email: "customer@example.com",
-			}),
+	describe("GET /register", () => {
+		it("renders the register page", async () => {
+			let response = await router.fetch("https://wordle.mcan.sh/register")
+			expect(response.status).toBe(200)
+			let html = await response.text()
+			assertContains(html, "Email address")
 		})
-
-		let html = await forgotPasswordResponse.text()
-		// Extract token from the reset link in the demo response
-		let tokenMatch = html.match(/\/reset-password\/([^"]+)/)
-		expect.assert.ok(tokenMatch, "Expected to find reset token in response")
-		let token = tokenMatch[1]
-
-		// Try to reset password with mismatched passwords
-		let response = await router.fetch(`https://remix.run/reset-password/${token}`, {
-			method: "POST",
-			body: new URLSearchParams({
-				password: "newpassword123",
-				confirmPassword: "differentpassword",
-			}),
-			redirect: "manual",
-		})
-
-		expect.assert.equal(response.status, 302)
-		expect.assert.equal(response.headers.get("Location"), `/reset-password/${token}`)
-
-		// Follow redirect to see the error message
-		let sessionCookie = getSessionCookie(response)
-		let followUpResponse = await router.fetch(`https://remix.run/reset-password/${token}`, {
-			headers: {
-				Cookie: `session=${sessionCookie}`,
-			},
-		})
-
-		let errorHtml = await followUpResponse.text()
-		assertContains(errorHtml, "Passwords do not match")
 	})
 
-	it.skip("POST /reset-password with invalid token redirects back with error", async () => {
-		let invalidToken = "invalid-token-12345"
+	describe("POST /register", () => {
+		it("redirects to home after successful registration", async () => {
+			let response = await router.fetch("https://wordle.mcan.sh/register", {
+				method: "POST",
+				body: new URLSearchParams({
+					email: "newuser@example.com",
+					username: "newuser",
+					password: "supersecretpassword",
+				}),
+				redirect: "manual",
+			})
 
-		let response = await router.fetch(`https://remix.run/reset-password/${invalidToken}`, {
-			method: "POST",
-			body: new URLSearchParams({
-				password: "newpassword123",
-				confirmPassword: "newpassword123",
-			}),
-			redirect: "manual",
+			expect(response.status).toBe(302)
+			expect(response.headers.get("Location")).toBe("/")
 		})
 
-		expect.assert.equal(response.status, 302)
-		expect.assert.equal(response.headers.get("Location"), `/reset-password/${invalidToken}`)
+		it("redirects back to register when email already exists", async () => {
+			let response = await router.fetch("https://wordle.mcan.sh/register", {
+				method: "POST",
+				body: new URLSearchParams({
+					email: "testuser@example.com",
+					username: "testuser",
+					password: "supersecretpassword",
+				}),
+				redirect: "manual",
+			})
 
-		// Follow redirect to see the error message
-		let sessionCookie = getSessionCookie(response)
-		let followUpResponse = await router.fetch(`https://remix.run/reset-password/${invalidToken}`, {
-			headers: {
-				Cookie: `session=${sessionCookie}`,
-			},
+			expect(response.status).toBe(302)
+			let location = response.headers.get("Location")!
+			expect(location.startsWith("/register")).toBe(true)
 		})
 
-		let errorHtml = await followUpResponse.text()
-		assertContains(errorHtml, "Invalid or expired reset token")
+		it("shows error when attempting to register with an existing email", async () => {
+			let firstResponse = await router.fetch("https://wordle.mcan.sh/register", {
+				method: "POST",
+				body: new URLSearchParams({
+					email: "testuser@example.com",
+					username: "testuser",
+					password: "supersecretpassword",
+				}),
+				redirect: "manual",
+			})
+
+			let sessionCookie = getSessionCookie(firstResponse)!
+			let location = firstResponse.headers.get("Location")!
+
+			let followUp = await router.fetch("https://wordle.mcan.sh" + location, {
+				headers: { Cookie: `session=${sessionCookie}` },
+			})
+
+			let html = await followUp.text()
+			assertContains(html, "already exists")
+		})
+	})
+
+	describe("POST /logout", () => {
+		it("redirects to home after logout", async () => {
+			let response = await router.fetch("https://wordle.mcan.sh/logout", {
+				method: "POST",
+				redirect: "manual",
+			})
+
+			expect(response.status).toBe(302)
+			expect(response.headers.get("Location")).toBe("/")
+		})
+
+		it("does not destroy the session cookie on logout (only unsets auth)", async () => {
+			let loginResponse = await router.fetch("https://wordle.mcan.sh/login", {
+				method: "POST",
+				body: new URLSearchParams({
+					email: "testuser@example.com",
+					password: "mytestaccountpassword",
+				}),
+				redirect: "manual",
+			})
+			let sessionCookie = getSessionCookie(loginResponse)!
+
+			let logoutResponse = await router.fetch("https://wordle.mcan.sh/logout", {
+				method: "POST",
+				headers: { Cookie: `session=${sessionCookie}` },
+				redirect: "manual",
+			})
+
+			expect(logoutResponse.status).toBe(302)
+			let updatedCookie = getSessionCookie(logoutResponse)
+			expect(updatedCookie).not.toBeNull()
+		})
+	})
+
+	describe("error flash messages are cleared after display", () => {
+		it("does not show error on second visit after login failure", async () => {
+			let loginResponse = await router.fetch("https://wordle.mcan.sh/login", {
+				method: "POST",
+				body: new URLSearchParams({
+					email: "wrong@example.com",
+					password: "wrongpassword",
+				}),
+				redirect: "manual",
+			})
+
+			let sessionCookie = getSessionCookie(loginResponse)!
+			let location = loginResponse.headers.get("Location")!
+
+			let firstVisit = await router.fetch("https://wordle.mcan.sh" + location, {
+				headers: { Cookie: `session=${sessionCookie}` },
+			})
+			let firstSessionCookie = getSessionCookie(firstVisit) || sessionCookie
+			let firstHtml = await firstVisit.text()
+			assertContains(firstHtml, "Invalid email or password")
+
+			let secondVisit = await router.fetch("https://wordle.mcan.sh" + location, {
+				headers: { Cookie: `session=${firstSessionCookie}` },
+			})
+			let secondHtml = await secondVisit.text()
+			assertNotContains(secondHtml, "Invalid email or password")
+		})
 	})
 })

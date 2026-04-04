@@ -17,8 +17,8 @@ export const auth = {
 
 		register: registerController,
 
-		logout({ get }) {
-			let session = get(Session)
+		logout(context) {
+			let session = context.get(Session)
 			session.destroy()
 			return redirect(routes.home.index.href())
 		},

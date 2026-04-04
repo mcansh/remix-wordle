@@ -1,7 +1,9 @@
-name: 🧪 Test
+name: 🛠️ CI
 
 on:
   push:
+    branches:
+      - main
   pull_request:
 
 env:
@@ -14,6 +16,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check:
+    name: ✅ Check
+    if: github.repository == 'mcansh/remix-wordle'
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v5
+
+      - name: ⎔ Setup VP
+        uses: voidzero-dev/setup-vp@v1
+        with:
+          cache: true
+
+      - name: ✅ Type check & lint
+        run: vp check
+
   test:
     name: 🧪 Test
     if: github.repository == 'mcansh/remix-wordle'
@@ -23,21 +42,27 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v5
 
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: ".node-version"
-
-      - uses: pnpm/action-setup@v4
-        name: 🟧 Install pnpm
+      - name: ⎔ Setup VP
+        uses: voidzero-dev/setup-vp@v1
         with:
           cache: true
 
-      - name: 🟧 Install dependencies
-        run: pnpm install --recursive --frozen-lockfile --strict-peer-dependencies
+      - name: 🧪 Run Tests
+        run: vp test
+
+  build:
+    name: 🛠️ Build
+    if: github.repository == 'mcansh/remix-wordle'
+
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v5
+
+      - name: ⎔ Setup VP
+        uses: voidzero-dev/setup-vp@v1
+        with:
+          cache: true
 
       - name: 🛠️ Build
-        run: pnpm run build
-
-      - name: 🧪 Run Tests
-        run: pnpm run test
+        run: vp build
