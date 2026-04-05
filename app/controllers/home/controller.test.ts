@@ -102,6 +102,19 @@ describe("guessWord", () => {
 		expect(result).toEqual({ letters: ["r", "e", "m", "i", "x"], cheat: false })
 	})
 
+	it("normalizes guess", async () => {
+		let formData = new FormData()
+		formData.append("letter", "R")
+		formData.append("letter", "E")
+		formData.append("letter", "M")
+		formData.append("letter", "I")
+		formData.append("letter", "X")
+
+		let result = parse(guessWordSchema, formData)
+
+		expect(result).toEqual({ letters: ["r", "e", "m", "i", "x"], cheat: false })
+	})
+
 	it("submits a cheat guess", async () => {
 		let formData = new FormData()
 		formData.append("letter", "r")
