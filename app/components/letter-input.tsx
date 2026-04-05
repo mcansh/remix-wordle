@@ -1,7 +1,4 @@
-"use client"
-
 import clsx from "clsx"
-
 export function LetterInput() {
 	return ({ errorMessage, index }: { errorMessage?: string | null; index: number }) => {
 		return (

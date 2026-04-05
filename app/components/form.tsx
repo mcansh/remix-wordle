@@ -16,6 +16,18 @@ export function GuessForm() {
 				id="current-guess"
 				autoComplete="off"
 				mix={[
+					on("keydown", (event) => {
+						if (event.key === "Backspace") {
+							let target = event.target
+							if (!(target instanceof HTMLInputElement)) return
+							if (target.previousElementSibling) {
+								let prevInput = target.previousElementSibling
+								if (prevInput instanceof HTMLInputElement) {
+									prevInput.focus()
+								}
+							}
+						}
+					}),
 					on("input", (event) => {
 						let target = event.target
 						if (!(target instanceof HTMLInputElement)) return
