@@ -1,11 +1,14 @@
+import { parseSafe } from "remix/data-schema"
 import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
+import { Button } from "#app/components/button.tsx"
 import { Document } from "#app/components/document.tsx"
+import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from "#app/components/field.tsx"
+import { Input } from "#app/components/input.tsx"
 import { createUser, getUserByEmail, joinSchema } from "#app/models/user.ts"
 import { routes } from "#app/routes.ts"
-import { parse } from "#app/utils/local-schema.ts"
 import { render } from "#app/utils/render.ts"
 
 export const registerController = {
@@ -16,63 +19,65 @@ export const registerController = {
 
 			return render(
 				<Document url={context.url} head={<title>Register - Remix Wordle</title>}>
-					<main class="h-dvh">
+					<main class="mx-auto flex h-dvh w-full max-w-md flex-col items-center justify-center space-y-6">
 						<form
 							method="POST"
 							action={routes.auth.register.action.href()}
 							class="mx-auto flex h-full w-full max-w-md flex-col items-center justify-center space-y-6 px-8"
 						>
 							{error && typeof error === "string" ? (
-								<div class="w-full text-center text-red-500">{error}</div>
+								<div className="mb-4 text-red-500">
+									<FieldError errors={[{ message: error }]} />
+								</div>
 							) : null}
-							<div class="w-full">
-								<label class="block text-sm font-medium text-gray-700" for="email">
-									Email address
-								</label>
-								<input
-									type="email"
-									id="email"
-									name="email"
-									required
-									autoComplete="email"
-									class="mt-1 w-full rounded border border-gray-500 px-2 py-1 text-lg"
-								/>
-							</div>
+							<FieldGroup>
+								<Field>
+									<FieldLabel htmlFor="email">Email</FieldLabel>
+									<FieldContent>
+										<Input
+											id="email"
+											autoFocus={true}
+											name="email"
+											type="email"
+											autoComplete="email"
+										/>
+									</FieldContent>
+								</Field>
+							</FieldGroup>
 
-							<div class="w-full">
-								<label class="block text-sm font-medium text-gray-700" for="username">
-									Username
-								</label>
-								<input
-									type="text"
-									id="username"
-									name="username"
-									required
-									autoComplete="username"
-									class="mt-1 w-full rounded border border-gray-500 px-2 py-1 text-lg"
-								/>
-							</div>
+							<FieldGroup>
+								<Field>
+									<FieldLabel htmlFor="username">Username</FieldLabel>
+									<FieldContent>
+										<Input
+											id="username"
+											autoFocus={true}
+											name="username"
+											type="text"
+											autoComplete="username"
+										/>
+									</FieldContent>
+								</Field>
+							</FieldGroup>
 
-							<div class="w-full">
-								<label class="block text-sm font-medium text-gray-700" for="password">
-									Password
-								</label>
-								<input
-									type="password"
-									id="password"
-									name="password"
-									required
-									autoComplete="new-password"
-									class="mt-1 w-full rounded border border-gray-500 px-2 py-1 text-lg"
-								/>
-							</div>
+							<FieldGroup>
+								<Field>
+									<FieldLabel htmlFor="password">Password</FieldLabel>
+									<FieldContent>
+										<Input
+											id="password"
+											autoFocus={true}
+											name="password"
+											type="password"
+											autoComplete="new-password"
+										/>
+									</FieldContent>
+								</Field>
+							</FieldGroup>
 
-							<button
-								type="submit"
-								class="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
-							>
+							<Button type="submit" class="w-full">
 								Join now
-							</button>
+							</Button>
 
 							<p class="text-sm text-gray-500">
 								Already have an account?{" "}
@@ -89,17 +94,22 @@ export const registerController = {
 		async action(context) {
 			let session = context.get(Session)
 			let formData = context.get(FormData)
-			let result = parse(joinSchema, formData)
+			let result = parseSafe(joinSchema, formData)
 
-			if (await getUserByEmail(result.email)) {
+			if (result.success === false) {
+				session.flash("error", "Invalid form data. Please check your input and try again.")
+				return redirect(routes.auth.register.index.href())
+			}
+
+			if (await getUserByEmail(result.value.email)) {
 				session.flash("error", "An account with this email already exists.")
 				return redirect(routes.auth.register.index.href())
 			}
 
 			let user = await createUser({
-				email: result.email,
-				username: result.username,
-				password: result.password,
+				email: result.value.email,
+				username: result.value.username,
+				password: result.value.password,
 			})
 
 			session.set("auth", { auth: user.id })

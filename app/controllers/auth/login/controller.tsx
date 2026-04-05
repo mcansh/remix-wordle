@@ -5,13 +5,11 @@ import { Session } from "remix/session"
 
 import { Button } from "#app/components/button.tsx"
 import { Document } from "#app/components/document.tsx"
-import { Field, FieldContent, FieldGroup, FieldLabel } from "#app/components/field.tsx"
+import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from "#app/components/field.tsx"
 import { Input } from "#app/components/input.tsx"
-import { Label } from "#app/components/label.tsx"
 import { getPostAuthRedirect, getReturnToQuery, passwordProvider } from "#app/middleware/auth.ts"
 import { routes } from "#app/routes.ts"
 import { render } from "#app/utils/render.ts"
-
 export const loginController = {
 	actions: {
 		async action(context) {
@@ -47,19 +45,22 @@ export const loginController = {
 			return render(
 				<Document url={context.url} head={<title>Login - Remix Wordle</title>}>
 					<main class="h-dvh">
-						{error && typeof error === "string" ? <div class="text-red-500">{error}</div> : null}
 						<form
 							method="post"
 							class="mx-auto flex h-full w-full max-w-md flex-col items-center justify-center space-y-6 px-8"
 							action={formAction}
 						>
+							{error && typeof error === "string" ? (
+								<div className="mb-4 text-red-500">
+									<FieldError errors={[{ message: error }]} />
+								</div>
+							) : null}
 							<FieldGroup>
 								<Field>
 									<FieldLabel htmlFor="email">Email</FieldLabel>
 									<FieldContent>
 										<Input
 											id="email"
-											required
 											autoFocus={true}
 											name="email"
 											type="email"
@@ -88,7 +89,7 @@ export const loginController = {
 							</Button>
 							<div class="text-sm text-gray-500">
 								Don&apos;t have an account?{" "}
-								<a class="text-blue-500 underline" href={routes.auth.register.index.href()}>
+								<a href={routes.auth.register.index.href()} class="text-blue-500 underline">
 									Sign up
 								</a>
 							</div>
