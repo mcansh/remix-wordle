@@ -38,6 +38,7 @@ onlyBuiltDependencies:
   - "@remix-run/async-context-middleware"
   - "@remix-run/auth"
   - "@remix-run/auth-middleware"
+  - '@remix-run/cli'
   - "@remix-run/component"
   - "@remix-run/compression-middleware"
   - "@remix-run/cookie"
