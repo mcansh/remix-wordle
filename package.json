@@ -11,7 +11,7 @@
 		"start": "node ./server.ts",
 		"lint": "vp lint",
 		"format": "vp fmt",
-		"test": "vp test",
+		"test": "remix-test",
 		"typecheck": "tsc"
 	},
 	"dependencies": {
@@ -30,6 +30,8 @@
 		"@mcansh/vite-plugin-remix": "catalog:",
 		"@mcansh/vite-plugin-svg-sprite": "catalog:",
 		"@mswjs/http-middleware": "catalog:",
+		"@remix-run/assert": "catalog:",
+		"@remix-run/test": "catalog:",
 		"@tailwindcss/vite": "catalog:",
 		"@total-typescript/tsconfig": "catalog:",
 		"@types/node": "catalog:",

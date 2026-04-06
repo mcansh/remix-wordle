@@ -166,7 +166,7 @@ export default defineConfig({
 	builder: {
 		async buildApp(builder) {
 			if (builder.environments.ssr == null || builder.environments.client == null) {
-				throw new Error("missing ssr and client environments")
+				throw new Error("missing ssr or client environment")
 			}
 			await builder.build(builder.environments.ssr)
 			await builder.build(builder.environments.client)
