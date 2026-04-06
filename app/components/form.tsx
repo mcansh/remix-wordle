@@ -18,12 +18,15 @@ export function GuessForm() {
 				mix={[
 					keysEvents(),
 					on(keysEvents.backspace, (event) => {
-						let target = event.target
-						if (!(target instanceof HTMLInputElement)) return
-						if (target.previousElementSibling) {
-							let prevInput = target.previousElementSibling
-							if (prevInput instanceof HTMLInputElement) {
-								prevInput.focus()
+						let focusedInput = event.currentTarget.querySelector("input:focus")
+						if (focusedInput instanceof HTMLInputElement) {
+							focusedInput.value = ""
+						}
+						event.preventDefault()
+						if (focusedInput?.previousElementSibling) {
+							let previousInput = focusedInput.previousElementSibling
+							if (previousInput instanceof HTMLInputElement) {
+								previousInput.select()
 							}
 						}
 					}),
