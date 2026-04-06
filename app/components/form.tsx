@@ -1,7 +1,7 @@
 "use client"
 
 import type { RemixNode } from "remix/component"
-import { on } from "remix/component"
+import { on, keysEvents } from "remix/component"
 
 import { routes } from "#app/routes.ts"
 
@@ -16,15 +16,14 @@ export function GuessForm() {
 				id="current-guess"
 				autoComplete="off"
 				mix={[
-					on("keydown", (event) => {
-						if (event.key === "Backspace") {
-							let target = event.target
-							if (!(target instanceof HTMLInputElement)) return
-							if (target.previousElementSibling) {
-								let prevInput = target.previousElementSibling
-								if (prevInput instanceof HTMLInputElement) {
-									prevInput.focus()
-								}
+					keysEvents(),
+					on(keysEvents.backspace, (event) => {
+						let target = event.target
+						if (!(target instanceof HTMLInputElement)) return
+						if (target.previousElementSibling) {
+							let prevInput = target.previousElementSibling
+							if (prevInput instanceof HTMLInputElement) {
+								prevInput.focus()
 							}
 						}
 					}),
