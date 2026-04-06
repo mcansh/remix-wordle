@@ -20,64 +20,64 @@ catalog:
   date-fns: ^4.1.0
   happy-dom: ^20.8.9
   ioredis: ^5.10.1
-  msw: ^2.12.14
+  msw: ^2.13.0
   prisma: ^7.6.0
   remix: github:remix-run/remix#preview/main&path:packages/remix
   tailwindcss: ^4.2.2
   typescript: ^6.0.2
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vite-plugin-devtools-json: ^1.0.0
-  vite-plus: ^0.1.15
+  vite-plus: ^0.1.16
   vitest: npm:@voidzero-dev/vite-plus-test@latest
 
 catalogMode: strict
 
-onlyBuiltDependencies:
-  - "@prisma/engines"
-  - "@remix-run/assert"
-  - "@remix-run/async-context-middleware"
-  - "@remix-run/auth"
-  - "@remix-run/auth-middleware"
-  - "@remix-run/cli"
-  - "@remix-run/component"
-  - "@remix-run/compression-middleware"
-  - "@remix-run/cookie"
-  - "@remix-run/cop-middleware"
-  - "@remix-run/cors-middleware"
-  - "@remix-run/csrf-middleware"
-  - "@remix-run/data-schema"
-  - "@remix-run/data-table"
-  - "@remix-run/data-table-mysql"
-  - "@remix-run/data-table-postgres"
-  - "@remix-run/data-table-sqlite"
-  - "@remix-run/fetch-proxy"
-  - "@remix-run/fetch-router"
-  - "@remix-run/file-storage"
-  - "@remix-run/file-storage-s3"
-  - "@remix-run/form-data-middleware"
-  - "@remix-run/form-data-parser"
-  - "@remix-run/fs"
-  - "@remix-run/headers"
-  - "@remix-run/html-template"
-  - "@remix-run/lazy-file"
-  - "@remix-run/logger-middleware"
-  - "@remix-run/method-override-middleware"
-  - "@remix-run/mime"
-  - "@remix-run/multipart-parser"
-  - "@remix-run/node-fetch-server"
-  - "@remix-run/response"
-  - "@remix-run/route-pattern"
-  - "@remix-run/session"
-  - "@remix-run/session-middleware"
-  - "@remix-run/session-storage-memcache"
-  - "@remix-run/session-storage-redis"
-  - "@remix-run/static-middleware"
-  - "@remix-run/tar-parser"
-  - "@remix-run/test"
-  - esbuild
-  - msw
-  - prisma
-  - remix
+allowBuilds:
+  "@prisma/engines": true
+  "@remix-run/assert": true
+  "@remix-run/async-context-middleware": true
+  "@remix-run/auth": true
+  "@remix-run/auth-middleware": true
+  "@remix-run/cli": true
+  "@remix-run/component": true
+  "@remix-run/compression-middleware": true
+  "@remix-run/cookie": true
+  "@remix-run/cop-middleware": true
+  "@remix-run/cors-middleware": true
+  "@remix-run/csrf-middleware": true
+  "@remix-run/data-schema": true
+  "@remix-run/data-table": true
+  "@remix-run/data-table-mysql": true
+  "@remix-run/data-table-postgres": true
+  "@remix-run/data-table-sqlite": true
+  "@remix-run/fetch-proxy": true
+  "@remix-run/fetch-router": true
+  "@remix-run/file-storage": true
+  "@remix-run/file-storage-s3": true
+  "@remix-run/form-data-middleware": true
+  "@remix-run/form-data-parser": true
+  "@remix-run/fs": true
+  "@remix-run/headers": true
+  "@remix-run/html-template": true
+  "@remix-run/lazy-file": true
+  "@remix-run/logger-middleware": true
+  "@remix-run/method-override-middleware": true
+  "@remix-run/mime": true
+  "@remix-run/multipart-parser": true
+  "@remix-run/node-fetch-server": true
+  "@remix-run/response": true
+  "@remix-run/route-pattern": true
+  "@remix-run/session": true
+  "@remix-run/session-middleware": true
+  "@remix-run/session-storage-memcache": true
+  "@remix-run/session-storage-redis": true
+  "@remix-run/static-middleware": true
+  "@remix-run/tar-parser": true
+  "@remix-run/test": true
+  esbuild: true
+  msw: true
+  prisma: true
+  remix: true
 overrides:
   vite: "catalog:"
   vitest: "catalog:"
