@@ -1,36 +1,3 @@
-catalog:
-  "@mcansh/http-helmet": ^0.13.2
-  "@mcansh/remix-testing-library": ^0.0.1
-  "@mcansh/vite-plugin-remix": ^0.0.1
-  "@mcansh/vite-plugin-svg-sprite": ^0.7.1
-  "@mswjs/http-middleware": ^0.10.3
-  "@oxlint/plugins": ^1.58.0
-  "@prisma/adapter-pg": ^7.6.0
-  "@prisma/client": ^7.6.0
-  "@remix-run/cli": github:remix-run/remix#preview/pr-11204&path:packages/cli
-  "@standard-schema/spec": ^1.1.0
-  "@tailwindcss/vite": ^4.2.2
-  "@total-typescript/tsconfig": ^1.0.4
-  "@types/node": ^25.5.2
-  "@vitest/coverage-v8": ^4.1.2
-  "@vitest/ui": 4.1.2
-  bcryptjs: ^3.0.3
-  bullmq: ^5.73.0
-  clsx: ^2.1.1
-  date-fns: ^4.1.0
-  happy-dom: ^20.8.9
-  ioredis: ^5.10.1
-  msw: ^2.13.0
-  prisma: ^7.6.0
-  remix: github:remix-run/remix#preview/main&path:packages/remix
-  tailwindcss: ^4.2.2
-  typescript: ^6.0.2
-  vite: npm:@voidzero-dev/vite-plus-core@latest
-  vite-plugin-devtools-json: ^1.0.0
-  vite-plus: ^0.1.16
-  vitest: npm:@voidzero-dev/vite-plus-test@latest
-
-catalogMode: strict
 
 allowBuilds:
   "@prisma/engines": true
@@ -78,6 +45,40 @@ allowBuilds:
   msw: true
   prisma: true
   remix: true
+catalog:
+  "@mcansh/http-helmet": ^0.13.2
+  "@mcansh/remix-testing-library": ^0.0.1
+  "@mcansh/vite-plugin-remix": ^0.0.1
+  "@mcansh/vite-plugin-svg-sprite": ^0.7.1
+  "@mswjs/http-middleware": ^0.10.3
+  "@oxlint/plugins": ^1.58.0
+  "@prisma/adapter-pg": ^7.6.0
+  "@prisma/client": ^7.6.0
+  '@redwoodjs/agent-ci': ^0.7.1
+  "@remix-run/cli": github:remix-run/remix#preview/pr-11204&path:packages/cli
+  "@standard-schema/spec": ^1.1.0
+  "@tailwindcss/vite": ^4.2.2
+  "@total-typescript/tsconfig": ^1.0.4
+  "@types/node": ^25.5.2
+  "@vitest/coverage-v8": ^4.1.2
+  "@vitest/ui": 4.1.2
+  bcryptjs: ^3.0.3
+  bullmq: ^5.73.0
+  clsx: ^2.1.1
+  date-fns: ^4.1.0
+  happy-dom: ^20.8.9
+  ioredis: ^5.10.1
+  msw: ^2.13.0
+  prisma: ^7.6.0
+  remix: github:remix-run/remix#preview/main&path:packages/remix
+  tailwindcss: ^4.2.2
+  typescript: ^6.0.2
+  vite: npm:@voidzero-dev/vite-plus-core@latest
+  vite-plugin-devtools-json: ^1.0.0
+  vite-plus: ^0.1.16
+  vitest: npm:@voidzero-dev/vite-plus-test@latest
+
+catalogMode: strict
 overrides:
   vite: "catalog:"
   vitest: "catalog:"

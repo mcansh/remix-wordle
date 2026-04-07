@@ -35,6 +35,7 @@
 		"@mcansh/vite-plugin-svg-sprite": "catalog:",
 		"@mswjs/http-middleware": "catalog:",
 		"@oxlint/plugins": "catalog:",
+		"@redwoodjs/agent-ci": "catalog:",
 		"@remix-run/cli": "catalog:",
 		"@tailwindcss/vite": "catalog:",
 		"@total-typescript/tsconfig": "catalog:",
