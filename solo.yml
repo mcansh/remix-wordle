@@ -15,10 +15,3 @@ processes:
     auto_restart: false
     restart_when_changed: []
     env: {}
-  dev:
-    command: npm run dev
-    working_dir: null
-    auto_start: false
-    auto_restart: true
-    restart_when_changed: []
-    env: {}
