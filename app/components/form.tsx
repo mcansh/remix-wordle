@@ -5,6 +5,18 @@ import { on, keysEvents } from "remix/component"
 
 import { routes } from "#app/routes.ts"
 
+export function hasFilledInputAfter(input: HTMLInputElement) {
+	let sibling = input.nextElementSibling
+	while (sibling) {
+		if (sibling instanceof HTMLInputElement && sibling.type === "text" && sibling.value !== "") {
+			return true
+		}
+		sibling = sibling.nextElementSibling
+	}
+
+	return false
+}
+
 export function GuessForm() {
 	return ({ currentGuess, children }: { currentGuess: number; children: RemixNode }) => {
 		return (
@@ -20,21 +32,8 @@ export function GuessForm() {
 					on(keysEvents.backspace, (event) => {
 						let focusedInput = event.currentTarget.querySelector("input:focus")
 						if (focusedInput instanceof HTMLInputElement) {
-							let hasFilledInputAfter = false
-							let sibling = focusedInput.nextElementSibling
-							while (sibling) {
-								if (
-									sibling instanceof HTMLInputElement &&
-									sibling.type === "text" &&
-									sibling.value !== ""
-								) {
-									hasFilledInputAfter = true
-									break
-								}
-								sibling = sibling.nextElementSibling
-							}
 							focusedInput.value = ""
-							if (hasFilledInputAfter) {
+							if (hasFilledInputAfter(focusedInput)) {
 								event.preventDefault()
 								return
 							}
