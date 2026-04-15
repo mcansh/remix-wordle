@@ -42,9 +42,10 @@ export function GuessForm() {
 				autoComplete="off"
 				mix={[
 					keysEvents(),
-					on(keysEvents.backspace, (event) => {
-						handleGuessFormBackspace(event as KeyboardEvent)
-					}),
+					on<HTMLFormElement, typeof keysEvents.backspace>(
+						keysEvents.backspace,
+						handleGuessFormBackspace,
+					),
 					on("input", (event) => {
 						let target = event.target
 						if (!(target instanceof HTMLInputElement)) return
