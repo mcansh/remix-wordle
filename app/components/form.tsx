@@ -6,6 +6,30 @@ import { on, keysEvents } from "remix/component"
 import { hasFilledInputAfter } from "#app/components/has-filled-input-after.ts"
 import { routes } from "#app/routes.ts"
 
+export function handleGuessFormBackspace(event: KeyboardEvent) {
+	let focusedInput =
+		event.currentTarget instanceof Element ? event.currentTarget.querySelector("input:focus") : null
+	if (focusedInput instanceof HTMLInputElement) {
+		let hasFilledInputLater = hasFilledInputAfter(focusedInput)
+		if (focusedInput.value !== "") {
+			focusedInput.value = ""
+		}
+		event.preventDefault()
+		if (hasFilledInputLater) {
+			return
+		}
+		if (focusedInput.previousElementSibling) {
+			let previousInput = focusedInput.previousElementSibling
+			if (previousInput instanceof HTMLInputElement) {
+				previousInput.select()
+			}
+		}
+		return
+	}
+
+	event.preventDefault()
+}
+
 export function GuessForm() {
 	return ({ currentGuess, children }: { currentGuess: number; children: RemixNode }) => {
 		return (
@@ -19,21 +43,7 @@ export function GuessForm() {
 				mix={[
 					keysEvents(),
 					on(keysEvents.backspace, (event) => {
-						let focusedInput = event.currentTarget.querySelector("input:focus")
-						if (focusedInput instanceof HTMLInputElement) {
-							if (hasFilledInputAfter(focusedInput)) {
-								event.preventDefault()
-								return
-							}
-							focusedInput.value = ""
-						}
-						event.preventDefault()
-						if (focusedInput?.previousElementSibling) {
-							let previousInput = focusedInput.previousElementSibling
-							if (previousInput instanceof HTMLInputElement) {
-								previousInput.select()
-							}
-						}
+						handleGuessFormBackspace(event as KeyboardEvent)
 					}),
 					on("input", (event) => {
 						let target = event.target
