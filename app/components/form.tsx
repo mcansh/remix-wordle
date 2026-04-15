@@ -32,11 +32,11 @@ export function GuessForm() {
 					on(keysEvents.backspace, (event) => {
 						let focusedInput = event.currentTarget.querySelector("input:focus")
 						if (focusedInput instanceof HTMLInputElement) {
-							focusedInput.value = ""
 							if (hasFilledInputAfter(focusedInput)) {
 								event.preventDefault()
 								return
 							}
+							focusedInput.value = ""
 						}
 						event.preventDefault()
 						if (focusedInput?.previousElementSibling) {
