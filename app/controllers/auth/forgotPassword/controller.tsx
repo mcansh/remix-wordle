@@ -1,9 +1,9 @@
 import type { Controller } from "remix/fetch-router"
 
-import { Document } from "../../components/document"
-import { createPasswordResetToken } from "../../models/user"
-import { routes } from "../../routes"
-import { render } from "../../utils/render"
+import { Document } from "#app/components/document.tsx"
+import { createPasswordResetToken } from "#app/models/user.ts"
+import { routes } from "#app/routes.ts"
+import { render } from "#app/utils/render.ts"
 
 export const forgotPasswordController = {
 	actions: {

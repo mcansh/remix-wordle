@@ -1,6 +1,6 @@
 import { Auth, type BadAuth, type GoodAuth } from "remix/auth-middleware"
 import type { Controller } from "remix/fetch-router"
-import { createRedirectResponse, redirect } from "remix/response/redirect"
+import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
 import { REVEAL_WORD, WORD_LENGTH } from "#app/constants.ts"
@@ -12,7 +12,7 @@ import * as f from "#app/utils/local-form-schema.ts"
 import * as s from "#app/utils/local-schema.ts"
 import { render } from "#app/utils/render.ts"
 
-import { Page } from "./page.tsx"
+import { Page } from "./page"
 
 export function validLength(length: number): s.Check<Array<string>> {
 	return {
@@ -54,7 +54,7 @@ export const home = {
 
 			if (!data.success) {
 				session.flash("error", "Invalid input")
-				return createRedirectResponse(routes.home.index.href())
+				return redirect(routes.home.index.href())
 			}
 
 			let guessedWord = data.value.letters.join("")
@@ -65,9 +65,7 @@ export const home = {
 				session.flash("error", error)
 			}
 
-			return createRedirectResponse(
-				routes.home.index.href(undefined, data.value.cheat ? { cheat: "true" } : {}),
-			)
+			return redirect(routes.home.index.href(undefined, data.value.cheat ? { cheat: "true" } : {}))
 		},
 
 		async index(context) {

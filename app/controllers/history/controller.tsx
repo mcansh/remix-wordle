@@ -9,13 +9,13 @@ import type { AuthIdentity } from "#app/utils/auth-session.ts"
 import { db } from "#app/utils/db.ts"
 import { render } from "#app/utils/render.ts"
 
-import { HistoricalGame } from "./game.tsx"
+import { HistoricalGame } from "./game"
 import {
 	createHistoricalGameListItem,
 	HISTORICAL_GAME_SELECT,
 	HistoricalGameList,
-} from "./history-page.tsx"
-import { GameNotFound } from "./not-found-page.tsx"
+} from "./history-page"
+import { GameNotFound } from "./not-found-page"
 
 export const history = {
 	middleware: [requireAuth],

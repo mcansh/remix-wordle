@@ -1,12 +1,22 @@
 "use client"
 
-import type { RemixNode } from "remix/component"
 import { on, keysEvents } from "remix/component"
 
+import { LETTER_INPUTS } from "#app/constants.ts"
 import { routes } from "#app/routes.ts"
 
+import { LetterInput } from "./letter-input"
+
 export function GuessForm() {
-	return ({ currentGuess, children }: { currentGuess: number; children: RemixNode }) => {
+	return ({
+		currentGuess,
+		cheat,
+		error,
+	}: {
+		currentGuess: number
+		error?: string
+		cheat?: boolean
+	}) => {
 		return (
 			<form
 				method="POST"
@@ -43,7 +53,10 @@ export function GuessForm() {
 					}),
 				]}
 			>
-				{children}
+				{cheat ? <input type="hidden" name="cheat" value="true" /> : null}
+				{LETTER_INPUTS.map((index) => (
+					<LetterInput key={`input-number-${index}`} index={index} errorMessage={error} />
+				))}
 			</form>
 		)
 	}

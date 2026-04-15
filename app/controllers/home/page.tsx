@@ -4,8 +4,7 @@ import { Document } from "#app/components/document.tsx"
 import { GuessForm } from "#app/components/form.tsx"
 import { GameOverModal } from "#app/components/game-over-modal.tsx"
 import { Keyboard } from "#app/components/keyboard.tsx"
-import { LetterInput } from "#app/components/letter-input.tsx"
-import { LETTER_INPUTS, TOTAL_GUESSES } from "#app/constants.ts"
+import { TOTAL_GUESSES } from "#app/constants.ts"
 import type { GameBoard } from "#app/models/game.ts"
 
 export function Page(_handle: Handle, { url }: { url: URL }) {
@@ -46,16 +45,7 @@ export function Page(_handle: Handle, { url }: { url: URL }) {
 							{board.guesses.map((guess, guessIndex) => {
 								if (board.currentGuess === guessIndex) {
 									return (
-										<GuessForm currentGuess={board.currentGuess}>
-											{showWord ? <input type="hidden" name="cheat" value="true" /> : null}
-											{LETTER_INPUTS.map((index) => (
-												<LetterInput
-													key={`input-number-${index}`}
-													index={index}
-													errorMessage={error}
-												/>
-											))}
-										</GuessForm>
+										<GuessForm currentGuess={board.currentGuess} error={error} cheat={!!showWord} />
 									)
 								}
 
@@ -83,8 +73,8 @@ export function Page(_handle: Handle, { url }: { url: URL }) {
 							})}
 
 							<input
-								form="current-guess"
 								enterKeyHint="send"
+								form="current-guess"
 								type="submit"
 								class="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
 								value="Submit Guess"
