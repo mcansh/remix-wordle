@@ -8,17 +8,17 @@ authoring reusable animation mixins instead of applying built-in mixins in app c
 ## Quick Start
 
 ```tsx
-import { animateEntrance, animateExit, animateLayout, spring } from "remix/component"
+import { animateEntrance, animateExit, animateLayout, spring } from 'remix/component'
 
 let el = (
-	<div
-		key="card"
-		mix={[
-			animateEntrance({ opacity: 0, transform: "scale(0.95)", ...spring("snappy") }),
-			animateExit({ opacity: 0, transform: "scale(0.98)", duration: 120, easing: "ease-in" }),
-			animateLayout({ duration: 220, easing: "ease-out" }),
-		]}
-	/>
+  <div
+    key="card"
+    mix={[
+      animateEntrance({ opacity: 0, transform: 'scale(0.95)', ...spring('snappy') }),
+      animateExit({ opacity: 0, transform: 'scale(0.98)', duration: 120, easing: 'ease-in' }),
+      animateLayout({ duration: 220, easing: 'ease-out' }),
+    ]}
+  />
 )
 ```
 
@@ -28,14 +28,14 @@ let el = (
 
 ```tsx
 <div
-	mix={[
-		animateEntrance({
-			opacity: 0,
-			transform: "translateY(8px)",
-			duration: 180,
-			easing: "ease-out",
-		}),
-	]}
+  mix={[
+    animateEntrance({
+      opacity: 0,
+      transform: 'translateY(8px)',
+      duration: 180,
+      easing: 'ease-out',
+    }),
+  ]}
 />
 ```
 
@@ -43,15 +43,15 @@ let el = (
 
 ```tsx
 {
-	isVisible && (
-		<div
-			key="panel"
-			mix={[
-				animateEntrance({ opacity: 0, transform: "scale(0.98)", duration: 180 }),
-				animateExit({ opacity: 0, transform: "scale(0.98)", duration: 120, easing: "ease-in" }),
-			]}
-		/>
-	)
+  isVisible && (
+    <div
+      key="panel"
+      mix={[
+        animateEntrance({ opacity: 0, transform: 'scale(0.98)', duration: 180 }),
+        animateExit({ opacity: 0, transform: 'scale(0.98)', duration: 120, easing: 'ease-in' }),
+      ]}
+    />
+  )
 }
 ```
 
@@ -59,36 +59,36 @@ let el = (
 
 ```tsx
 {
-	items.map((item) => (
-		<li
-			key={item.id}
-			mix={[
-				animateLayout({
-					...spring({ duration: 500, bounce: 0.2 }),
-				}),
-			]}
-		/>
-	))
+  items.map((item) => (
+    <li
+      key={item.id}
+      mix={[
+        animateLayout({
+          ...spring({ duration: 500, bounce: 0.2 }),
+        }),
+      ]}
+    />
+  ))
 }
 ```
 
 ### Shared-layout swap
 
 ```tsx
-import { animateEntrance, animateExit, css } from "remix/component"
+import { animateEntrance, animateExit, css } from 'remix/component'
 ;<div
-	mix={[
-		css({
-			display: "grid",
-			"& > *": { gridArea: "1 / 1" },
-		}),
-	]}
+  mix={[
+    css({
+      display: 'grid',
+      '& > *': { gridArea: '1 / 1' },
+    }),
+  ]}
 >
-	{state ? (
-		<div key="a" mix={[animateEntrance({ opacity: 0 }), animateExit({ opacity: 0 })]} />
-	) : (
-		<div key="b" mix={[animateEntrance({ opacity: 0 }), animateExit({ opacity: 0 })]} />
-	)}
+  {state ? (
+    <div key="a" mix={[animateEntrance({ opacity: 0 }), animateExit({ opacity: 0 })]} />
+  ) : (
+    <div key="b" mix={[animateEntrance({ opacity: 0 }), animateExit({ opacity: 0 })]} />
+  )}
 </div>
 ```
 

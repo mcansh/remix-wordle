@@ -3,41 +3,41 @@
 Use `clientEntry()` to mark interactive islands and `run()` to hydrate them.
 
 ```tsx
-import { clientEntry, on, run, type Handle } from "remix/component"
+import { clientEntry, on, run, type Handle } from 'remix/component'
 
-export let Counter = clientEntry("/assets/entry.js#Counter", (handle: Handle) => {
-	let count = 0
+export let Counter = clientEntry('/assets/entry.js#Counter', (handle: Handle) => {
+  let count = 0
 
-	return () => (
-		<button
-			mix={[
-				on("click", () => {
-					count++
-					handle.update()
-				}),
-			]}
-		>
-			{count}
-		</button>
-	)
+  return () => (
+    <button
+      mix={[
+        on('click', () => {
+          count++
+          handle.update()
+        }),
+      ]}
+    >
+      {count}
+    </button>
+  )
 })
 
 let app = run({
-	async loadModule(moduleUrl, exportName) {
-		let mod = await import(moduleUrl)
-		return mod[exportName]
-	},
-	async resolveFrame(src, signal, target) {
-		let headers = new Headers({ accept: "text/html" })
-		if (target) headers.set("x-remix-target", target)
+  async loadModule(moduleUrl, exportName) {
+    let mod = await import(moduleUrl)
+    return mod[exportName]
+  },
+  async resolveFrame(src, signal, target) {
+    let headers = new Headers({ accept: 'text/html' })
+    if (target) headers.set('x-remix-target', target)
 
-		let response = await fetch(src, { headers, signal })
-		return response.body ?? (await response.text())
-	},
+    let response = await fetch(src, { headers, signal })
+    return response.body ?? (await response.text())
+  },
 })
 
-app.addEventListener("error", (event) => {
-	console.error(event.error)
+app.addEventListener('error', (event) => {
+  console.error(event.error)
 })
 
 await app.ready()
@@ -55,19 +55,19 @@ Rules:
 Use `<Frame>` for server-rendered regions that should load or reload independently.
 
 ```tsx
-import { renderToStream } from "remix/component/server"
+import { renderToStream } from 'remix/component/server'
 
 let stream = renderToStream(<App />, {
-	frameSrc: request.url,
-	resolveFrame(src, _target, context) {
-		let currentFrameSrc = context?.currentFrameSrc ?? request.url
-		let url = new URL(src, currentFrameSrc)
-		return renderToStream(<FrameRoute url={url} />, {
-			frameSrc: url,
-			topFrameSrc: context?.topFrameSrc ?? request.url,
-			resolveFrame,
-		})
-	},
+  frameSrc: request.url,
+  resolveFrame(src, _target, context) {
+    let currentFrameSrc = context?.currentFrameSrc ?? request.url
+    let url = new URL(src, currentFrameSrc)
+    return renderToStream(<FrameRoute url={url} />, {
+      frameSrc: url,
+      topFrameSrc: context?.topFrameSrc ?? request.url,
+      resolveFrame,
+    })
+  },
 })
 ```
 
@@ -99,18 +99,18 @@ Manage document head state with an explicit `<head>` in your document or layout 
 
 ```tsx
 function App() {
-	return () => (
-		<html>
-			<head>
-				<title>Dashboard</title>
-				<meta name="description" content="Team dashboard" />
-				<link rel="stylesheet" href="/styles/app.css" />
-			</head>
-			<body>
-				<main>...</main>
-			</body>
-		</html>
-	)
+  return () => (
+    <html>
+      <head>
+        <title>Dashboard</title>
+        <meta name="description" content="Team dashboard" />
+        <link rel="stylesheet" href="/styles/app.css" />
+      </head>
+      <body>
+        <main>...</main>
+      </body>
+    </html>
+  )
 }
 ```
 
