@@ -2,7 +2,7 @@
 
 import { describe, expect, it } from "vite-plus/test"
 
-import { hasFilledInputAfter } from "#app/components/form.tsx"
+import { hasFilledInputAfter } from "#app/components/has-filled-input-after.ts"
 
 describe("hasFilledInputAfter", () => {
 	it("returns true when a later text input contains a value", () => {

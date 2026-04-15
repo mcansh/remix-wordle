@@ -3,19 +3,8 @@
 import type { RemixNode } from "remix/component"
 import { on, keysEvents } from "remix/component"
 
+import { hasFilledInputAfter } from "#app/components/has-filled-input-after.ts"
 import { routes } from "#app/routes.ts"
-
-export function hasFilledInputAfter(input: HTMLInputElement) {
-	let sibling = input.nextElementSibling
-	while (sibling) {
-		if (sibling instanceof HTMLInputElement && sibling.type === "text" && sibling.value !== "") {
-			return true
-		}
-		sibling = sibling.nextElementSibling
-	}
-
-	return false
-}
 
 export function GuessForm() {
 	return ({ currentGuess, children }: { currentGuess: number; children: RemixNode }) => {
