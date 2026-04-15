@@ -44,6 +44,7 @@ allowBuilds:
   msw: true
   prisma: true
   remix: true
+
 catalog:
   "@mcansh/http-helmet": ^0.13.2
   "@mcansh/remix-testing-library": ^0.0.1
@@ -57,6 +58,8 @@ catalog:
   "@remix-run/cli": github:remix-run/remix#preview/pr-11204&path:packages/cli
   "@standard-schema/spec": ^1.1.0
   "@tailwindcss/vite": ^4.2.2
+  "@testing-library/jest-dom": ^6.9.1
+  "@testing-library/user-event": ^14.6.1
   "@total-typescript/tsconfig": ^1.0.4
   "@types/node": ^25.5.2
   "@vitest/coverage-v8": ^4.1.4
@@ -78,9 +81,11 @@ catalog:
   vitest: npm:@voidzero-dev/vite-plus-test@latest
 
 catalogMode: strict
+
 overrides:
   vite: "catalog:"
   vitest: "catalog:"
+
 peerDependencyRules:
   allowAny:
     - vite

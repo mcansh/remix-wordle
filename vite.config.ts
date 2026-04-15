@@ -210,4 +210,9 @@ export default defineConfig({
 		},
 	},
 	plugins: [remix(), devtoolsJson(), tailwindcss(), svgSprite()],
+
+	test: {
+		exclude: ["./app/generated/**", "./node_modules/**", ".git/**", "./dist/**"],
+		environment: "happy-dom",
+	},
 })

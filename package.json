@@ -38,6 +38,8 @@
 		"@redwoodjs/agent-ci": "catalog:",
 		"@remix-run/cli": "catalog:",
 		"@tailwindcss/vite": "catalog:",
+		"@testing-library/jest-dom": "catalog:",
+		"@testing-library/user-event": "catalog:",
 		"@total-typescript/tsconfig": "catalog:",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
