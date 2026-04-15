@@ -3,6 +3,7 @@ import { email, minLength } from "remix/data-schema/checks"
 import * as f from "remix/data-schema/form-data"
 
 import type { User } from "#app/generated/prisma/client.ts"
+import { normalizeEmail } from "#app/utils/auth-session.ts"
 import { db } from "#app/utils/db.ts"
 import * as s from "#app/utils/local-schema.ts"
 
@@ -13,7 +14,7 @@ export const joinSchema = f.object({
 })
 
 export async function getUserByEmail(email: User["email"]) {
-	return db.user.findUnique({ where: { email } })
+	return db.user.findUnique({ where: { email: normalizeEmail(email) } })
 }
 
 export async function createUser(user: {
@@ -22,11 +23,12 @@ export async function createUser(user: {
 	password: User["password"]
 }) {
 	let hashedPassword = await bcrypt.hash(user.password, 10)
+	let normalizedEmail = normalizeEmail(user.email)
 
 	return db.user.create({
 		data: {
 			username: user.username,
-			email: user.email,
+			email: normalizedEmail,
 			password: hashedPassword,
 		},
 	})
