@@ -4,6 +4,7 @@ import { remix } from "@mcansh/vite-plugin-remix"
 import { svgSprite } from "@mcansh/vite-plugin-svg-sprite"
 import tailwindcss from "@tailwindcss/vite"
 import devtoolsJson from "vite-plugin-devtools-json"
+import inspect from "vite-plugin-inspect"
 import { defineConfig } from "vite-plus"
 
 try {
@@ -43,6 +44,10 @@ export default defineConfig({
 		],
 		categories: {},
 		rules: {
+			"prefer-import-alias/prefer-import-alias": "error",
+			"remix-style/prefer-const-module-scope": "error",
+			"remix-style/prefer-let-locals": "error",
+			"import/extensions": ["error", "ignorePackages"],
 			"constructor-super": "warn",
 			"for-direction": "warn",
 			"no-async-promise-executor": "warn",
@@ -147,10 +152,6 @@ export default defineConfig({
 			"unicorn/no-useless-spread": "warn",
 			"unicorn/prefer-set-size": "warn",
 			"unicorn/prefer-string-starts-ends-with": "warn",
-			"prefer-import-alias/prefer-import-alias": "error",
-			"remix-style/prefer-const-module-scope": "error",
-			"remix-style/prefer-let-locals": "error",
-			"import/extensions": ["error", "ignorePackages"],
 		},
 		settings: {
 			"jsx-a11y": {
@@ -209,5 +210,5 @@ export default defineConfig({
 			},
 		},
 	},
-	plugins: [remix(), devtoolsJson(), tailwindcss(), svgSprite()],
+	plugins: [remix(), devtoolsJson(), tailwindcss(), svgSprite(), inspect()],
 })

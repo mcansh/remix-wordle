@@ -49,6 +49,7 @@
 		"typescript": "catalog:",
 		"vite": "npm:@voidzero-dev/vite-plus-core@latest",
 		"vite-plugin-devtools-json": "catalog:",
+		"vite-plugin-inspect": "catalog:",
 		"vite-plus": "catalog:",
 		"vitest": "npm:@voidzero-dev/vite-plus-test@latest"
 	},
