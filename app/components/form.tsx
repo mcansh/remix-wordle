@@ -20,7 +20,7 @@ export function GuessForm() {
 					on(keysEvents.backspace, (event) => {
 						let focusedInput = event.currentTarget.querySelector("input:focus")
 						if (focusedInput instanceof HTMLInputElement) {
-							let hasFutureFilledInput = false
+							let hasFilledInputAfter = false
 							let sibling = focusedInput.nextElementSibling
 							while (sibling) {
 								if (
@@ -28,13 +28,13 @@ export function GuessForm() {
 									sibling.type === "text" &&
 									sibling.value !== ""
 								) {
-									hasFutureFilledInput = true
+									hasFilledInputAfter = true
 									break
 								}
 								sibling = sibling.nextElementSibling
 							}
 							focusedInput.value = ""
-							if (hasFutureFilledInput) {
+							if (hasFilledInputAfter) {
 								event.preventDefault()
 								return
 							}
