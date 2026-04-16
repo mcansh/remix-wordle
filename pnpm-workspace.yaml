@@ -1,4 +1,3 @@
-
 allowBuilds:
   "@prisma/engines": true
   "@remix-run/assert": true
@@ -54,7 +53,7 @@ catalog:
   "@oxlint/plugins": ^1.58.0
   "@prisma/adapter-pg": ^7.7.0
   "@prisma/client": ^7.7.0
-  '@redwoodjs/agent-ci': ^0.9.0
+  "@redwoodjs/agent-ci": ^0.9.0
   "@remix-run/cli": github:remix-run/remix#preview/pr-11204&path:packages/cli
   "@standard-schema/spec": ^1.1.0
   "@tailwindcss/vite": ^4.2.2
@@ -75,7 +74,7 @@ catalog:
   typescript: ^6.0.2
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vite-plugin-devtools-json: ^1.0.0
-  vite-plus: ^0.1.16
+  vite-plus: ^0.1.17
   vitest: npm:@voidzero-dev/vite-plus-test@latest
 
 catalogMode: strict
