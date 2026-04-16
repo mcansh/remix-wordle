@@ -75,7 +75,7 @@ catalog:
   typescript: ^6.0.2
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vite-plugin-devtools-json: ^1.0.0
-  vite-plus: ^0.1.16
+  vite-plus: ^0.1.17
   vitest: npm:@voidzero-dev/vite-plus-test@latest
 
 catalogMode: strict
