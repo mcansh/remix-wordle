@@ -44,43 +44,46 @@ allowBuilds:
   msw: true
   prisma: true
   remix: true
+
+catalogMode: strict
+
 catalog:
   "@mcansh/http-helmet": ^0.13.2
   "@mcansh/remix-testing-library": ^0.0.1
   "@mcansh/vite-plugin-remix": ^0.0.1
   "@mcansh/vite-plugin-svg-sprite": ^0.7.1
   "@mswjs/http-middleware": ^0.10.3
-  "@oxlint/plugins": ^1.58.0
+  "@oxlint/plugins": ^1.60.0
   "@prisma/adapter-pg": ^7.7.0
   "@prisma/client": ^7.7.0
-  "@redwoodjs/agent-ci": ^0.9.0
+  "@redwoodjs/agent-ci": ^0.10.7
   "@remix-run/cli": github:remix-run/remix#preview/pr-11204&path:packages/cli
   "@standard-schema/spec": ^1.1.0
   "@tailwindcss/vite": ^4.2.2
   "@total-typescript/tsconfig": ^1.0.4
-  "@types/node": ^25.5.2
+  "@types/node": ^25.6.0
   "@vitest/coverage-v8": ^4.1.4
   "@vitest/ui": 4.1.4
   bcryptjs: ^3.0.3
-  bullmq: ^5.73.4
+  bullmq: ^5.74.1
   clsx: ^2.1.1
   date-fns: ^4.1.0
-  happy-dom: ^20.8.9
+  happy-dom: ^20.9.0
   ioredis: ^5.10.1
-  msw: ^2.13.0
+  msw: ^2.13.3
   prisma: ^7.7.0
   remix: github:remix-run/remix#preview/main&path:packages/remix
   tailwindcss: ^4.2.2
   typescript: ^6.0.2
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vite-plugin-devtools-json: ^1.0.0
-  vite-plus: ^0.1.17
+  vite-plus: ^0.1.18
   vitest: npm:@voidzero-dev/vite-plus-test@latest
 
-catalogMode: strict
 overrides:
   vite: "catalog:"
   vitest: "catalog:"
+
 peerDependencyRules:
   allowAny:
     - vite
