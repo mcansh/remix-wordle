@@ -5,6 +5,7 @@ import { Session } from "remix/session"
 import { Document } from "#app/components/document.tsx"
 import { createUser, getUserByEmail, joinSchema } from "#app/models/user.ts"
 import { routes } from "#app/routes.ts"
+import { normalizeEmail } from "#app/utils/auth-session.ts"
 import { parse } from "#app/utils/local-schema.ts"
 import { render } from "#app/utils/render.ts"
 
@@ -90,19 +91,20 @@ export const registerController = {
 			let session = context.get(Session)
 			let formData = context.get(FormData)
 			let result = parse(joinSchema, formData)
+			let email = normalizeEmail(result.email)
 
-			if (await getUserByEmail(result.email)) {
+			if (await getUserByEmail(email)) {
 				session.flash("error", "An account with this email already exists.")
 				return redirect(routes.auth.register.index.href())
 			}
 
 			let user = await createUser({
-				email: result.email,
+				email,
 				username: result.username,
 				password: result.password,
 			})
 
-			session.set("auth", { auth: user.id })
+			session.set("auth", { userId: user.id })
 
 			return redirect(routes.home.index.href())
 		},

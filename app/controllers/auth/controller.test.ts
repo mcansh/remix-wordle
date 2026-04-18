@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vite-plus/test"
 
+import { createUser } from "#app/models/user.ts"
 import { router } from "#app/router.ts"
 import { assertContains, assertNotContains, getSessionCookie } from "#test/helpers.ts"
 
@@ -249,6 +250,25 @@ describe("auth handlers", () => {
 
 			expect(response.status).toBe(302)
 			expect(response.headers.get("Location")).toBe("/")
+		})
+
+		it("normalizes email before creating the account", async () => {
+			let response = await router.fetch("https://wordle.mcan.sh/register", {
+				method: "POST",
+				body: new URLSearchParams({
+					email: "  NewUser@Example.com  ",
+					username: "newuser",
+					password: "supersecretpassword",
+				}),
+				redirect: "manual",
+			})
+
+			expect(response.status).toBe(302)
+			expect(createUser).toHaveBeenCalledWith({
+				email: "newuser@example.com",
+				username: "newuser",
+				password: "supersecretpassword",
+			})
 		})
 
 		it("redirects back to register when email already exists", async () => {
