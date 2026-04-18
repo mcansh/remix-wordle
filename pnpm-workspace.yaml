@@ -67,7 +67,7 @@ catalog:
   date-fns: ^4.1.0
   happy-dom: ^20.9.0
   ioredis: ^5.10.1
-  msw: ^2.13.0
+  msw: ^2.13.4
   prisma: ^7.7.0
   remix: github:remix-run/remix#preview/main&path:packages/remix
   tailwindcss: ^4.2.2
