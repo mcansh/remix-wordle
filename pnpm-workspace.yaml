@@ -53,7 +53,7 @@ catalog:
   "@oxlint/plugins": ^1.58.0
   "@prisma/adapter-pg": ^7.7.0
   "@prisma/client": ^7.7.0
-  "@redwoodjs/agent-ci": ^0.9.0
+  "@redwoodjs/agent-ci": ^0.12.1
   "@remix-run/cli": github:remix-run/remix#preview/pr-11204&path:packages/cli
   "@standard-schema/spec": ^1.1.0
   "@tailwindcss/vite": ^4.2.2
