@@ -31,8 +31,8 @@ catalogs:
       specifier: ^7.7.0
       version: 7.7.0
     '@redwoodjs/agent-ci':
-      specifier: ^0.9.0
-      version: 0.9.0
+      specifier: ^0.12.1
+      version: 0.12.1
     '@remix-run/cli':
       specifier: github:remix-run/remix#preview/pr-11204&path:packages/cli
       version: 0.0.0
@@ -147,7 +147,7 @@ importers:
         version: 1.58.0
       '@redwoodjs/agent-ci':
         specifier: 'catalog:'
-        version: 0.9.0
+        version: 0.12.1
       '@remix-run/cli':
         specifier: 'catalog:'
         version: https://codeload.github.com/remix-run/remix/tar.gz/5c20da47a677c3c3b1ccf4bce7b942bd8dc5ad14#path:packages/cli
@@ -1035,8 +1035,8 @@ packages:
       '@types/react':
         optional: true
 
-  '@redwoodjs/agent-ci@0.9.0':
-    resolution: {integrity: sha512-QFzSfl94qN5OJf6L411bZ4nrTqhJ2fJw1j6EKeEJIeE/MIWyQWczNUg2fgDElx7HlGUSIy+I+cw3sTxeqWQQOQ==}
+  '@redwoodjs/agent-ci@0.12.1':
+    resolution: {integrity: sha512-BJ9cMlDropb+nAv/vse8tFPQQtRILPMkJ/8GK4RSTb6aJyaDE5L3L2vNYmuPv2+4Rq7mw1iJe3kDhqE+p/lHIQ==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -1879,8 +1879,8 @@ packages:
     resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
     engines: {node: '>=12'}
 
-  dtu-github-actions@0.9.0:
-    resolution: {integrity: sha512-3J279MktXFzLpOvKm9ERRHAWdgDlX0Lm57xofyNitpzlBuq90+RHDgEHycHmjwoGB0YbJ32fv0CYtOthUMLBlw==}
+  dtu-github-actions@0.12.1:
+    resolution: {integrity: sha512-ucEYE6GKankBNsC0mBjeq3Se7E20VOB+TFkXgzDQEDLc3OQ89pav032s5j2kYrpAfIwnK3u+gcRFdlEMtYz+xA==}
     engines: {node: '>=22'}
 
   dunder-proto@1.0.1:
@@ -3761,11 +3761,11 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.7
 
-  '@redwoodjs/agent-ci@0.9.0':
+  '@redwoodjs/agent-ci@0.12.1':
     dependencies:
       '@actions/workflow-parser': 0.3.43
       dockerode: 4.0.10
-      dtu-github-actions: 0.9.0
+      dtu-github-actions: 0.12.1
       log-update: 7.2.0
       minimatch: 10.2.5
       yaml: 2.8.2
@@ -4552,7 +4552,7 @@ snapshots:
 
   dotenv@16.6.1: {}
 
-  dtu-github-actions@0.9.0:
+  dtu-github-actions@0.12.1:
     dependencies:
       body-parser: 2.2.2
       jsonc-parser: 3.3.1
