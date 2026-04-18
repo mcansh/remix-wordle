@@ -62,7 +62,7 @@ catalog:
   "@vitest/coverage-v8": ^4.1.4
   "@vitest/ui": 4.1.4
   bcryptjs: ^3.0.3
-  bullmq: ^5.73.4
+  bullmq: ^5.74.1
   clsx: ^2.1.1
   date-fns: ^4.1.0
   happy-dom: ^20.8.9
