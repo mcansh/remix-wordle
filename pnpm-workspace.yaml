@@ -65,7 +65,7 @@ catalog:
   bullmq: ^5.73.4
   clsx: ^2.1.1
   date-fns: ^4.1.0
-  happy-dom: ^20.8.9
+  happy-dom: ^20.9.0
   ioredis: ^5.10.1
   msw: ^2.13.0
   prisma: ^7.7.0
