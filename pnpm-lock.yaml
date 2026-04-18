@@ -58,8 +58,8 @@ catalogs:
       specifier: ^3.0.3
       version: 3.0.3
     bullmq:
-      specifier: ^5.73.4
-      version: 5.73.4
+      specifier: ^5.74.1
+      version: 5.74.1
     clsx:
       specifier: ^2.1.1
       version: 2.1.1
@@ -116,7 +116,7 @@ importers:
         version: 3.0.3
       bullmq:
         specifier: 'catalog:'
-        version: 5.73.4
+        version: 5.74.1
       clsx:
         specifier: 'catalog:'
         version: 2.1.1
@@ -1632,8 +1632,8 @@ packages:
     resolution: {integrity: sha512-lHblz4ahamxpTmnsk+MNTRWsjYKv965MwOrSJyeD588rR3Jcu7swE+0wN5F+PbL5cjgu/9ObkhfzEPuofEMwLA==}
     engines: {node: '>=10.0.0'}
 
-  bullmq@5.73.4:
-    resolution: {integrity: sha512-Q+NeFLtdKSD3GDPYSX4pH+Mc9E4OZVKimXwrnZ5WmndNy31COMy4vQV9zfhgfHGSUFrlpsBicfKYbSjx9FbO+A==}
+  bullmq@5.74.1:
+    resolution: {integrity: sha512-GfJEos2zoOGM9xqkB7VZouwwFuejKFqm667cBcmbBekJXKqqXWk4QYP3Uy2pzgUwCbg1cR7GgGmGczM7fnhWSA==}
 
   bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
@@ -4296,7 +4296,7 @@ snapshots:
   buildcheck@0.0.7:
     optional: true
 
-  bullmq@5.73.4:
+  bullmq@5.74.1:
     dependencies:
       cron-parser: 4.9.0
       ioredis: 5.10.1
