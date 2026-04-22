@@ -134,7 +134,7 @@ importers:
         version: 5.10.1
       remix:
         specifier: github:remix-run/remix#preview/main&path:packages/remix
-        version: https://codeload.github.com/remix-run/remix/tar.gz/dd7e7d3572b1fd5df27c9760089a6b11cd117599#path:packages/remix(mysql2@3.15.3)(pg@8.20.0)
+        version: https://codeload.github.com/remix-run/remix/tar.gz/ccafabbb1c6a20bf0b013c63cd3af76a3194abdc#path:packages/remix(mysql2@3.15.3)(pg@8.20.0)
     devDependencies:
       '@mcansh/remix-testing-library':
         specifier: 'catalog:'
@@ -1234,8 +1234,8 @@ packages:
     resolution: {path: packages/static-middleware, tarball: https://codeload.github.com/remix-run/remix/tar.gz/ccafabbb1c6a20bf0b013c63cd3af76a3194abdc}
     version: 0.4.5
 
-  '@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/caaed2de9a74d1f6ce2002979a44af5c8f0280a2#path:packages/tar-parser':
-    resolution: {path: packages/tar-parser, tarball: https://codeload.github.com/remix-run/remix/tar.gz/caaed2de9a74d1f6ce2002979a44af5c8f0280a2}
+  '@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/8058e8dc635ea5168e1fbd5e44d3b34bc5ecc700#path:packages/tar-parser':
+    resolution: {path: packages/tar-parser, tarball: https://codeload.github.com/remix-run/remix/tar.gz/8058e8dc635ea5168e1fbd5e44d3b34bc5ecc700}
     version: 0.7.0
 
   '@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/ccafabbb1c6a20bf0b013c63cd3af76a3194abdc#path:packages/tar-parser':
@@ -2808,8 +2808,8 @@ packages:
   remeda@2.33.4:
     resolution: {integrity: sha512-ygHswjlc/opg2VrtiYvUOPLjxjtdKvjGz1/plDhkG66hjNjFr1xmfrs2ClNFo/E6TyUFiwYNh53bKV26oBoMGQ==}
 
-  remix@https://codeload.github.com/remix-run/remix/tar.gz/dd7e7d3572b1fd5df27c9760089a6b11cd117599#path:packages/remix:
-    resolution: {path: packages/remix, tarball: https://codeload.github.com/remix-run/remix/tar.gz/dd7e7d3572b1fd5df27c9760089a6b11cd117599}
+  remix@https://codeload.github.com/remix-run/remix/tar.gz/ccafabbb1c6a20bf0b013c63cd3af76a3194abdc#path:packages/remix:
+    resolution: {path: packages/remix, tarball: https://codeload.github.com/remix-run/remix/tar.gz/ccafabbb1c6a20bf0b013c63cd3af76a3194abdc}
     version: 3.0.0-alpha.4
     hasBin: true
 
@@ -3855,7 +3855,7 @@ snapshots:
 
   '@remix-run/cli@https://codeload.github.com/remix-run/remix/tar.gz/caaed2de9a74d1f6ce2002979a44af5c8f0280a2#path:packages/cli':
     dependencies:
-      '@remix-run/tar-parser': https://codeload.github.com/remix-run/remix/tar.gz/caaed2de9a74d1f6ce2002979a44af5c8f0280a2#path:packages/tar-parser
+      '@remix-run/tar-parser': https://codeload.github.com/remix-run/remix/tar.gz/8058e8dc635ea5168e1fbd5e44d3b34bc5ecc700#path:packages/tar-parser
       semver: 7.7.4
 
   '@remix-run/component@0.6.0':
@@ -4000,7 +4000,7 @@ snapshots:
       '@remix-run/mime': https://codeload.github.com/remix-run/remix/tar.gz/ccafabbb1c6a20bf0b013c63cd3af76a3194abdc#path:packages/mime
       '@remix-run/response': https://codeload.github.com/remix-run/remix/tar.gz/ccafabbb1c6a20bf0b013c63cd3af76a3194abdc#path:packages/response
 
-  '@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/caaed2de9a74d1f6ce2002979a44af5c8f0280a2#path:packages/tar-parser': {}
+  '@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/8058e8dc635ea5168e1fbd5e44d3b34bc5ecc700#path:packages/tar-parser': {}
 
   '@remix-run/tar-parser@https://codeload.github.com/remix-run/remix/tar.gz/ccafabbb1c6a20bf0b013c63cd3af76a3194abdc#path:packages/tar-parser': {}
 
@@ -5565,7 +5565,7 @@ snapshots:
 
   remeda@2.33.4: {}
 
-  remix@https://codeload.github.com/remix-run/remix/tar.gz/dd7e7d3572b1fd5df27c9760089a6b11cd117599#path:packages/remix(mysql2@3.15.3)(pg@8.20.0):
+  remix@https://codeload.github.com/remix-run/remix/tar.gz/ccafabbb1c6a20bf0b013c63cd3af76a3194abdc#path:packages/remix(mysql2@3.15.3)(pg@8.20.0):
     dependencies:
       '@remix-run/assert': https://codeload.github.com/remix-run/remix/tar.gz/ccafabbb1c6a20bf0b013c63cd3af76a3194abdc#path:packages/assert
       '@remix-run/async-context-middleware': https://codeload.github.com/remix-run/remix/tar.gz/ccafabbb1c6a20bf0b013c63cd3af76a3194abdc#path:packages/async-context-middleware
