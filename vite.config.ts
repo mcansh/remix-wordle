@@ -3,6 +3,7 @@ import { loadEnvFile } from "node:process"
 import { remix } from "@mcansh/vite-plugin-remix"
 import { svgSprite } from "@mcansh/vite-plugin-svg-sprite"
 import tailwindcss from "@tailwindcss/vite"
+import getPort from "get-port"
 import devtoolsJson from "vite-plugin-devtools-json"
 import inspect from "vite-plugin-inspect"
 import { defineConfig } from "vite-plus"
@@ -10,6 +11,8 @@ import { defineConfig } from "vite-plus"
 try {
 	loadEnvFile(".env")
 } catch {}
+
+let port = await getPort({ port: 44100 })
 
 export default defineConfig({
 	staged: {
@@ -182,7 +185,7 @@ export default defineConfig({
 			typeCheck: true,
 		},
 	},
-	server: { port: 44100 },
+	server: { port },
 	builder: {
 		async buildApp(builder) {
 			if (builder.environments.ssr == null || builder.environments.client == null) {
