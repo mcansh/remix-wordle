@@ -17,7 +17,7 @@ import type * as Prisma from "./prismaNamespace.ts"
 
 const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [],
-  "clientVersion": "7.6.0",
+  "clientVersion": "7.7.0",
   "engineVersion": "75cbdc1eb7150937890ad5465d861175c6624711",
   "activeProvider": "postgresql",
   "inlineSchema": "generator client {\n  provider   = \"prisma-client\" // or `prisma-client-js`\n  output     = \"../app/generated/prisma\"\n  engineType = \"client\" // enable Prisma ORM without Rust\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id        String   @id @default(cuid())\n  username  String   @unique\n  email     String   @unique\n  password  String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  games     Game[]\n}\n\nenum GameStatus {\n  EMPTY\n  IN_PROGRESS\n  COMPLETE\n  WON\n}\n\nmodel Game {\n  id        String     @id @default(cuid())\n  createdAt DateTime   @default(now())\n  updatedAt DateTime   @updatedAt\n  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)\n  userId    String\n  guesses   Guess[]\n  word      String\n  status    GameStatus\n}\n\nmodel Guess {\n  id        String   @id @default(cuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)\n  gameId    String\n  guess     String\n\n  @@unique([guess, gameId], name: \"UniqueGuessPerGame\")\n}\n",
