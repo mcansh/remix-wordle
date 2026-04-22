@@ -15,7 +15,7 @@ export default defineConfig({
 		"*": "vp check --fix",
 	},
 	fmt: {
-		ignorePatterns: ["app/generated/**"],
+		ignorePatterns: ["app/generated/**", ".agents/**/*"],
 		experimentalSortImports: {},
 		experimentalSortPackageJson: true,
 		experimentalTailwindcss: {
