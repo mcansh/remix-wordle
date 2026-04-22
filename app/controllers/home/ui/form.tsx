@@ -1,34 +1,11 @@
 "use client"
 
 import type { RemixNode } from "remix/component"
-import { on, keysEvents } from "remix/component"
+import { keysEvents, on } from "remix/component"
 
-import { hasFilledInputAfter } from "#app/components/has-filled-input-after.ts"
 import { routes } from "#app/routes.ts"
 
-export function handleGuessFormBackspace(event: KeyboardEvent) {
-	let focusedInput =
-		event.currentTarget instanceof Element ? event.currentTarget.querySelector("input:focus") : null
-	if (focusedInput instanceof HTMLInputElement) {
-		let hasFilledInputLater = hasFilledInputAfter(focusedInput)
-		if (focusedInput.value !== "") {
-			focusedInput.value = ""
-		}
-		event.preventDefault()
-		if (hasFilledInputLater) {
-			return
-		}
-		if (focusedInput.previousElementSibling) {
-			let previousInput = focusedInput.previousElementSibling
-			if (previousInput instanceof HTMLInputElement) {
-				previousInput.select()
-			}
-		}
-		return
-	}
-
-	event.preventDefault()
-}
+import { handleGuessFormBackspace } from "./has-filled-input-after.ts"
 
 export function GuessForm() {
 	return ({ currentGuess, children }: { currentGuess: number; children: RemixNode }) => {
@@ -42,6 +19,10 @@ export function GuessForm() {
 				autoComplete="off"
 				mix={[
 					keysEvents(),
+					on<HTMLFormElement, typeof keysEvents.enter>(keysEvents.enter, (event) => {
+						event.preventDefault()
+						event.currentTarget.submit()
+					}),
 					on<HTMLFormElement, typeof keysEvents.backspace>(
 						keysEvents.backspace,
 						handleGuessFormBackspace,

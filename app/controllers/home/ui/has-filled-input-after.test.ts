@@ -2,8 +2,7 @@
 
 import { describe, expect, it, vi } from "vite-plus/test"
 
-import { handleGuessFormBackspace } from "#app/components/form.tsx"
-import { hasFilledInputAfter } from "#app/components/has-filled-input-after.ts"
+import { handleGuessFormBackspace, hasFilledInputAfter } from "./has-filled-input-after"
 
 describe("hasFilledInputAfter", () => {
 	it("returns true when a later text input contains a value", () => {
@@ -13,15 +12,18 @@ describe("hasFilledInputAfter", () => {
 		let third = document.createElement("input")
 
 		first.type = "text"
+		first.name = "letter"
 		second.type = "text"
+		second.name = "letter"
 		third.type = "text"
+		third.name = "letter"
 		first.value = "a"
 		second.value = ""
 		third.value = "c"
 
 		form.append(first, second, third)
 
-		expect(hasFilledInputAfter(second)).toBe(true)
+		expect(hasFilledInputAfter(form, second)).toBe(true)
 	})
 
 	it("returns false when later text inputs are empty", () => {
@@ -31,15 +33,18 @@ describe("hasFilledInputAfter", () => {
 		let third = document.createElement("input")
 
 		first.type = "text"
+		first.name = "letter"
 		second.type = "text"
+		second.name = "letter"
 		third.type = "text"
+		third.name = "letter"
 		first.value = "a"
 		second.value = ""
 		third.value = ""
 
 		form.append(first, second, third)
 
-		expect(hasFilledInputAfter(second)).toBe(false)
+		expect(hasFilledInputAfter(form, second)).toBe(false)
 	})
 })
 
@@ -51,8 +56,11 @@ describe("handleGuessFormBackspace", () => {
 		let third = document.createElement("input")
 
 		first.type = "text"
+		first.name = "letter"
 		second.type = "text"
+		second.name = "letter"
 		third.type = "text"
+		third.name = "letter"
 		first.value = "a"
 		second.value = "b"
 		third.value = "c"
@@ -71,7 +79,9 @@ describe("handleGuessFormBackspace", () => {
 			}
 		})
 
-		second.dispatchEvent(new KeyboardEvent("keydown", { key: "Backspace", bubbles: true }))
+		let event = new KeyboardEvent("keydown", { key: "Backspace", bubbles: true, cancelable: true })
+		Object.defineProperty(event, "target", { value: second, writable: false })
+		form.dispatchEvent(event)
 
 		expect(second.value).toBe("")
 		expect(selectSpy).not.toHaveBeenCalled()
