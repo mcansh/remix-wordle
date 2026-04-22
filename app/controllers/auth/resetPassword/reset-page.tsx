@@ -1,4 +1,4 @@
-import { routes } from "../../../routes"
+import { routes } from "#/app/routes.ts"
 
 export function ResetPasswordForm() {
 	return ({ error, token }: { error?: unknown; token: string }) => {

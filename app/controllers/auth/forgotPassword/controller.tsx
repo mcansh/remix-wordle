@@ -1,4 +1,9 @@
+import * as s from "remix/data-schema"
+import { email } from "remix/data-schema/checks"
+import * as f from "remix/data-schema/form-data"
 import type { Controller } from "remix/fetch-router"
+import { redirect } from "remix/response/redirect"
+import { Session } from "remix/session"
 
 import { Document } from "#app/components/document.tsx"
 import { createPasswordResetToken } from "#app/models/user.ts"
@@ -33,13 +38,25 @@ export const forgotPasswordController = {
 			)
 		},
 
-		async action({ get, url }) {
-			let formData = get(FormData)
-			let email = formData.get("email")?.toString() ?? ""
-			let token = createPasswordResetToken(email)
+		async action(context) {
+			let session = context.get(Session)
+			let formData = context.get(FormData)
+
+			let schema = f.object({
+				email: f.field(s.string().pipe(email())),
+			})
+
+			let result = s.parseSafe(schema, formData)
+
+			if (result.success === false) {
+				session.flash("error", "Invalid email address")
+				return redirect(routes.auth.forgotPassword.index.href())
+			}
+
+			let token = createPasswordResetToken(result.value.email)
 
 			return render(
-				<Document url={url} head={<title>Login - Remix Wordle</title>}>
+				<Document url={context.url} head={<title>Login - Remix Wordle</title>}>
 					<div class="card" style="max-width: 500px; margin: 2rem auto;">
 						<div class="alert alert-success">Password reset link sent! Check your email.</div>
 
