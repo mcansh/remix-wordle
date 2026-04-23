@@ -2,7 +2,7 @@ import type { ConnectionOptions } from "bullmq"
 import { Queue, Worker } from "bullmq"
 import { startOfDay } from "date-fns"
 
-import { env } from "#app/constants.ts"
+import { env } from "#app/env.ts"
 
 import { db } from "./db.ts"
 
