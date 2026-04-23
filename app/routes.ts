@@ -1,6 +1,10 @@
 import { form, get, post, route } from "remix/fetch-router/routes"
 
+export const assetsBase = "/assets"
+
 export const routes = route({
+	assets: `${assetsBase}/*path`,
+
 	home: form("/"),
 	health: get("health"),
 

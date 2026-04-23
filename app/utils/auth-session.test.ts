@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vite-plus/test"
+import { describe, expect, it } from "vitest"
 
 import { normalizeEmail, parseAuthSession } from "./auth-session.ts"
 
@@ -42,7 +42,9 @@ describe("normalizeEmail", () => {
 
 describe("parseAuthSession", () => {
 	it("returns an AuthSession for a valid object with userId string", () => {
-		expect(parseAuthSession({ userId: "user-123" })).toEqual({ userId: "user-123" })
+		expect(parseAuthSession({ userId: "user-123" })).toEqual({
+			userId: "user-123",
+		})
 	})
 
 	it("returns null for null input", () => {

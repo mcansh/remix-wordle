@@ -2,9 +2,8 @@
 
 import { on, keysEvents } from "remix/component"
 
-import { LETTER_INPUTS } from "#app/constants.ts"
-import { routes } from "#app/routes.ts"
-
+import { LETTER_INPUTS } from "../constants"
+import { routes } from "../routes"
 import { LetterInput } from "./letter-input"
 
 export function GuessForm() {

@@ -1,6 +1,6 @@
 import { clsx } from "clsx"
 
-import type { keyboardWithStatus } from "#app/utils/game.ts"
+import type { keyboardWithStatus } from "../utils/game"
 
 export function Keyboard() {
 	return ({ board }: { board: ReturnType<typeof keyboardWithStatus> }) => {

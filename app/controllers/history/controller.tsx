@@ -2,13 +2,12 @@ import { Auth, type BadAuth, type GoodAuth } from "remix/auth-middleware"
 import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 
-import { getReturnToQuery, requireAuth } from "#app/middleware/auth.ts"
-import { getGameById, isGameComplete } from "#app/models/game.ts"
-import { routes } from "#app/routes.ts"
-import type { AuthIdentity } from "#app/utils/auth-session.ts"
-import { db } from "#app/utils/db.ts"
-import { render } from "#app/utils/render.ts"
-
+import { getReturnToQuery, requireAuth } from "../../middleware/auth.ts"
+import { getGameById, isGameComplete } from "../../models/game.ts"
+import { routes } from "../../routes.ts"
+import type { AuthIdentity } from "../../utils/auth-session.ts"
+import { db } from "../../utils/db.ts"
+import { render } from "../../utils/render.ts"
 import { HistoricalGame } from "./game"
 import {
 	createHistoricalGameListItem,
@@ -43,7 +42,9 @@ export const history = {
 			let game = await getGameById(context.params.id)
 
 			if (!game) {
-				return render(<GameNotFound setup={{ url: context.url }} />, { status: 404 })
+				return render(<GameNotFound setup={{ url: context.url }} />, {
+					status: 404,
+				})
 			}
 
 			let showModal = isGameComplete(game.status)

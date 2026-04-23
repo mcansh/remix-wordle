@@ -4,10 +4,10 @@ import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { Document } from "#app/components/document.tsx"
-import { resetPassword } from "#app/models/user.ts"
-import { routes } from "#app/routes.ts"
-import { render } from "#app/utils/render.ts"
+import { Document } from "../../../components/document"
+import { resetPassword } from "../../../models/user"
+import { routes } from "../../../routes"
+import { render } from "../../../utils/render"
 
 export const resetPasswordController = {
 	actions: {

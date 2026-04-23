@@ -2,13 +2,13 @@ import * as http from "node:http"
 
 import { createRequestListener } from "remix/node-fetch-server"
 
-// @ts-ignore - no types for this
-import ssr from "./dist/ssr/entry.server.js"
+import { router } from "./app/router.ts"
+import { assetServer } from "./app/utils/assets.ts"
 
 const server = http.createServer(
 	createRequestListener(async (request) => {
 		try {
-			return await ssr.fetch(request)
+			return await router.fetch(request)
 		} catch (error) {
 			console.error(error)
 			return new Response("Internal Server Error", { status: 500 })
@@ -24,13 +24,18 @@ server.listen(port, () => {
 
 let shuttingDown = false
 
-function shutdown() {
+async function shutdown() {
 	if (shuttingDown) return
 	shuttingDown = true
-	server.close(() => {
-		process.exit(0)
-	})
+
+	await assetServer.close()
+	server.close(() => process.exit(0))
+	server.closeAllConnections()
 }
 
-process.on("SIGINT", shutdown)
-process.on("SIGTERM", shutdown)
+process.on("SIGINT", () => {
+	void shutdown()
+})
+process.on("SIGTERM", () => {
+	void shutdown()
+})

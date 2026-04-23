@@ -1,9 +1,9 @@
-import { describe, expect, it, vi } from "vite-plus/test"
+import { describe, expect, it, vi } from "vitest"
 
-import { router } from "#app/router.ts"
-import { assertContains, assertNotContains, getSessionCookie } from "#test/helpers.ts"
+import { assertContains, assertNotContains, getSessionCookie } from "../../../test/helpers.ts"
+import { router } from "../../router.ts"
 
-vi.mock("#app/models/user.ts", async (importActual) => {
+vi.mock("../../models/user.ts", async (importActual) => {
 	let actual = await importActual<typeof import("../../models/user.ts")>()
 	return {
 		...actual,
@@ -58,7 +58,7 @@ vi.mock("bcryptjs", () => ({
 	},
 }))
 
-vi.mock("#app/utils/db.ts", () => ({
+vi.mock("../utils/db", () => ({
 	redis: {
 		get: vi.fn().mockResolvedValue(null),
 		set: vi.fn().mockResolvedValue("OK"),

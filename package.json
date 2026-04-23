@@ -5,16 +5,15 @@
 	"license": "MIT",
 	"type": "module",
 	"sideEffects": false,
-	"imports": {
-		"#*": "./*"
-	},
 	"scripts": {
-		"build": "vp build",
-		"dev": "vp dev",
-		"start": "node ./server.ts",
-		"lint": "vp lint",
-		"format": "vp fmt",
-		"test": "vp test",
+		"dev": "pnpm run \"/^dev:.*\"/",
+		"dev:server": "NODE_ENV=development tsx --env-file .env --watch server.ts",
+		"dev:css": "tailwindcss --input app/app.css --output public/app.css --watch",
+		"build": "tailwindcss --input app/app.css --output public/app.css --minify",
+		"start": "tsx server.ts",
+		"lint": "oxlint",
+		"format": "oxfmt",
+		"test": "vitest",
 		"typecheck": "tsc"
 	},
 	"dependencies": {
@@ -27,17 +26,13 @@
 		"clsx": "catalog:",
 		"date-fns": "catalog:",
 		"ioredis": "catalog:",
-		"remix": "github:remix-run/remix#preview/main&path:packages/remix"
+		"remix": "catalog:"
 	},
 	"devDependencies": {
 		"@mcansh/remix-testing-library": "catalog:",
-		"@mcansh/vite-plugin-remix": "catalog:",
-		"@mcansh/vite-plugin-svg-sprite": "catalog:",
 		"@mswjs/http-middleware": "catalog:",
 		"@oxlint/plugins": "catalog:",
-		"@redwoodjs/agent-ci": "catalog:",
-		"@remix-run/cli": "catalog:",
-		"@tailwindcss/vite": "catalog:",
+		"@tailwindcss/cli": "catalog:",
 		"@testing-library/jest-dom": "catalog:",
 		"@testing-library/user-event": "catalog:",
 		"@total-typescript/tsconfig": "catalog:",
@@ -46,13 +41,13 @@
 		"@vitest/ui": "catalog:",
 		"happy-dom": "catalog:",
 		"msw": "catalog:",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
+		"oxlint-tsgolint": "catalog:",
 		"prisma": "catalog:",
-		"tailwindcss": "catalog:",
+		"tsx": "catalog:",
 		"typescript": "catalog:",
-		"vite": "npm:@voidzero-dev/vite-plus-core@latest",
-		"vite-plugin-devtools-json": "catalog:",
-		"vite-plus": "catalog:",
-		"vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+		"vitest": "catalog:"
 	},
 	"packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
 }

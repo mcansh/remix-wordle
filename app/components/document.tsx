@@ -1,38 +1,25 @@
-import "@mcansh/vite-plugin-remix/types"
 import type { RemixNode } from "remix/component"
 
-import clientAssets from "#app/entry.browser.ts?assets=client"
-import serverAssets from "#app/entry.server.tsx?assets=ssr"
-
-import appStylesHref from "#app/app.css?url"
-
-const assets = clientAssets.merge(serverAssets)
+import { getAssetEntry } from "../middleware/asset-entry.ts"
 
 export function Document() {
-	return ({ children, url, head }: { children: RemixNode; head?: RemixNode; url: URL }) => {
+	return ({ children, head, url }: { children: RemixNode; head?: RemixNode; url: URL }) => {
+		let { src, preloads } = getAssetEntry()
 		let canonical = url.origin + url.pathname
 		return (
 			<html lang="en">
 				<head>
 					<meta charSet="utf-8" />
 					<meta name="viewport" content="width=device-width, initial-scale=1" />
-					<link rel="stylesheet" href={appStylesHref} />
-					{assets.css.map((attrs) => (
-						<link key={attrs.href} {...attrs} rel="stylesheet" />
-					))}
-
+					<link rel="stylesheet" href="/app.css" />
 					{head}
-
 					<link rel="canonical" href={canonical} />
-				</head>
-				<body>
-					{children}
-
-					{assets.js.map((attrs) => (
-						<link key={attrs.href} {...attrs} rel="modulepreload" />
+					{preloads.map((href) => (
+						<link key={href} rel="modulepreload" href={href} />
 					))}
-					<script async type="module" src={clientAssets.entry} />
-				</body>
+					<script type="module" async src={src} />
+				</head>
+				<body>{children}</body>
 			</html>
 		)
 	}

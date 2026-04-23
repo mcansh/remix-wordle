@@ -1,9 +1,9 @@
 import { clsx } from "clsx"
 import type { Handle } from "remix/component"
 
-import { Document } from "#app/components/document.tsx"
-import type { Prisma } from "#app/generated/prisma/client.ts"
-import { routes } from "#app/routes.ts"
+import { Document } from "../../components/document.tsx"
+import type { Prisma } from "../../generated/prisma/client.ts"
+import { routes } from "../../routes.ts"
 
 const shortDateFormatter = new Intl.DateTimeFormat("en-US", {
 	dateStyle: "short",
@@ -18,7 +18,9 @@ export const HISTORICAL_GAME_SELECT = {
 	word: true,
 } satisfies Prisma.GameSelect
 
-export type HistoricalGame = Prisma.GameGetPayload<{ select: typeof HISTORICAL_GAME_SELECT }>
+export type HistoricalGame = Prisma.GameGetPayload<{
+	select: typeof HISTORICAL_GAME_SELECT
+}>
 
 export function createHistoricalGameListItem(game: HistoricalGame) {
 	let createdAt = new Date(game.createdAt)

@@ -1,7 +1,7 @@
 import { createCookie } from "remix/cookie"
 import { createCookieSessionStorage } from "remix/session/cookie-storage"
 
-import { env } from "#app/constants.ts"
+import { env } from "../constants.ts"
 
 export const sessionCookie = createCookie("session", {
 	secrets: [env.SESSION_SECRET],
@@ -9,7 +9,7 @@ export const sessionCookie = createCookie("session", {
 	sameSite: "Lax",
 	maxAge: 60 * 60 * 24 * 30, // 30 days
 	path: "/",
-	secure: import.meta.env.PROD,
+	secure: env.NODE_ENV === "production",
 })
 
 export const sessionStorage = createCookieSessionStorage()

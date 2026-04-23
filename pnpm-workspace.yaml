@@ -48,16 +48,12 @@ allowBuilds:
 catalog:
   "@mcansh/http-helmet": ^0.13.2
   "@mcansh/remix-testing-library": ^0.0.1
-  "@mcansh/vite-plugin-remix": ^0.0.1
-  "@mcansh/vite-plugin-svg-sprite": ^0.7.1
   "@mswjs/http-middleware": ^0.10.3
-  "@oxlint/plugins": ^1.58.0
+  "@oxlint/plugins": ^1.61.0
   "@prisma/adapter-pg": ^7.7.0
   "@prisma/client": ^7.7.0
-  "@redwoodjs/agent-ci": ^0.12.1
-  "@remix-run/cli": github:remix-run/remix#preview/pr-11204&path:packages/cli
   "@standard-schema/spec": ^1.1.0
-  "@tailwindcss/vite": ^4.2.2
+  "@tailwindcss/cli": ^4.2.4
   "@testing-library/jest-dom": ^6.9.1
   "@testing-library/user-event": ^14.6.1
   "@total-typescript/tsconfig": ^1.0.4
@@ -71,27 +67,15 @@ catalog:
   happy-dom: ^20.9.0
   ioredis: ^5.10.1
   msw: ^2.13.4
+  oxfmt: ^0.46.0
+  oxlint: ^1.61.0
+  oxlint-tsgolint: ^0.21.1
   prisma: ^7.7.0
-  remix: github:remix-run/remix#preview/main&path:packages/remix
-  tailwindcss: ^4.2.2
+  remix: ^3.0.0-alpha.5
+  tsx: ^4.21.0
   typescript: ^6.0.3
-  vite: npm:@voidzero-dev/vite-plus-core@latest
-  vite-plugin-devtools-json: ^1.0.0
-  vite-plus: ^0.1.17
-  vitest: npm:@voidzero-dev/vite-plus-test@latest
+  vitest: ^4.1.4
 
 catalogMode: strict
-
-overrides:
-  vite: "catalog:"
-  vitest: "catalog:"
-
-peerDependencyRules:
-  allowAny:
-    - vite
-    - vitest
-  allowedVersions:
-    vite: "*"
-    vitest: "*"
 
 shellEmulator: true

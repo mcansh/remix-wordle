@@ -1,7 +1,7 @@
 import type { BuildAction } from "remix/fetch-router"
 
-import { routes } from "#app/routes.ts"
-import { db } from "#app/utils/db.ts"
+import type { routes } from "../routes"
+import { db } from "../utils/db"
 
 export const health = {
 	middleware: [],

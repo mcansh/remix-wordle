@@ -4,11 +4,9 @@ import clsx from "clsx"
 import type { Handle } from "remix/component"
 import { on, pressEvents } from "remix/component"
 
-import checkIconUrl from "#app/icons/check.svg"
-import xIconUrl from "#app/icons/x.svg"
-import { routes } from "#app/routes.ts"
-import { boardToEmoji } from "#app/utils/board-to-emoji.ts"
-import type { ComputedGuess } from "#app/utils/game.ts"
+import { routes } from "../routes"
+import { boardToEmoji } from "../utils/board-to-emoji"
+import type { ComputedGuess } from "../utils/game"
 
 type GameOverModalProps = {
 	currentGuess: number
@@ -36,12 +34,15 @@ export function GameOverModal(handle: Handle) {
 										winner ? "bg-green-100" : "bg-red-100",
 									)}
 								>
-									<svg
+									{/* <svg
 										aria-hidden="true"
-										class={clsx("h-6 w-6", winner ? "text-green-600" : "text-red-600")}
+										class={clsx(
+											"h-6 w-6",
+											winner ? "text-green-600" : "text-red-600",
+										)}
 									>
 										<use href={winner ? checkIconUrl : xIconUrl} />
-									</svg>
+									</svg> */}
 								</div>
 								<div class="mt-3 text-center sm:mt-5">
 									<h3 class="text-lg leading-6 font-medium text-gray-900">Game Summary</h3>

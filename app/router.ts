@@ -12,9 +12,11 @@ import { auth } from "./controllers/auth/controller.tsx"
 import { health } from "./controllers/health.tsx"
 import { history } from "./controllers/history/controller.tsx"
 import { home } from "./controllers/home/controller.tsx"
+import { loadAssetEntry } from "./middleware/asset-entry.ts"
 import { loadAuth } from "./middleware/auth.ts"
 import { securityHeaders } from "./middleware/security.ts"
 import { routes } from "./routes.ts"
+import { assetServer } from "./utils/assets.ts"
 import { sessionCookie, sessionStorage } from "./utils/session.ts"
 
 const middleware = []
@@ -25,25 +27,28 @@ if (process.env.NODE_ENV === "development") {
 
 middleware.push(compression())
 middleware.push(
-	staticFiles("./dist/client/assets", {
-		cacheControl: "public, max-age=31536000, immutable",
+	staticFiles("./public/app.css", {
+		cacheControl:
+			process.env.NODE_ENV === "production"
+				? "max-age=31536000, immutable"
+				: "no-store, must-revalidate",
 	}),
-)
-middleware.push(
-	staticFiles("./dist/client", {
-		cacheControl: "public, max-age=3600",
+	staticFiles("./public", {
+		cacheControl:
+			process.env.NODE_ENV === "production" ? "public, max-age=3600" : "no-store, must-revalidate",
 	}),
 )
 middleware.push(formData())
 middleware.push(methodOverride())
 middleware.push(session(sessionCookie, sessionStorage))
 middleware.push(asyncContext())
+middleware.push(loadAssetEntry())
 middleware.push(
 	securityHeaders({
 		"Content-Security-Policy": {
 			"default-src": [NONE],
 			"script-src": [SELF],
-			"connect-src": [SELF, ...(import.meta.env.DEV ? ["ws"] : [])],
+			"connect-src": [SELF, ...(process.env.NODE_ENV === "development" ? ["ws"] : [])],
 			"style-src": [SELF],
 			"img-src": [SELF, "https://cdn.usefathom.com"],
 		},
@@ -58,6 +63,11 @@ middleware.push(
 middleware.push(loadAuth())
 
 export const router = createRouter({ middleware })
+
+router.get(routes.assets, async ({ request }) => {
+	let assetResponse = await assetServer.fetch(request)
+	return assetResponse ?? new Response("Not found", { status: 404 })
+})
 
 router.map(routes.home, home)
 router.map(routes.history, history)

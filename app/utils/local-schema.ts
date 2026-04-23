@@ -178,7 +178,9 @@ export function createSchema<input, output>(
 				for (let check of checks) {
 					if (!check.check(result.value)) {
 						if (!check.code) {
-							return { issues: [createIssue(check.message ?? "Check failed", context.path)] }
+							return {
+								issues: [createIssue(check.message ?? "Check failed", context.path)],
+							}
 						}
 
 						return {
@@ -748,7 +750,9 @@ export function object<shape extends ObjectShape>(
 			return { issues }
 		}
 
-		return { value: outputValues as { [key in keyof shape]: InferOutput<shape[key]> } }
+		return {
+			value: outputValues as { [key in keyof shape]: InferOutput<shape[key]> },
+		}
 	})
 }
 
@@ -991,7 +995,11 @@ export function tuple<items extends Schema<any, any>[]>(
 			return { issues }
 		}
 
-		return { value: outputValues as { [index in keyof items]: InferOutput<items[index]> } }
+		return {
+			value: outputValues as {
+				[index in keyof items]: InferOutput<items[index]>
+			},
+		}
 	})
 }
 

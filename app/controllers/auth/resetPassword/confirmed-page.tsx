@@ -1,4 +1,4 @@
-import { routes } from "#app/routes.ts"
+import { routes } from "../../../routes"
 
 export function ResetPasswordConfirmed() {
 	return () => {

@@ -3,10 +3,10 @@ import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { Document } from "#app/components/document.tsx"
-import { getPostAuthRedirect, getReturnToQuery, passwordProvider } from "#app/middleware/auth.ts"
-import { routes } from "#app/routes.ts"
-import { render } from "#app/utils/render.ts"
+import { Document } from "../../../components/document"
+import { getPostAuthRedirect, getReturnToQuery, passwordProvider } from "../../../middleware/auth"
+import { routes } from "../../../routes"
+import { render } from "../../../utils/render"
 
 export const loginController = {
 	actions: {

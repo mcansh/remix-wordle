@@ -2,10 +2,10 @@ import * as s from "remix/data-schema"
 import * as f from "remix/data-schema/form-data"
 import type { Controller } from "remix/fetch-router"
 
-import { Document } from "#app/components/document.tsx"
-import { createPasswordResetToken } from "#app/models/user.ts"
-import { routes } from "#app/routes.ts"
-import { render } from "#app/utils/render.ts"
+import { Document } from "../../../components/document"
+import { createPasswordResetToken } from "../../../models/user"
+import { routes } from "../../../routes"
+import { render } from "../../../utils/render"
 
 export const forgotPasswordController = {
 	actions: {

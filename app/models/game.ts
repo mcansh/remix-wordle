@@ -1,10 +1,10 @@
 import { endOfDay, startOfDay } from "date-fns"
 
-import { WORD_LENGTH } from "#app/constants.ts"
-import type { Game, User } from "#app/generated/prisma/client.ts"
-import { GameStatus, Prisma } from "#app/generated/prisma/client.ts"
-import { db } from "#app/utils/db.ts"
-import type { ComputedGuess } from "#app/utils/game.ts"
+import { WORD_LENGTH } from "../constants.ts"
+import type { Game, User } from "../generated/prisma/client.ts"
+import { GameStatus, Prisma } from "../generated/prisma/client.ts"
+import { db } from "../utils/db.ts"
+import type { ComputedGuess } from "../utils/game.ts"
 import {
 	computeGuess,
 	createEmptyLetter,
@@ -12,7 +12,7 @@ import {
 	isValidWord,
 	keyboardWithStatus,
 	LetterState,
-} from "#app/utils/game.ts"
+} from "../utils/game.ts"
 
 const TOTAL_GUESSES = 6
 
@@ -28,7 +28,9 @@ const FULL_GAME_SELECT = {
 	word: true,
 } satisfies Prisma.GameSelect
 
-export type FullGame = Prisma.GameGetPayload<{ select: typeof FULL_GAME_SELECT }>
+export type FullGame = Prisma.GameGetPayload<{
+	select: typeof FULL_GAME_SELECT
+}>
 
 export async function getTodaysGame(userId: User["id"]): Promise<FullGame> {
 	let now = new Date()

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vite-plus/test"
+import { describe, it, expect } from "vitest"
 
 import { boardToEmoji } from "./board-to-emoji"
 import type { ComputedGuess } from "./game"
