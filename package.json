@@ -17,6 +17,7 @@
 		"typecheck": "tsc"
 	},
 	"dependencies": {
+		"@epic-web/invariant": "catalog:",
 		"@mcansh/http-helmet": "catalog:",
 		"@prisma/adapter-pg": "catalog:",
 		"@prisma/client": "catalog:",
@@ -35,6 +36,7 @@
 		"@tailwindcss/cli": "catalog:",
 		"@testing-library/jest-dom": "catalog:",
 		"@testing-library/user-event": "catalog:",
+		"@total-typescript/shoehorn": "catalog:",
 		"@total-typescript/tsconfig": "catalog:",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
