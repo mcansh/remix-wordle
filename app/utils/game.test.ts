@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest"
+import { describe, expect, it } from "vitest"
 
 import type { ComputedGuess } from "./game"
 import {
@@ -100,7 +100,7 @@ describe("getRandomWord", () => {
 	it("returns different words on multiple calls (probabilistic)", () => {
 		let words = new Set()
 		// Generate 100 words - very likely to get at least 2 different ones
-		for (let i = 0; i < 100; i++) {
+		for (let i = 0; i < 100; i += 1) {
 			words.add(getRandomWord())
 		}
 		expect(words.size).toBeGreaterThan(1)
@@ -133,9 +133,10 @@ describe("createEmptyLetter", () => {
 
 	it("generates different ids for multiple calls", () => {
 		let ids = new Set()
-		for (let i = 0; i < 10; i++) {
+		for (let i = 0; i < 10; i += 1) {
 			ids.add(createEmptyLetter().id)
 		}
+
 		expect(ids.size).toBe(10)
 	})
 })

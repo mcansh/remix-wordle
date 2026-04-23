@@ -1,3 +1,4 @@
+import { fromAny } from "@total-typescript/shoehorn"
 import { expect, it } from "vitest"
 
 import { safeRedirect } from "./redirect"
@@ -15,7 +16,7 @@ it("safeRedirect returns default for empty string", () => {
 })
 
 it("safeRedirect returns default for non-string", () => {
-	expect(safeRedirect(42 as any)).toBe("/")
+	expect(safeRedirect(fromAny(42))).toBe("/")
 })
 
 it("safeRedirect returns default for absolute URL", () => {

@@ -1,10 +1,11 @@
-import "@testing-library/jest-dom/vitest"
+import { invariant } from "@epic-web/invariant"
 import { render, screen } from "@mcansh/remix-testing-library"
-import { describe, it, expect, vi } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
+import { range } from "../utils/range"
 import { GuessForm } from "./form"
 
-vi.mock("../routes", () => ({
+vi.mock("../routes.ts", () => ({
 	routes: {
 		home: {
 			action: {
@@ -27,7 +28,11 @@ describe("GuessForm", () => {
 		let Component = GuessForm()
 		render(Component({ currentGuess: 0 }))
 
-		for (let i = 1; i <= 5; i++) {
+		for (let i of range(5)) {
+			console.log({ i })
+		}
+
+		for (let i = 1; i <= 5; i += 1) {
 			expect(
 				screen.getByRole("textbox", { name: `letter ${i}` }),
 			).toBeInTheDocument()
@@ -81,10 +86,11 @@ describe("GuessForm", () => {
 
 		let form = container.querySelector("form")
 		let inputs = form?.querySelectorAll('input[name="letter"]')
+		invariant(inputs, "form should have letter inputs")
 		expect(inputs).toHaveLength(5)
-		inputs?.forEach((input) => {
+		for (let input of inputs) {
 			expect(input).toHaveClass("border-red-500")
-		})
+		}
 	})
 
 	it("first input has auto focus", () => {
@@ -102,9 +108,8 @@ describe("GuessForm", () => {
 		let { container } = render(Component({ currentGuess: 0 }))
 
 		let form = container.querySelector("form")
-		let input = form?.querySelector(
-			'input[name="letter"]',
-		) as HTMLInputElement | null
+		invariant(form, "form should be present")
+		let input = form.querySelector<HTMLInputElement>('input[name="letter"]')
 
 		expect(input).toHaveAttribute("type", "text")
 		expect(input).toHaveAttribute("pattern", "[a-zA-Z]{1}")

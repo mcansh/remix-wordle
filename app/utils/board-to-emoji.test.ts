@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest"
+import { fromAny } from "@total-typescript/shoehorn"
+import { describe, expect, it } from "vitest"
 
 import { boardToEmoji } from "./board-to-emoji"
 import type { ComputedGuess } from "./game"
@@ -187,7 +188,7 @@ describe("boardToEmoji", () => {
 		let guesses = [
 			{
 				letters: [
-					{ id: "1", letter: "x", state: "Invalid" as any },
+					{ id: "1", letter: "x", state: fromAny("Invalid") },
 				] satisfies Array<ComputedGuess>,
 			},
 		]

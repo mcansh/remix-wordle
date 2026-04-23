@@ -24,20 +24,22 @@ function createMockContext(
 }
 
 function createNext(responseBody = "OK") {
-	return vi.fn(() => Promise.resolve(new Response(responseBody)))
+	return vi.fn(async () => Promise.resolve(new Response(responseBody)))
 }
 
 type TestContext = ReturnType<typeof createMockContext>
 type TestNext = ReturnType<typeof createNext>
 type SecurityHeadersMiddleware = ReturnType<typeof securityHeaders>
 
-function invokeSecurityHeaders(
+async function invokeSecurityHeaders(
 	middleware: SecurityHeadersMiddleware,
 	context: TestContext,
 	next: TestNext,
 ) {
 	return middleware(
+		// oxlint-disable-next-line typescript/no-unsafe-type-assertion
 		context as unknown as Parameters<SecurityHeadersMiddleware>[0],
+		// oxlint-disable-next-line typescript/no-unsafe-type-assertion
 		next as unknown as Parameters<SecurityHeadersMiddleware>[1],
 	)
 }
