@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/vitest"
 import { render, screen } from "@mcansh/remix-testing-library"
-import { userEvent } from "@testing-library/user-event"
+import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
 
 import { GuessForm } from "./form"
