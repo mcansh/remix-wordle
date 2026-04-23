@@ -1,0 +1,31 @@
+{
+	"$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+	"packageManager": "pnpm",
+	"plugins": ["@stryker-mutator/vitest-runner"],
+	"testRunner": "vitest",
+	"reporters": ["html", "clear-text", "progress"],
+	"mutate": [
+		"app/{utils,middleware,components}/**/*.{ts,tsx}",
+		"!app/**/*.test.{ts,tsx}",
+		"!app/generated/**",
+		"!app/utils/queue.ts",
+		"!app/utils/render.ts",
+		"!app/utils/session.ts",
+		"!app/utils/db.ts",
+		"!app/utils/local-schema.ts",
+		"!app/utils/local-form-schema.ts",
+		"!app/components/document.tsx",
+		"!app/middleware/auth.ts",
+		"!app/components/form.tsx",
+		"!app/components/game-over-modal.tsx",
+		"!app/components/keyboard.tsx"
+	],
+	"thresholds": {
+		"high": 80,
+		"low": 60
+	},
+	"concurrency": 4,
+	"incremental": true,
+	"incrementalFile": ".stryker-tmp/incremental.json",
+	"coverageAnalysis": "all"
+}

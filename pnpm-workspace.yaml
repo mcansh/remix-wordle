@@ -57,6 +57,8 @@ catalog:
   "@redwoodjs/agent-ci": ^0.12.1
   "@remix-run/cli": github:remix-run/remix#preview/pr-11204&path:packages/cli
   "@standard-schema/spec": ^1.1.0
+  "@stryker-mutator/core": ^9.6.1
+  "@stryker-mutator/vitest-runner": ^9.6.1
   "@tailwindcss/vite": ^4.2.2
   "@testing-library/jest-dom": ^6.9.1
   "@testing-library/user-event": ^14.6.1
