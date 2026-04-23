@@ -1,10 +1,9 @@
-import { Auth, type BadAuth, type GoodAuth } from "remix/auth-middleware"
 import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
 import { REVEAL_WORD, WORD_LENGTH } from "../../constants.ts"
-import { getReturnToQuery, requireAuth } from "../../middleware/auth.ts"
+import { requireAuth } from "../../middleware/auth.ts"
 import {
 	createGuess,
 	getFullBoard,
@@ -12,7 +11,7 @@ import {
 	isGameComplete,
 } from "../../models/game.ts"
 import { routes } from "../../routes.ts"
-import type { AuthIdentity } from "../../utils/auth-session.ts"
+import { getCurrentUser } from "../../utils/context.ts"
 import * as f from "../../utils/local-form-schema.ts"
 import * as s from "../../utils/local-schema.ts"
 import { render } from "../../utils/render.ts"
@@ -46,15 +45,7 @@ export const home = {
 	middleware: [requireAuth],
 	actions: {
 		async action(context) {
-			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
-			if (auth.ok === false) {
-				return redirect(
-					routes.auth.login.index.href(
-						undefined,
-						getReturnToQuery(context.url),
-					),
-				)
-			}
+			let identity = getCurrentUser()
 
 			let session = context.get(Session)
 			let formData = context.get(FormData)
@@ -67,7 +58,7 @@ export const home = {
 			}
 
 			let guessedWord = data.value.letters.join("")
-			let error = await createGuess(auth.identity.user.id, guessedWord)
+			let error = await createGuess(identity.user.id, guessedWord)
 
 			if (error) {
 				console.error({ error })
@@ -83,19 +74,11 @@ export const home = {
 		},
 
 		async index(context) {
-			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
-			if (auth.ok === false) {
-				return redirect(
-					routes.auth.login.index.href(
-						undefined,
-						getReturnToQuery(context.url),
-					),
-				)
-			}
+			let identity = getCurrentUser()
 
 			let session = context.get(Session)
 
-			let game = await getTodaysGame(auth.identity.user.id)
+			let game = await getTodaysGame(identity.user.id)
 			let board = getFullBoard(game)
 
 			let showModal = isGameComplete(game.status)

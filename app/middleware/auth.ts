@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs"
+import * as bcrypt from "bcryptjs"
 import { createCredentialsAuthProvider } from "remix/auth"
 import {
 	auth,

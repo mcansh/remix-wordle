@@ -1,3 +1,4 @@
+import { invariant } from "@epic-web/invariant"
 import { describe, expect, it, vi } from "vitest"
 
 import {
@@ -174,8 +175,8 @@ describe("auth handlers", () => {
 
 			expect(response.status).toBe(302)
 			let location = response.headers.get("Location")
-			expect(location).toBeTruthy()
-			expect(location!.startsWith("/login")).toBe(true)
+			invariant(location, "Location header not found")
+			expect(location.startsWith("/login")).toBe(true)
 		})
 
 		it("shows error message after failed login", async () => {
@@ -189,7 +190,8 @@ describe("auth handlers", () => {
 			})
 
 			let sessionCookie = getSessionCookie(response)
-			let location = response.headers.get("Location")!
+			let location = response.headers.get("Location")
+			invariant(location, "Location header not found")
 
 			let followUp = await router.fetch("https://wordle.mcan.sh" + location, {
 				headers: { Cookie: `session=${sessionCookie}` },
@@ -232,7 +234,8 @@ describe("auth handlers", () => {
 			)
 
 			expect(response.status).toBe(302)
-			let location = response.headers.get("Location")!
+			let location = response.headers.get("Location")
+			invariant(location, "Location header not found")
 			expect(location).toContain("returnTo=")
 			expect(location).toContain(encodeURIComponent("/history"))
 		})
@@ -293,7 +296,8 @@ describe("auth handlers", () => {
 			})
 
 			expect(response.status).toBe(302)
-			let location = response.headers.get("Location")!
+			let location = response.headers.get("Location")
+			invariant(location, "Location header not found")
 			expect(location.startsWith("/register")).toBe(true)
 		})
 
@@ -311,8 +315,9 @@ describe("auth handlers", () => {
 				},
 			)
 
-			let sessionCookie = getSessionCookie(firstResponse)!
-			let location = firstResponse.headers.get("Location")!
+			let sessionCookie = getSessionCookie(firstResponse)
+			let location = firstResponse.headers.get("Location")
+			invariant(location, "Location header not found")
 
 			let followUp = await router.fetch("https://wordle.mcan.sh" + location, {
 				headers: { Cookie: `session=${sessionCookie}` },
@@ -343,7 +348,8 @@ describe("auth handlers", () => {
 				}),
 				redirect: "manual",
 			})
-			let sessionCookie = getSessionCookie(loginResponse)!
+
+			let sessionCookie = getSessionCookie(loginResponse)
 
 			let logoutResponse = await router.fetch("https://wordle.mcan.sh/logout", {
 				method: "POST",
@@ -368,8 +374,9 @@ describe("auth handlers", () => {
 				redirect: "manual",
 			})
 
-			let sessionCookie = getSessionCookie(loginResponse)!
-			let location = loginResponse.headers.get("Location")!
+			let sessionCookie = getSessionCookie(loginResponse)
+			let location = loginResponse.headers.get("Location")
+			invariant(location, "location header should exist")
 
 			let firstVisit = await router.fetch("https://wordle.mcan.sh" + location, {
 				headers: { Cookie: `session=${sessionCookie}` },

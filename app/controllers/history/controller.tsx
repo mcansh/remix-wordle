@@ -1,11 +1,9 @@
-import { Auth, type BadAuth, type GoodAuth } from "remix/auth-middleware"
 import type { Controller } from "remix/fetch-router"
-import { redirect } from "remix/response/redirect"
 
-import { getReturnToQuery, requireAuth } from "../../middleware/auth.ts"
+import { requireAuth } from "../../middleware/auth.ts"
 import { getGameById, isGameComplete } from "../../models/game.ts"
 import { routes } from "../../routes.ts"
-import type { AuthIdentity } from "../../utils/auth-session.ts"
+import { getCurrentUser } from "../../utils/context.ts"
 import { db } from "../../utils/db.ts"
 import { render } from "../../utils/render.ts"
 import { HistoricalGame } from "./game"
@@ -20,18 +18,10 @@ export const history = {
 	middleware: [requireAuth],
 	actions: {
 		async index(context) {
-			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
-			if (auth.ok === false) {
-				return redirect(
-					routes.auth.login.index.href(
-						undefined,
-						getReturnToQuery(context.url),
-					),
-				)
-			}
+			let identity = getCurrentUser()
 
 			let games = await db.game.findMany({
-				where: { userId: auth.identity.user.id },
+				where: { userId: identity.user.id },
 				orderBy: { createdAt: "desc" },
 				select: HISTORICAL_GAME_SELECT,
 			})
