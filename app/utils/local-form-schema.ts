@@ -129,6 +129,7 @@ export function object<schema extends FormDataSchema>(
 			return { issues }
 		}
 
+		// At this point every schema key has been validated and assigned.
 		return { value: fromAny<ParsedFormData<schema>, typeof output>(output) }
 	})
 }
