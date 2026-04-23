@@ -22,6 +22,7 @@
 		"@prisma/adapter-pg": "catalog:",
 		"@prisma/client": "catalog:",
 		"@standard-schema/spec": "catalog:",
+		"@total-typescript/shoehorn": "catalog:",
 		"bcryptjs": "catalog:",
 		"bullmq": "catalog:",
 		"clsx": "catalog:",

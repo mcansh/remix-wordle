@@ -60,6 +60,7 @@ catalog:
   "@tailwindcss/vite": ^4.2.2
   "@testing-library/jest-dom": ^6.9.1
   "@testing-library/user-event": ^14.6.1
+  '@total-typescript/shoehorn': 0.1.2
   "@total-typescript/tsconfig": ^1.0.4
   "@types/node": ^25.5.2
   "@vitest/coverage-v8": ^4.1.4

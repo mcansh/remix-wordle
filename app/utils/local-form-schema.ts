@@ -1,4 +1,5 @@
 import type { InferOutput, Issue, ParseOptions, Schema } from "./local-schema.ts"
+import { fromAny } from "@total-typescript/shoehorn"
 import { createIssue, createSchema, fail } from "./local-schema.ts"
 
 type FormDataEntryKind = "field" | "fields" | "file" | "files"
@@ -104,7 +105,7 @@ export function object<schema extends FormDataSchema>(
 
 		let abortEarly = shouldAbortEarly(context.options)
 		let issues: Issue[] = []
-		let output: Partial<Record<keyof schema, unknown>> = {}
+		let output: Record<keyof schema, unknown> = fromAny({})
 
 		for (let [key, entrySchema] of Object.entries(schema) as [
 			keyof schema & string,
