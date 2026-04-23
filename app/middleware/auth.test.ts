@@ -19,18 +19,24 @@ describe("getReturnToQuery", () => {
 	})
 
 	it("returns an empty object for a protocol-relative URL (//evil.com)", () => {
-		let url = new URL("https://example.com/login?returnTo=" + encodeURIComponent("//evil.com"))
+		let url = new URL(
+			"https://example.com/login?returnTo=" + encodeURIComponent("//evil.com"),
+		)
 		expect(getReturnToQuery(url)).toEqual({})
 	})
 
 	it("returns an empty object for an absolute http URL", () => {
-		let url = new URL("https://example.com/login?returnTo=" + encodeURIComponent("http://evil.com"))
+		let url = new URL(
+			"https://example.com/login?returnTo=" +
+				encodeURIComponent("http://evil.com"),
+		)
 		expect(getReturnToQuery(url)).toEqual({})
 	})
 
 	it("returns an empty object for an absolute https URL", () => {
 		let url = new URL(
-			"https://example.com/login?returnTo=" + encodeURIComponent("https://evil.com/steal"),
+			"https://example.com/login?returnTo=" +
+				encodeURIComponent("https://evil.com/steal"),
 		)
 		expect(getReturnToQuery(url)).toEqual({})
 	})
@@ -42,26 +48,32 @@ describe("getReturnToQuery", () => {
 
 	it("preserves query strings in the returnTo path", () => {
 		let url = new URL(
-			"https://example.com/login?returnTo=" + encodeURIComponent("/search?q=wordle"),
+			"https://example.com/login?returnTo=" +
+				encodeURIComponent("/search?q=wordle"),
 		)
 		expect(getReturnToQuery(url)).toEqual({ returnTo: "/search?q=wordle" })
 	})
 
 	it("preserves hash fragments in the returnTo path", () => {
-		let url = new URL("https://example.com/login?returnTo=" + encodeURIComponent("/page#section"))
+		let url = new URL(
+			"https://example.com/login?returnTo=" +
+				encodeURIComponent("/page#section"),
+		)
 		expect(getReturnToQuery(url)).toEqual({ returnTo: "/page#section" })
 	})
 
 	it("returns an empty object for a javascript: URI", () => {
 		let url = new URL(
-			"https://example.com/login?returnTo=" + encodeURIComponent("javascript:alert(1)"),
+			"https://example.com/login?returnTo=" +
+				encodeURIComponent("javascript:alert(1)"),
 		)
 		expect(getReturnToQuery(url)).toEqual({})
 	})
 
 	it("returns returnTo for a nested path", () => {
 		let url = new URL(
-			"https://example.com/login?returnTo=" + encodeURIComponent("/history/game-123"),
+			"https://example.com/login?returnTo=" +
+				encodeURIComponent("/history/game-123"),
 		)
 		expect(getReturnToQuery(url)).toEqual({ returnTo: "/history/game-123" })
 	})
@@ -84,13 +96,16 @@ describe("getPostAuthRedirect", () => {
 	})
 
 	it("falls back to home for a protocol-relative URL", () => {
-		let url = new URL("https://example.com/login?returnTo=" + encodeURIComponent("//evil.com"))
+		let url = new URL(
+			"https://example.com/login?returnTo=" + encodeURIComponent("//evil.com"),
+		)
 		expect(getPostAuthRedirect(url)).toBe("/")
 	})
 
 	it("falls back to home for an absolute http URL", () => {
 		let url = new URL(
-			"https://example.com/login?returnTo=" + encodeURIComponent("http://malicious.com"),
+			"https://example.com/login?returnTo=" +
+				encodeURIComponent("http://malicious.com"),
 		)
 		expect(getPostAuthRedirect(url)).toBe("/")
 	})
@@ -106,7 +121,9 @@ describe("getPostAuthRedirect", () => {
 	})
 
 	it("uses a custom fallback when returnTo is unsafe", () => {
-		let url = new URL("https://example.com/login?returnTo=" + encodeURIComponent("//evil.com"))
+		let url = new URL(
+			"https://example.com/login?returnTo=" + encodeURIComponent("//evil.com"),
+		)
 		expect(getPostAuthRedirect(url, "/safe-fallback")).toBe("/safe-fallback")
 	})
 
@@ -116,13 +133,16 @@ describe("getPostAuthRedirect", () => {
 	})
 
 	it("returns the correct path for the root returnTo", () => {
-		let url = new URL("https://example.com/login?returnTo=" + encodeURIComponent("/"))
+		let url = new URL(
+			"https://example.com/login?returnTo=" + encodeURIComponent("/"),
+		)
 		expect(getPostAuthRedirect(url)).toBe("/")
 	})
 
 	it("rejects a javascript: returnTo and falls back to home", () => {
 		let url = new URL(
-			"https://example.com/login?returnTo=" + encodeURIComponent("javascript:alert(1)"),
+			"https://example.com/login?returnTo=" +
+				encodeURIComponent("javascript:alert(1)"),
 		)
 		expect(getPostAuthRedirect(url)).toBe("/")
 	})

@@ -15,7 +15,10 @@ export const registerController = {
 			let error = session.get("error")
 
 			return render(
-				<Document url={context.url} head={<title>Register - Remix Wordle</title>}>
+				<Document
+					url={context.url}
+					head={<title>Register - Remix Wordle</title>}
+				>
 					<main class="h-dvh">
 						<form
 							method="POST"
@@ -26,7 +29,10 @@ export const registerController = {
 								<div class="w-full text-center text-red-500">{error}</div>
 							) : null}
 							<div class="w-full">
-								<label class="block text-sm font-medium text-gray-700" for="email">
+								<label
+									class="block text-sm font-medium text-gray-700"
+									for="email"
+								>
 									Email address
 								</label>
 								<input
@@ -40,7 +46,10 @@ export const registerController = {
 							</div>
 
 							<div class="w-full">
-								<label class="block text-sm font-medium text-gray-700" for="username">
+								<label
+									class="block text-sm font-medium text-gray-700"
+									for="username"
+								>
 									Username
 								</label>
 								<input
@@ -54,7 +63,10 @@ export const registerController = {
 							</div>
 
 							<div class="w-full">
-								<label class="block text-sm font-medium text-gray-700" for="password">
+								<label
+									class="block text-sm font-medium text-gray-700"
+									for="password"
+								>
 									Password
 								</label>
 								<input
@@ -76,7 +88,10 @@ export const registerController = {
 
 							<p class="text-sm text-gray-500">
 								Already have an account?{" "}
-								<a href={routes.auth.login.index.href()} class="text-blue-500 underline">
+								<a
+									href={routes.auth.login.index.href()}
+									class="text-blue-500 underline"
+								>
 									Login here
 								</a>
 							</p>

@@ -310,15 +310,44 @@ describe("keyboardWithStatus", () => {
 
 		// First row
 		expect(row1).toHaveLength(10)
-		expect(row1.map((k) => k.letter)).toEqual(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"])
+		expect(row1.map((k) => k.letter)).toEqual([
+			"q",
+			"w",
+			"e",
+			"r",
+			"t",
+			"y",
+			"u",
+			"i",
+			"o",
+			"p",
+		])
 
 		// Second row
 		expect(row2).toHaveLength(9)
-		expect(row2.map((k) => k.letter)).toEqual(["a", "s", "d", "f", "g", "h", "j", "k", "l"])
+		expect(row2.map((k) => k.letter)).toEqual([
+			"a",
+			"s",
+			"d",
+			"f",
+			"g",
+			"h",
+			"j",
+			"k",
+			"l",
+		])
 
 		// Third row
 		expect(row3).toHaveLength(7)
-		expect(row3.map((k) => k.letter)).toEqual(["z", "x", "c", "v", "b", "n", "m"])
+		expect(row3.map((k) => k.letter)).toEqual([
+			"z",
+			"x",
+			"c",
+			"v",
+			"b",
+			"n",
+			"m",
+		])
 	})
 })
 

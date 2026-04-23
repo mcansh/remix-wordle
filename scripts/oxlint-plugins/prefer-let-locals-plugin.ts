@@ -9,7 +9,10 @@ function isModuleScopeDeclaration(node: ESTree.VariableDeclaration) {
 		return true
 	}
 
-	if (parent.type !== "ExportNamedDeclaration" && parent.type !== "ExportDefaultDeclaration") {
+	if (
+		parent.type !== "ExportNamedDeclaration" &&
+		parent.type !== "ExportDefaultDeclaration"
+	) {
 		return false
 	}
 
@@ -21,7 +24,9 @@ function hasInitializers(node: ESTree.VariableDeclaration) {
 }
 
 function isConstEligibleModuleBinding(variable: Variable) {
-	return variable.references.every((reference) => !reference.isWrite() || reference.init)
+	return variable.references.every(
+		(reference) => !reference.isWrite() || reference.init,
+	)
 }
 
 const preferLetLocalsRule = defineRule({
@@ -42,9 +47,13 @@ const preferLetLocalsRule = defineRule({
 
 				context.report({
 					node,
-					message: "Use let for local bindings; reserve const for module scope.",
+					message:
+						"Use let for local bindings; reserve const for module scope.",
 					fix(fixer: Fixer) {
-						return fixer.replaceTextRange([node.range[0], node.range[0] + 5], "let")
+						return fixer.replaceTextRange(
+							[node.range[0], node.range[0] + 5],
+							"let",
+						)
 					},
 				})
 			},
@@ -84,9 +93,13 @@ const preferConstModuleScopeRule = defineRule({
 
 				context.report({
 					node,
-					message: "Use const for module-scope bindings that are never reassigned.",
+					message:
+						"Use const for module-scope bindings that are never reassigned.",
 					fix(fixer: Fixer) {
-						return fixer.replaceTextRange([node.range[0], node.range[0] + 3], "const")
+						return fixer.replaceTextRange(
+							[node.range[0], node.range[0] + 3],
+							"const",
+						)
 					},
 				})
 			},

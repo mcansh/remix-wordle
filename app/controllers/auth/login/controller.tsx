@@ -4,7 +4,11 @@ import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
 import { Document } from "../../../components/document"
-import { getPostAuthRedirect, getReturnToQuery, passwordProvider } from "../../../middleware/auth"
+import {
+	getPostAuthRedirect,
+	getReturnToQuery,
+	passwordProvider,
+} from "../../../middleware/auth"
 import { routes } from "../../../routes"
 import { render } from "../../../utils/render"
 
@@ -17,7 +21,12 @@ export const loginController = {
 				if (user == null) {
 					let session = context.get(Session)
 					session.flash("error", "Invalid email or password. Please try again.")
-					return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+					return redirect(
+						routes.auth.login.index.href(
+							undefined,
+							getReturnToQuery(context.url),
+						),
+					)
 				}
 
 				let session = completeAuth(context)
@@ -30,7 +39,12 @@ export const loginController = {
 			} catch {
 				let session = context.get(Session)
 				session.flash("error", "We could not complete that sign-in request.")
-				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+				return redirect(
+					routes.auth.login.index.href(
+						undefined,
+						getReturnToQuery(context.url),
+					),
+				)
 			}
 		},
 		index(context) {
@@ -43,14 +57,19 @@ export const loginController = {
 			return render(
 				<Document url={context.url} head={<title>Login - Remix Wordle</title>}>
 					<main class="h-dvh">
-						{error && typeof error === "string" ? <div class="text-red-500">{error}</div> : null}
+						{error && typeof error === "string" ? (
+							<div class="text-red-500">{error}</div>
+						) : null}
 						<form
 							method="post"
 							class="mx-auto flex h-full w-full max-w-md flex-col items-center justify-center space-y-6 px-8"
 							action={formAction}
 						>
 							<div class="w-full">
-								<label htmlFor="email" class="block text-sm font-medium text-gray-700">
+								<label
+									htmlFor="email"
+									class="block text-sm font-medium text-gray-700"
+								>
 									Email address
 								</label>
 								<div class="mt-1">
@@ -67,7 +86,10 @@ export const loginController = {
 							</div>
 
 							<div class="w-full">
-								<label htmlFor="password" class="block text-sm font-medium text-gray-700">
+								<label
+									htmlFor="password"
+									class="block text-sm font-medium text-gray-700"
+								>
 									Password
 								</label>
 								<div class="mt-1">
@@ -89,7 +111,10 @@ export const loginController = {
 							</button>
 							<div class="text-sm text-gray-500">
 								Don&apos;t have an account?{" "}
-								<a class="text-blue-500 underline" href={routes.auth.register.index.href()}>
+								<a
+									class="text-blue-500 underline"
+									href={routes.auth.register.index.href()}
+								>
 									Sign up
 								</a>
 							</div>

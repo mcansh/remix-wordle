@@ -5,7 +5,12 @@ import { Session } from "remix/session"
 
 import { REVEAL_WORD, WORD_LENGTH } from "../../constants.ts"
 import { getReturnToQuery, requireAuth } from "../../middleware/auth.ts"
-import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "../../models/game.ts"
+import {
+	createGuess,
+	getFullBoard,
+	getTodaysGame,
+	isGameComplete,
+} from "../../models/game.ts"
 import { routes } from "../../routes.ts"
 import type { AuthIdentity } from "../../utils/auth-session.ts"
 import * as f from "../../utils/local-form-schema.ts"
@@ -43,7 +48,12 @@ export const home = {
 		async action(context) {
 			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
 			if (auth.ok === false) {
-				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+				return redirect(
+					routes.auth.login.index.href(
+						undefined,
+						getReturnToQuery(context.url),
+					),
+				)
 			}
 
 			let session = context.get(Session)
@@ -64,13 +74,23 @@ export const home = {
 				session.flash("error", error)
 			}
 
-			return redirect(routes.home.index.href(undefined, data.value.cheat ? { cheat: "true" } : {}))
+			return redirect(
+				routes.home.index.href(
+					undefined,
+					data.value.cheat ? { cheat: "true" } : {},
+				),
+			)
 		},
 
 		async index(context) {
 			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
 			if (auth.ok === false) {
-				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+				return redirect(
+					routes.auth.login.index.href(
+						undefined,
+						getReturnToQuery(context.url),
+					),
+				)
 			}
 
 			let session = context.get(Session)
@@ -80,7 +100,10 @@ export const home = {
 
 			let showModal = isGameComplete(game.status)
 
-			let showWord = showModal || context.url.searchParams.has(REVEAL_WORD) ? board.word : undefined
+			let showWord =
+				showModal || context.url.searchParams.has(REVEAL_WORD)
+					? board.word
+					: undefined
 
 			let errorMessage = session.get("error") || undefined
 

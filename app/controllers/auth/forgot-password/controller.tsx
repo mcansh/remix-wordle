@@ -14,12 +14,24 @@ export const forgotPasswordController = {
 				<Document url={context.url} head={<title>Login - Remix Wordle</title>}>
 					<div class="card" style="max-width: 500px; margin: 2rem auto;">
 						<h1>Forgot Password</h1>
-						<p>Enter your email address and we'll send you a link to reset your password.</p>
+						<p>
+							Enter your email address and we'll send you a link to reset your
+							password.
+						</p>
 
-						<form method="POST" action={routes.auth.forgotPassword.action.href()}>
+						<form
+							method="POST"
+							action={routes.auth.forgotPassword.action.href()}
+						>
 							<div>
 								<label for="email">Email</label>
-								<input type="email" id="email" name="email" required autoComplete="email" />
+								<input
+									type="email"
+									id="email"
+									name="email"
+									required
+									autoComplete="email"
+								/>
 							</div>
 
 							<button type="submit" class="btn">
@@ -50,14 +62,15 @@ export const forgotPasswordController = {
 				<Document url={context.url} head={<title>Login - Remix Wordle</title>}>
 					<div class="card" style="max-width: 500px; margin: 2rem auto;">
 						<div class="alert alert-success">
-							Password reset link sent! If we have found a user with that email, you will receive a
-							link to reset your password.
+							Password reset link sent! If we have found a user with that email,
+							you will receive a link to reset your password.
 						</div>
 
 						{token ? (
 							<div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
 								<p style="font-size: 0.9rem;">
-									<strong>Demo Mode:</strong> Click the link below to reset your password
+									<strong>Demo Mode:</strong> Click the link below to reset your
+									password
 								</p>
 								<p style="margin-top: 0.5rem;">
 									<a

@@ -78,7 +78,10 @@ export const requireAuth = requireAuthenticated<AuthIdentity>({
 	},
 })
 
-export function getPostAuthRedirect(url: URL, fallback = routes.home.index.href()): string {
+export function getPostAuthRedirect(
+	url: URL,
+	fallback = routes.home.index.href(),
+): string {
 	return getSafeReturnTo(url.searchParams.get("returnTo")) ?? fallback
 }
 
@@ -92,6 +95,7 @@ function getSafeReturnTo(returnTo: string | null): string | undefined {
 		return undefined
 	}
 
-	let isSafePath = returnTo.startsWith("/") && returnTo.startsWith("//") === false
+	let isSafePath =
+		returnTo.startsWith("/") && returnTo.startsWith("//") === false
 	return isSafePath ? returnTo : undefined
 }

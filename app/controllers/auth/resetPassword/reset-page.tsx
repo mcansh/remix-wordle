@@ -13,7 +13,10 @@ export function ResetPasswordForm() {
 					</div>
 				) : null}
 
-				<form method="POST" action={routes.auth.resetPassword.action.href({ token })}>
+				<form
+					method="POST"
+					action={routes.auth.resetPassword.action.href({ token })}
+				>
 					<div>
 						<label for="password">New Password</label>
 						<input

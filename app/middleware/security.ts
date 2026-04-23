@@ -1,11 +1,18 @@
-import { createSecureHeaders, mergeHeaders, type CreateSecureHeaders } from "@mcansh/http-helmet"
+import {
+	createSecureHeaders,
+	mergeHeaders,
+	type CreateSecureHeaders,
+} from "@mcansh/http-helmet"
 import type { Middleware } from "remix/fetch-router"
 
 export type SecurityHeadersMiddleware = CreateSecureHeaders & {
 	skip?: (context: Parameters<Middleware>[0]) => boolean
 }
 
-export function securityHeaders({ skip, ...config }: SecurityHeadersMiddleware): Middleware {
+export function securityHeaders({
+	skip,
+	...config
+}: SecurityHeadersMiddleware): Middleware {
 	return async (context, next) => {
 		if (skip?.(context)) return next()
 

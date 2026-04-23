@@ -1,7 +1,11 @@
 import { parse, parseSafe } from "remix/data-schema"
 import { describe, expect, it, vi } from "vitest"
 
-import { assertContains, loginAsCustomer, requestWithSession } from "../../../test/helpers.ts"
+import {
+	assertContains,
+	loginAsCustomer,
+	requestWithSession,
+} from "../../../test/helpers.ts"
 import type { FullGame } from "../../models/game.ts"
 import { router } from "../../router.ts"
 import { guessWordSchema } from "./controller.tsx"
@@ -47,18 +51,20 @@ vi.mock("../../models/user.ts", async (importActual) => {
 
 	return {
 		...actual,
-		authenticateUser: vi.fn().mockImplementation(async (email: string, password: string) => {
-			if (email === "customer@example.com" && password === "password123") {
-				return {
-					id: "user-123",
-					email,
-					username: "testuser",
-					password: "hashed-password", // In real case, this would be hashed
+		authenticateUser: vi
+			.fn()
+			.mockImplementation(async (email: string, password: string) => {
+				if (email === "customer@example.com" && password === "password123") {
+					return {
+						id: "user-123",
+						email,
+						username: "testuser",
+						password: "hashed-password", // In real case, this would be hashed
+					}
 				}
-			}
 
-			return null
-		}),
+				return null
+			}),
 		getUserById: vi.fn().mockImplementation(async (id: string) => {
 			if (id === "user-123") {
 				return {

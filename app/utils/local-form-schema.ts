@@ -1,4 +1,9 @@
-import type { InferOutput, Issue, ParseOptions, Schema } from "./local-schema.ts"
+import type {
+	InferOutput,
+	Issue,
+	ParseOptions,
+	Schema,
+} from "./local-schema.ts"
 import { createIssue, createSchema, fail } from "./local-schema.ts"
 
 type FormDataEntryKind = "field" | "fields" | "file" | "files"
@@ -8,7 +13,9 @@ type FormDataEntryKind = "field" | "fields" | "file" | "files"
  */
 export type FormDataSource = FormData | URLSearchParams
 
-type FormDataParseResult<output> = { value: output } | { issues: ReadonlyArray<Issue> }
+type FormDataParseResult<output> =
+	| { value: output }
+	| { issues: ReadonlyArray<Issue> }
 
 type FormDataValidationContext = {
 	path: NonNullable<Issue["path"]>
@@ -77,7 +84,9 @@ export type FormDataObjectSchema<schema extends FormDataSchema> = Schema<
  * The typed result produced by `object()` for a given form-data shape.
  */
 export type ParsedFormData<schema extends FormDataSchema> = {
-	[key in keyof schema]: schema[key] extends FormDataEntrySchema<infer output> ? output : never
+	[key in keyof schema]: schema[key] extends FormDataEntrySchema<infer output>
+		? output
+		: never
 }
 
 /**
@@ -223,7 +232,12 @@ function parseField(
 				}
 			}
 
-			return validateParsedValue(keyPath, entrySchema.schema, value ?? undefined, context.options)
+			return validateParsedValue(
+				keyPath,
+				entrySchema.schema,
+				value ?? undefined,
+				context.options,
+			)
 		}
 		case "fields": {
 			let values = formData.getAll(fieldName)
@@ -232,7 +246,12 @@ function parseField(
 
 			values.forEach((value, index) => {
 				if (value instanceof Blob) {
-					issues.push(createIssue(`Expected text field "${fieldName}"`, withPath(keyPath, index)))
+					issues.push(
+						createIssue(
+							`Expected text field "${fieldName}"`,
+							withPath(keyPath, index),
+						),
+					)
 				} else {
 					parsedValues.push(value)
 				}
@@ -242,7 +261,12 @@ function parseField(
 				return { issues }
 			}
 
-			return validateParsedValue(keyPath, entrySchema.schema, parsedValues, context.options)
+			return validateParsedValue(
+				keyPath,
+				entrySchema.schema,
+				parsedValues,
+				context.options,
+			)
 		}
 		case "file": {
 			let value = formData.get(fieldName)
@@ -253,7 +277,12 @@ function parseField(
 				}
 			}
 
-			return validateParsedValue(keyPath, entrySchema.schema, value ?? undefined, context.options)
+			return validateParsedValue(
+				keyPath,
+				entrySchema.schema,
+				value ?? undefined,
+				context.options,
+			)
 		}
 		case "files": {
 			let values = formData.getAll(fieldName)
@@ -262,7 +291,12 @@ function parseField(
 
 			values.forEach((value, index) => {
 				if (!(value instanceof Blob)) {
-					issues.push(createIssue(`Expected file field "${fieldName}"`, withPath(keyPath, index)))
+					issues.push(
+						createIssue(
+							`Expected file field "${fieldName}"`,
+							withPath(keyPath, index),
+						),
+					)
 				} else {
 					parsedValues.push(value)
 				}
@@ -272,7 +306,12 @@ function parseField(
 				return { issues }
 			}
 
-			return validateParsedValue(keyPath, entrySchema.schema, parsedValues, context.options)
+			return validateParsedValue(
+				keyPath,
+				entrySchema.schema,
+				parsedValues,
+				context.options,
+			)
 		}
 	}
 }
@@ -295,13 +334,17 @@ function validateParsedValue(
 }
 
 function shouldAbortEarly(options?: ParseOptions): boolean {
-	let libraryAbortEarly = (options?.libraryOptions as { abortEarly?: unknown } | undefined)
-		?.abortEarly
+	let libraryAbortEarly = (
+		options?.libraryOptions as { abortEarly?: unknown } | undefined
+	)?.abortEarly
 
 	return Boolean(options?.abortEarly ?? libraryAbortEarly)
 }
 
-function withPath(path: NonNullable<Issue["path"]>, key: PropertyKey): NonNullable<Issue["path"]> {
+function withPath(
+	path: NonNullable<Issue["path"]>,
+	key: PropertyKey,
+): NonNullable<Issue["path"]> {
 	return path.length === 0 ? [key] : [...path, key]
 }
 

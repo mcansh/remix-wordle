@@ -37,14 +37,22 @@ export function createHistoricalGameListItem(game: HistoricalGame) {
 }
 
 export function HistoricalGameList(_handle: Handle, { url }: { url: URL }) {
-	return ({ games }: { games: Array<ReturnType<typeof createHistoricalGameListItem>> }) => {
+	return ({
+		games,
+	}: {
+		games: Array<ReturnType<typeof createHistoricalGameListItem>>
+	}) => {
 		return (
 			<Document url={url} head={<title>Remix Wordle Game History</title>}>
 				<div class="px-4 pt-8 sm:px-6 lg:px-8">
 					<div class="sm:flex sm:items-center">
 						<div class="sm:flex-auto">
-							<h1 class="text-base leading-6 font-semibold text-gray-900">History</h1>
-							<p class="mt-2 text-sm text-gray-700">A history of all of your games.</p>
+							<h1 class="text-base leading-6 font-semibold text-gray-900">
+								History
+							</h1>
+							<p class="mt-2 text-sm text-gray-700">
+								A history of all of your games.
+							</p>
 						</div>
 					</div>
 					<div class="mt-8 flow-root">
@@ -90,7 +98,9 @@ export function HistoricalGameList(_handle: Handle, { url }: { url: URL }) {
 											<tr key={game.id}>
 												<td
 													class={clsx(
-														gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
+														gameIndex !== array.length - 1
+															? "border-b border-gray-200"
+															: "",
 														"py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 lg:pl-8",
 													)}
 												>
@@ -98,7 +108,9 @@ export function HistoricalGameList(_handle: Handle, { url }: { url: URL }) {
 												</td>
 												<td
 													class={clsx(
-														gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
+														gameIndex !== array.length - 1
+															? "border-b border-gray-200"
+															: "",
 														"px-3 py-4 text-sm whitespace-nowrap text-gray-500",
 													)}
 												>
@@ -106,7 +118,9 @@ export function HistoricalGameList(_handle: Handle, { url }: { url: URL }) {
 												</td>
 												<td
 													class={clsx(
-														gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
+														gameIndex !== array.length - 1
+															? "border-b border-gray-200"
+															: "",
 														"px-3 py-4 text-sm whitespace-nowrap text-gray-500",
 													)}
 												>
@@ -114,7 +128,9 @@ export function HistoricalGameList(_handle: Handle, { url }: { url: URL }) {
 												</td>
 												<td
 													class={clsx(
-														gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
+														gameIndex !== array.length - 1
+															? "border-b border-gray-200"
+															: "",
 														"px-3 py-4 text-sm whitespace-nowrap text-gray-500",
 													)}
 												>
@@ -122,7 +138,9 @@ export function HistoricalGameList(_handle: Handle, { url }: { url: URL }) {
 												</td>
 												<td
 													class={clsx(
-														gameIndex !== array.length - 1 ? "border-b border-gray-200" : "",
+														gameIndex !== array.length - 1
+															? "border-b border-gray-200"
+															: "",
 														"relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-8 lg:pr-8",
 													)}
 												>

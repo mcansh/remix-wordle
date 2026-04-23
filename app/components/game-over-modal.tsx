@@ -20,7 +20,13 @@ type GameOverModalProps = {
 
 export function GameOverModal(handle: Handle) {
 	let copied = false
-	return ({ currentGuess, guesses, totalGuesses, winner, word }: GameOverModalProps) => {
+	return ({
+		currentGuess,
+		guesses,
+		totalGuesses,
+		winner,
+		word,
+	}: GameOverModalProps) => {
 		return (
 			<div class="relative z-10" role="dialog" aria-modal="true">
 				<div class="fixed inset-0 bg-gray-500/75 transition-opacity" />
@@ -45,7 +51,9 @@ export function GameOverModal(handle: Handle) {
 									</svg> */}
 								</div>
 								<div class="mt-3 text-center sm:mt-5">
-									<h3 class="text-lg leading-6 font-medium text-gray-900">Game Summary</h3>
+									<h3 class="text-lg leading-6 font-medium text-gray-900">
+										Game Summary
+									</h3>
 									<div class="mt-2">
 										<div class="whitespace-pre">{boardToEmoji(guesses)}</div>
 										<button
@@ -54,7 +62,8 @@ export function GameOverModal(handle: Handle) {
 											mix={[
 												pressEvents(),
 												on(pressEvents.press, async () => {
-													let guessString = (winner ? currentGuess : "X") + "/" + totalGuesses
+													let guessString =
+														(winner ? currentGuess : "X") + "/" + totalGuesses
 
 													let text =
 														`Remix Wordle - ${guessString} \n` +
@@ -80,16 +89,22 @@ export function GameOverModal(handle: Handle) {
 												}),
 											]}
 										>
-											{copied ? "Copied to clipboard 📋" : "Copy to clipboard 📋"}
+											{copied
+												? "Copied to clipboard 📋"
+												: "Copy to clipboard 📋"}
 										</button>
 										<div class="mt-2 space-y-2 text-sm text-gray-500">
 											<p>
-												The word was <strong>{word}</strong>. Come back and try again tomorrow
+												The word was <strong>{word}</strong>. Come back and try
+												again tomorrow
 											</p>
 
 											<p>
 												View your&nbsp;
-												<a class="text-indigo-600" href={routes.history.index.href()}>
+												<a
+													class="text-indigo-600"
+													href={routes.history.index.href()}
+												>
 													full game history
 												</a>
 											</p>

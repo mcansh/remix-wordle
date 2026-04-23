@@ -53,7 +53,11 @@ describe("securityHeaders", () => {
 		let middleware = securityHeaders({})
 		let next = createNext()
 
-		let result = await invokeSecurityHeaders(middleware, createMockContext(), next)
+		let result = await invokeSecurityHeaders(
+			middleware,
+			createMockContext(),
+			next,
+		)
 
 		assertResponse(result)
 
@@ -80,15 +84,25 @@ describe("securityHeaders", () => {
 
 		let next = createNext()
 
-		let result = await invokeSecurityHeaders(middleware, createMockContext(), next)
+		let result = await invokeSecurityHeaders(
+			middleware,
+			createMockContext(),
+			next,
+		)
 
 		assertResponse(result)
 
 		expect(result.headers.get("Content-Security-Policy")).toBe("img-src 'self'")
-		expect(result.headers.get("Cross-Origin-Embedder-Policy")).toBe("require-corp")
+		expect(result.headers.get("Cross-Origin-Embedder-Policy")).toBe(
+			"require-corp",
+		)
 		expect(result.headers.get("Cross-Origin-Opener-Policy")).toBe("same-origin")
-		expect(result.headers.get("Cross-Origin-Resource-Policy")).toBe("same-origin")
-		expect(result.headers.get("Referrer-Policy")).toBe("strict-origin-when-cross-origin")
+		expect(result.headers.get("Cross-Origin-Resource-Policy")).toBe(
+			"same-origin",
+		)
+		expect(result.headers.get("Referrer-Policy")).toBe(
+			"strict-origin-when-cross-origin",
+		)
 	})
 
 	it("rate limits through a real router but skips non-GET requests", async () => {
@@ -112,7 +126,9 @@ describe("securityHeaders", () => {
 		expect(get.status).toBe(200)
 		expect(get.headers.get("Content-Security-Policy")).toBe("img-src 'self'")
 
-		let post = await router.fetch(new Request("http://localhost", { method: "POST" }))
+		let post = await router.fetch(
+			new Request("http://localhost", { method: "POST" }),
+		)
 
 		expect(post.status).toBe(200)
 	})

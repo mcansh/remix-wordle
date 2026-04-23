@@ -35,7 +35,9 @@ middleware.push(
 	}),
 	staticFiles("./public", {
 		cacheControl:
-			process.env.NODE_ENV === "production" ? "public, max-age=3600" : "no-store, must-revalidate",
+			process.env.NODE_ENV === "production"
+				? "public, max-age=3600"
+				: "no-store, must-revalidate",
 	}),
 )
 middleware.push(formData())
@@ -48,7 +50,10 @@ middleware.push(
 		"Content-Security-Policy": {
 			"default-src": [NONE],
 			"script-src": [SELF],
-			"connect-src": [SELF, ...(process.env.NODE_ENV === "development" ? ["ws"] : [])],
+			"connect-src": [
+				SELF,
+				...(process.env.NODE_ENV === "development" ? ["ws"] : []),
+			],
 			"style-src": [SELF],
 			"img-src": [SELF, "https://cdn.usefathom.com"],
 		},

@@ -69,14 +69,18 @@ export function getFullBoard(game: FullGame) {
 		}
 	})
 
-	let computedGuesses: Array<{ letters: Array<ComputedGuess> }> = game.guesses.flatMap((guess) => {
-		let computed = computeGuess(guess.guess, game.word)
-		return {
-			letters: computed,
-		}
-	})
+	let computedGuesses: Array<{ letters: Array<ComputedGuess> }> =
+		game.guesses.flatMap((guess) => {
+			let computed = computeGuess(guess.guess, game.word)
+			return {
+				letters: computed,
+			}
+		})
 
-	let guesses: Array<{ letters: Array<ComputedGuess> }> = [...computedGuesses, ...fillerGuesses]
+	let guesses: Array<{ letters: Array<ComputedGuess> }> = [
+		...computedGuesses,
+		...fillerGuesses,
+	]
 
 	let currentGuess = game.guesses.length
 
@@ -101,7 +105,10 @@ export async function createGame(userId: User["id"]): Promise<FullGame> {
 	return game
 }
 
-export async function createGuess(userId: User["id"], guessedWord: string): Promise<string | null> {
+export async function createGuess(
+	userId: User["id"],
+	guessedWord: string,
+): Promise<string | null> {
 	let game = await getTodaysGame(userId)
 
 	if (game.guesses.length >= TOTAL_GUESSES || isGameComplete(game.status)) {

@@ -1,24 +1,33 @@
 import { describe, expect, it, vi } from "vitest"
 
-import { assertContains, assertNotContains, getSessionCookie } from "../../../test/helpers.ts"
+import {
+	assertContains,
+	assertNotContains,
+	getSessionCookie,
+} from "../../../test/helpers.ts"
 import { router } from "../../router.ts"
 
 vi.mock("../../models/user.ts", async (importActual) => {
 	let actual = await importActual<typeof import("../../models/user.ts")>()
 	return {
 		...actual,
-		authenticateUser: vi.fn().mockImplementation(async (email: string, password: string) => {
-			if (email === "testuser@example.com" && password === "mytestaccountpassword") {
-				return {
-					id: "user-123",
-					email,
-					username: "testuser",
-					password: "hashed-password",
+		authenticateUser: vi
+			.fn()
+			.mockImplementation(async (email: string, password: string) => {
+				if (
+					email === "testuser@example.com" &&
+					password === "mytestaccountpassword"
+				) {
+					return {
+						id: "user-123",
+						email,
+						username: "testuser",
+						password: "hashed-password",
+					}
 				}
-			}
 
-			return null
-		}),
+				return null
+			}),
 		getUserById: vi.fn().mockImplementation(async (id: string) => {
 			if (id === "user-123") {
 				return {
@@ -41,20 +50,30 @@ vi.mock("../../models/user.ts", async (importActual) => {
 		}),
 		createUser: vi
 			.fn()
-			.mockImplementation(async (data: { email: string; username: string; password: string }) => ({
-				id: "new-user-456",
-				email: data.email,
-				username: data.username,
-			})),
+			.mockImplementation(
+				async (data: {
+					email: string
+					username: string
+					password: string
+				}) => ({
+					id: "new-user-456",
+					email: data.email,
+					username: data.username,
+				}),
+			),
 	}
 })
 
 vi.mock("bcryptjs", () => ({
 	default: {
-		compare: vi.fn().mockImplementation(async (plain: string, hashed: string) => {
-			return hashed === `hashed-${plain}`
-		}),
-		hash: vi.fn().mockImplementation(async (plain: string) => `hashed-${plain}`),
+		compare: vi
+			.fn()
+			.mockImplementation(async (plain: string, hashed: string) => {
+				return hashed === `hashed-${plain}`
+			}),
+		hash: vi
+			.fn()
+			.mockImplementation(async (plain: string) => `hashed-${plain}`),
 	},
 }))
 
@@ -68,43 +87,51 @@ vi.mock("../utils/db", () => ({
 		user: {
 			findFirst: vi
 				.fn()
-				.mockImplementation(async ({ where }: { where: Record<string, unknown> }) => {
-					if (where.email === "testuser@example.com") {
-						return {
-							id: "user-123",
-							email: "testuser@example.com",
-							username: "testuser",
-							password: "hashed-mytestaccountpassword",
+				.mockImplementation(
+					async ({ where }: { where: Record<string, unknown> }) => {
+						if (where.email === "testuser@example.com") {
+							return {
+								id: "user-123",
+								email: "testuser@example.com",
+								username: "testuser",
+								password: "hashed-mytestaccountpassword",
+							}
 						}
-					}
-					if (where.id === "user-123") {
-						return {
-							id: "user-123",
-							email: "testuser@example.com",
-							username: "testuser",
+						if (where.id === "user-123") {
+							return {
+								id: "user-123",
+								email: "testuser@example.com",
+								username: "testuser",
+							}
 						}
-					}
-					return null
-				}),
+						return null
+					},
+				),
 			findUnique: vi
 				.fn()
-				.mockImplementation(async ({ where }: { where: Record<string, unknown> }) => {
-					if (where.email === "testuser@example.com") {
-						return {
-							id: "user-123",
-							email: "testuser@example.com",
-							username: "testuser",
-							password: "hashed-mytestaccountpassword",
+				.mockImplementation(
+					async ({ where }: { where: Record<string, unknown> }) => {
+						if (where.email === "testuser@example.com") {
+							return {
+								id: "user-123",
+								email: "testuser@example.com",
+								username: "testuser",
+								password: "hashed-mytestaccountpassword",
+							}
 						}
-					}
-					return null
-				}),
-			create: vi.fn().mockImplementation(async ({ data }: { data: Record<string, unknown> }) => ({
-				id: "new-user-456",
-				email: data.email,
-				username: data.username,
-				password: data.password,
-			})),
+						return null
+					},
+				),
+			create: vi
+				.fn()
+				.mockImplementation(
+					async ({ data }: { data: Record<string, unknown> }) => ({
+						id: "new-user-456",
+						email: data.email,
+						username: data.username,
+						password: data.password,
+					}),
+				),
 		},
 	},
 }))
@@ -174,7 +201,8 @@ describe("auth handlers", () => {
 
 		it("redirects to returnTo destination on successful login", async () => {
 			let response = await router.fetch(
-				"https://wordle.mcan.sh/login?returnTo=" + encodeURIComponent("/history"),
+				"https://wordle.mcan.sh/login?returnTo=" +
+					encodeURIComponent("/history"),
 				{
 					method: "POST",
 					body: new URLSearchParams({
@@ -191,7 +219,8 @@ describe("auth handlers", () => {
 
 		it("preserves a safe returnTo param on failed login", async () => {
 			let response = await router.fetch(
-				"https://wordle.mcan.sh/login?returnTo=" + encodeURIComponent("/history"),
+				"https://wordle.mcan.sh/login?returnTo=" +
+					encodeURIComponent("/history"),
 				{
 					method: "POST",
 					body: new URLSearchParams({
@@ -210,7 +239,8 @@ describe("auth handlers", () => {
 
 		it("does not redirect to an unsafe open-redirect returnTo on success", async () => {
 			let response = await router.fetch(
-				"https://wordle.mcan.sh/login?returnTo=" + encodeURIComponent("//evil.com"),
+				"https://wordle.mcan.sh/login?returnTo=" +
+					encodeURIComponent("//evil.com"),
 				{
 					method: "POST",
 					body: new URLSearchParams({
@@ -268,15 +298,18 @@ describe("auth handlers", () => {
 		})
 
 		it("shows error when attempting to register with an existing email", async () => {
-			let firstResponse = await router.fetch("https://wordle.mcan.sh/register", {
-				method: "POST",
-				body: new URLSearchParams({
-					email: "testuser@example.com",
-					username: "testuser",
-					password: "supersecretpassword",
-				}),
-				redirect: "manual",
-			})
+			let firstResponse = await router.fetch(
+				"https://wordle.mcan.sh/register",
+				{
+					method: "POST",
+					body: new URLSearchParams({
+						email: "testuser@example.com",
+						username: "testuser",
+						password: "supersecretpassword",
+					}),
+					redirect: "manual",
+				},
+			)
 
 			let sessionCookie = getSessionCookie(firstResponse)!
 			let location = firstResponse.headers.get("Location")!
@@ -345,9 +378,12 @@ describe("auth handlers", () => {
 			let firstHtml = await firstVisit.text()
 			assertContains(firstHtml, "Invalid email or password")
 
-			let secondVisit = await router.fetch("https://wordle.mcan.sh" + location, {
-				headers: { Cookie: `session=${firstSessionCookie}` },
-			})
+			let secondVisit = await router.fetch(
+				"https://wordle.mcan.sh" + location,
+				{
+					headers: { Cookie: `session=${firstSessionCookie}` },
+				},
+			)
 			let secondHtml = await secondVisit.text()
 			assertNotContains(secondHtml, "Invalid email or password")
 		})

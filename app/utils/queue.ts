@@ -21,7 +21,9 @@ await queue.upsertJobScheduler(
 const worker = new Worker(
 	"my-cron-jobs",
 	async (job) => {
-		console.log(`Starting job ${job.id} at ${new Date().toISOString()} to clean up games`)
+		console.log(
+			`Starting job ${job.id} at ${new Date().toISOString()} to clean up games`,
+		)
 
 		let incompleteGames = await db.game.findMany({
 			where: {

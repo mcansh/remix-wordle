@@ -22,7 +22,12 @@ export const history = {
 		async index(context) {
 			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
 			if (auth.ok === false) {
-				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+				return redirect(
+					routes.auth.login.index.href(
+						undefined,
+						getReturnToQuery(context.url),
+					),
+				)
 			}
 
 			let games = await db.game.findMany({
@@ -35,7 +40,12 @@ export const history = {
 				return createHistoricalGameListItem(game)
 			})
 
-			return render(<HistoricalGameList setup={{ url: context.url }} games={formattedGames} />)
+			return render(
+				<HistoricalGameList
+					setup={{ url: context.url }}
+					games={formattedGames}
+				/>,
+			)
 		},
 
 		async game(context) {
@@ -50,7 +60,11 @@ export const history = {
 			let showModal = isGameComplete(game.status)
 
 			return render(
-				<HistoricalGame setup={{ url: context.url }} game={game} showModal={showModal} />,
+				<HistoricalGame
+					setup={{ url: context.url }}
+					game={game}
+					showModal={showModal}
+				/>,
 			)
 		},
 	},

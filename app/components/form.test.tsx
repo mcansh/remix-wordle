@@ -28,7 +28,9 @@ describe("GuessForm", () => {
 		render(Component({ currentGuess: 0 }))
 
 		for (let i = 1; i <= 5; i++) {
-			expect(screen.getByRole("textbox", { name: `letter ${i}` })).toBeInTheDocument()
+			expect(
+				screen.getByRole("textbox", { name: `letter ${i}` }),
+			).toBeInTheDocument()
 		}
 	})
 
@@ -73,7 +75,9 @@ describe("GuessForm", () => {
 
 	it("passes error message to letter inputs", () => {
 		let Component = GuessForm()
-		let { container } = render(Component({ currentGuess: 0, error: "invalid word" }))
+		let { container } = render(
+			Component({ currentGuess: 0, error: "invalid word" }),
+		)
 
 		let form = container.querySelector("form")
 		let inputs = form?.querySelectorAll('input[name="letter"]')
@@ -98,7 +102,9 @@ describe("GuessForm", () => {
 		let { container } = render(Component({ currentGuess: 0 }))
 
 		let form = container.querySelector("form")
-		let input = form?.querySelector('input[name="letter"]') as HTMLInputElement | null
+		let input = form?.querySelector(
+			'input[name="letter"]',
+		) as HTMLInputElement | null
 
 		expect(input).toHaveAttribute("type", "text")
 		expect(input).toHaveAttribute("pattern", "[a-zA-Z]{1}")

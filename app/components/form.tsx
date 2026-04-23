@@ -54,7 +54,11 @@ export function GuessForm() {
 			>
 				{cheat ? <input type="hidden" name="cheat" value="true" /> : null}
 				{LETTER_INPUTS.map((index) => (
-					<LetterInput key={`input-number-${index}`} index={index} errorMessage={error} />
+					<LetterInput
+						key={`input-number-${index}`}
+						index={index}
+						errorMessage={error}
+					/>
 				))}
 			</form>
 		)

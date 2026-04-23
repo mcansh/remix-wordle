@@ -56,7 +56,10 @@ type SyncStandardSchemaProps<input, output> = Omit<
 	"validate"
 > & {
 	// data-schema is sync-first; keep validate sync.
-	validate: (value: unknown, options?: ValidationOptions) => ValidationResult<output>
+	validate: (
+		value: unknown,
+		options?: ValidationOptions,
+	) => ValidationResult<output>
 	// Preserve Standard Schema's compile-time type channel.
 	types?: StandardSchemaV1.Types<input, output> | undefined
 }
@@ -78,7 +81,10 @@ export type Check<output> = {
 /**
  * A sync, Standard Schema v1-compatible schema with a small chainable API.
  */
-export type Schema<input, output = input> = SyncStandardSchema<input, output> & {
+export type Schema<input, output = input> = SyncStandardSchema<
+	input,
+	output
+> & {
 	/**
 	 * Compose one or more reusable checks onto this schema.
 	 *
@@ -99,7 +105,10 @@ export type Schema<input, output = input> = SyncStandardSchema<input, output> & 
 	 * @param message Optional issue message when the predicate fails
 	 * @returns A new schema with the refinement applied
 	 */
-	refine: (predicate: (value: output) => boolean, message?: string) => Schema<input, output>
+	refine: (
+		predicate: (value: output) => boolean,
+		message?: string,
+	) => Schema<input, output>
 	/**
 	 * Transform the output of this schema with a function.
 	 *
@@ -109,17 +118,23 @@ export type Schema<input, output = input> = SyncStandardSchema<input, output> & 
 	 * @param transform A function that transforms the validated output
 	 * @returns A new schema with the transformation applied
 	 */
-	transform: <newOutput>(transform: (value: output) => newOutput) => Schema<input, newOutput>
+	transform: <newOutput>(
+		transform: (value: output) => newOutput,
+	) => Schema<input, newOutput>
 	/**
 	 * Internal validator used to validate nested values while preserving `path`/`options`.
 	 */
-	"~run": (value: unknown, context: ValidationContext) => ValidationResult<output>
+	"~run": (
+		value: unknown,
+		context: ValidationContext,
+	) => ValidationResult<output>
 }
 
 /**
  * Infers the input type of a schema-like value.
  */
-export type InferInput<schema> = schema extends StandardSchemaV1<infer input, any> ? input : never
+export type InferInput<schema> =
+	schema extends StandardSchemaV1<infer input, any> ? input : never
 
 /**
  * Infers the output type of a schema-like value.
@@ -179,7 +194,9 @@ export function createSchema<input, output>(
 					if (!check.check(result.value)) {
 						if (!check.code) {
 							return {
-								issues: [createIssue(check.message ?? "Check failed", context.path)],
+								issues: [
+									createIssue(check.message ?? "Check failed", context.path),
+								],
 							}
 						}
 
@@ -226,7 +243,9 @@ export function createSchema<input, output>(
 				return result
 			})
 		},
-		transform<newOutput>(fn: (value: output) => newOutput): Schema<input, newOutput> {
+		transform<newOutput>(
+			fn: (value: output) => newOutput,
+		): Schema<input, newOutput> {
 			return createSchema<input, newOutput>(function validate(value, context) {
 				let result = schema["~run"](value, context)
 
@@ -243,18 +262,24 @@ export function createSchema<input, output>(
 }
 
 function shouldAbortEarly(options?: ParseOptions): boolean {
-	let libraryAbortEarly = (options?.libraryOptions as { abortEarly?: unknown } | undefined)
-		?.abortEarly
+	let libraryAbortEarly = (
+		options?.libraryOptions as { abortEarly?: unknown } | undefined
+	)?.abortEarly
 	let abortEarly = options?.abortEarly ?? libraryAbortEarly
 	return Boolean(abortEarly)
 }
 
-function withPath(path: NonNullable<Issue["path"]>, key: PropertyKey): NonNullable<Issue["path"]> {
+function withPath(
+	path: NonNullable<Issue["path"]>,
+	key: PropertyKey,
+): NonNullable<Issue["path"]> {
 	return path.length === 0 ? [key] : [...path, key]
 }
 
 function getErrorMap(options?: ParseOptions): ErrorMap | undefined {
-	let libraryErrorMap = (options?.libraryOptions as { errorMap?: unknown } | undefined)?.errorMap
+	let libraryErrorMap = (
+		options?.libraryOptions as { errorMap?: unknown } | undefined
+	)?.errorMap
 
 	if (typeof options?.errorMap === "function") {
 		return options.errorMap
@@ -266,7 +291,9 @@ function getErrorMap(options?: ParseOptions): ErrorMap | undefined {
 }
 
 function getLocale(options?: ParseOptions): string | undefined {
-	let libraryLocale = (options?.libraryOptions as { locale?: unknown } | undefined)?.locale
+	let libraryLocale = (
+		options?.libraryOptions as { locale?: unknown } | undefined
+	)?.locale
 
 	if (typeof options?.locale === "string") {
 		return options.locale
@@ -277,7 +304,10 @@ function getLocale(options?: ParseOptions): string | undefined {
 	}
 }
 
-function resolveIssueMessage(options: ParseOptions | undefined, context: ErrorMapContext): string {
+function resolveIssueMessage(
+	options: ParseOptions | undefined,
+	context: ErrorMapContext,
+): string {
 	let errorMap = getErrorMap(options)
 
 	if (!errorMap) {
@@ -288,7 +318,10 @@ function resolveIssueMessage(options: ParseOptions | undefined, context: ErrorMa
 	return message ?? context.defaultMessage
 }
 
-function createIssueFromContext(context: ValidationContext, descriptor: IssueDescriptor): Issue {
+function createIssueFromContext(
+	context: ValidationContext,
+	descriptor: IssueDescriptor,
+): Issue {
 	let path = descriptor.path ?? context.path
 	let message = resolveIssueMessage(context.options, {
 		code: descriptor.code,
@@ -464,7 +497,9 @@ export function defaulted<input, output>(
 	return createSchema(function validate(value, context) {
 		if (value === undefined) {
 			let resolved =
-				typeof defaultValue === "function" ? (defaultValue as () => output)() : defaultValue
+				typeof defaultValue === "function"
+					? (defaultValue as () => output)()
+					: defaultValue
 
 			return { value: resolved }
 		}
@@ -489,12 +524,16 @@ export function enum_<const values extends readonly [unknown, ...unknown[]]>(
 			}
 		}
 
-		return fail("Expected one of: " + values.map(String).join(", "), context.path, {
-			code: "enum.invalid_value",
-			input: value,
-			values: { values: [...values] },
-			parseOptions: context.options,
-		})
+		return fail(
+			"Expected one of: " + values.map(String).join(", "),
+			context.path,
+			{
+				code: "enum.invalid_value",
+				input: value,
+				values: { values: [...values] },
+				parseOptions: context.options,
+			},
+		)
 	})
 }
 
@@ -504,9 +543,9 @@ export function enum_<const values extends readonly [unknown, ...unknown[]]>(
  * @param constructor The class constructor to check against
  * @returns A schema that produces the instance type
  */
-export function instanceof_<constructor extends abstract new (...args: any[]) => any>(
-	constructor: constructor,
-): Schema<unknown, InstanceType<constructor>> {
+export function instanceof_<
+	constructor extends abstract new (...args: any[]) => any,
+>(constructor: constructor): Schema<unknown, InstanceType<constructor>> {
 	return createSchema(function validate(value, context) {
 		if (!(value instanceof constructor)) {
 			return fail("Expected instance of " + constructor.name, context.path, {
@@ -634,13 +673,15 @@ export function null_(): Schema<unknown, null> {
 export function nullable<input, output>(
 	schema: Schema<input, output>,
 ): Schema<input | null, output | null> {
-	return createSchema<input | null, output | null>(function validate(value, context) {
-		if (value === null) {
-			return { value: null }
-		}
+	return createSchema<input | null, output | null>(
+		function validate(value, context) {
+			if (value === null) {
+				return { value: null }
+			}
 
-		return schema["~run"](value, context)
-	})
+			return schema["~run"](value, context)
+		},
+	)
 }
 
 /**
@@ -710,7 +751,10 @@ export function object<shape extends ObjectShape>(
 
 				issues.push(...result.issues)
 			} else {
-				if (Object.prototype.hasOwnProperty.call(input, key) || result.value !== undefined) {
+				if (
+					Object.prototype.hasOwnProperty.call(input, key) ||
+					result.value !== undefined
+				) {
 					outputValues[key] = result.value
 				}
 			}
@@ -765,13 +809,15 @@ export function object<shape extends ObjectShape>(
 export function optional<input, output>(
 	schema: Schema<input, output>,
 ): Schema<input | undefined, output | undefined> {
-	return createSchema<input | undefined, output | undefined>(function validate(value, context) {
-		if (value === undefined) {
-			return { value: undefined }
-		}
+	return createSchema<input | undefined, output | undefined>(
+		function validate(value, context) {
+			if (value === undefined) {
+				return { value: undefined }
+			}
 
-		return schema["~run"](value, context)
-	})
+			return schema["~run"](value, context)
+		},
+	)
 }
 
 /**
@@ -781,7 +827,12 @@ export function optional<input, output>(
  * @param valueSchema Schema used to validate and transform each value
  * @returns A schema that produces a record of validated keys and values
  */
-export function record<keyInput, keyOutput extends PropertyKey, valueInput, valueOutput>(
+export function record<
+	keyInput,
+	keyOutput extends PropertyKey,
+	valueInput,
+	valueOutput,
+>(
 	keySchema: Schema<keyInput, keyOutput>,
 	valueSchema: Schema<valueInput, valueOutput>,
 ): Schema<unknown, Record<keyOutput, valueOutput>> {
@@ -1035,7 +1086,10 @@ export function undefined_(): Schema<unknown, undefined> {
 export function variant<
 	key extends PropertyKey,
 	variants extends Record<PropertyKey, Schema<any, any>>,
->(discriminator: key, variants: variants): Schema<unknown, InferOutput<variants[keyof variants]>> {
+>(
+	discriminator: key,
+	variants: variants,
+): Schema<unknown, InferOutput<variants[keyof variants]>> {
 	return createSchema(function validate(value, context) {
 		if (typeof value !== "object" || value === null || Array.isArray(value)) {
 			return fail("Expected object", context.path, {
@@ -1057,7 +1111,11 @@ export function variant<
 			})
 		}
 
-		if (typeof tag !== "string" && typeof tag !== "number" && typeof tag !== "symbol") {
+		if (
+			typeof tag !== "string" &&
+			typeof tag !== "number" &&
+			typeof tag !== "symbol"
+		) {
 			return fail("Unknown discriminator", [...context.path, discriminator], {
 				code: "variant.unknown_discriminator",
 				input: tag,
@@ -1158,7 +1216,10 @@ export function parse<input, output>(
 	value: unknown,
 	options?: ParseOptions,
 ): output {
-	let result = schema["~standard"].validate(value, options) as ValidationResult<output>
+	let result = schema["~standard"].validate(
+		value,
+		options,
+	) as ValidationResult<output>
 
 	if (result.issues) {
 		throw new ValidationError(result.issues)
@@ -1182,7 +1243,10 @@ export function parseSafe<input, output>(
 ):
 	| { success: true; value: output }
 	| { success: false; issues: ReadonlyArray<StandardSchemaV1.Issue> } {
-	let result = schema["~standard"].validate(value, options) as ValidationResult<output>
+	let result = schema["~standard"].validate(
+		value,
+		options,
+	) as ValidationResult<output>
 
 	if (result.issues) {
 		return { success: false, issues: result.issues }

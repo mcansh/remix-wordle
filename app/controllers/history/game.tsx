@@ -24,14 +24,19 @@ export function HistoricalGame(_handle: Handle, { url }: { url: URL }) {
 
 				<div class="mx-auto h-full max-w-sm">
 					<header>
-						<h1 class="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
+						<h1 class="py-4 text-center text-4xl font-semibold">
+							Remix Wordle
+						</h1>
 					</header>
 
 					<main>
 						<div class="space-y-4">
 							{game.guesses.map((guess, guessIndex) => {
 								return (
-									<div key={`guess-number-${guessIndex}`} class="grid grid-cols-5 gap-4">
+									<div
+										key={`guess-number-${guessIndex}`}
+										class="grid grid-cols-5 gap-4"
+									>
 										{guess.letters.map((letter) => {
 											return (
 												<input
@@ -46,7 +51,8 @@ export function HistoricalGame(_handle: Handle, { url }: { url: URL }) {
 																letter.state === LetterState.Miss,
 															"border-yellow-500 bg-yellow-500 text-white":
 																letter.state === LetterState.Present,
-															"border-gray-400 text-white": letter.state === LetterState.Blank,
+															"border-gray-400 text-white":
+																letter.state === LetterState.Blank,
 														},
 													)}
 													value={letter.letter}

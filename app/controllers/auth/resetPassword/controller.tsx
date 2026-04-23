@@ -39,19 +39,25 @@ export const resetPasswordController = {
 
 			if (result.success === false) {
 				session.flash("error", "Password must be at least 8 characters long.")
-				return redirect(routes.auth.resetPassword.index.href({ token: context.params.token }))
+				return redirect(
+					routes.auth.resetPassword.index.href({ token: context.params.token }),
+				)
 			}
 
 			if (result.value.password !== result.value.confirmPassword) {
 				session.flash("error", "Passwords do not match.")
-				return redirect(routes.auth.resetPassword.index.href({ token: context.params.token }))
+				return redirect(
+					routes.auth.resetPassword.index.href({ token: context.params.token }),
+				)
 			}
 
 			let success = resetPassword(context.params.token, result.value.password)
 
 			if (!success) {
 				session.flash("error", "Invalid or expired reset token.")
-				return redirect(routes.auth.resetPassword.index.href({ token: context.params.token }))
+				return redirect(
+					routes.auth.resetPassword.index.href({ token: context.params.token }),
+				)
 			}
 
 			return render(

@@ -3,7 +3,15 @@ import type { RemixNode } from "remix/component"
 import { getAssetEntry } from "../middleware/asset-entry.ts"
 
 export function Document() {
-	return ({ children, head, url }: { children: RemixNode; head?: RemixNode; url: URL }) => {
+	return ({
+		children,
+		head,
+		url,
+	}: {
+		children: RemixNode
+		head?: RemixNode
+		url: URL
+	}) => {
 		let { src, preloads } = getAssetEntry()
 		let canonical = url.origin + url.pathname
 		return (

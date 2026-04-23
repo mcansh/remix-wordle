@@ -25,7 +25,10 @@ export function createEmptyLetter() {
 
 const segmenter = new Intl.Segmenter("en", { granularity: "grapheme" })
 
-export function computeGuess(guess: string, answer: string): Array<ComputedGuess> {
+export function computeGuess(
+	guess: string,
+	answer: string,
+): Array<ComputedGuess> {
 	if (guess.length !== answer.length) {
 		return []
 	}
@@ -90,7 +93,9 @@ const KEYBOARD = [
 	["z", "x", "c", "v", "b", "n", "m"],
 ] as const
 
-export function keyboardWithStatus(guesses: Array<{ letters: Array<ComputedGuess> }>) {
+export function keyboardWithStatus(
+	guesses: Array<{ letters: Array<ComputedGuess> }>,
+) {
 	let letters = guesses
 		.flatMap((guess) => guess.letters)
 		.filter((guess) => guess.state !== LetterState.Blank)

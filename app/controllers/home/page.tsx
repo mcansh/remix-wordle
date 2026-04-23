@@ -33,24 +33,37 @@ export function Page(_handle: Handle, { url }: { url: URL }) {
 
 				<div class="h-full" aria-hidden={showModal ? true : undefined}>
 					<header>
-						<h1 class="py-4 text-center text-4xl font-semibold">Remix Wordle</h1>
+						<h1 class="py-4 text-center text-4xl font-semibold">
+							Remix Wordle
+						</h1>
 						{!showModal && showWord ? (
-							<h2 class="mb-4 text-center text-sm text-gray-700">Your word is {showWord}</h2>
+							<h2 class="mb-4 text-center text-sm text-gray-700">
+								Your word is {showWord}
+							</h2>
 						) : null}
 					</header>
 
 					<main>
-						{error ? <div class="mb-4 text-center text-red-500">{error}</div> : null}
+						{error ? (
+							<div class="mb-4 text-center text-red-500">{error}</div>
+						) : null}
 						<div class="mx-auto max-w-sm space-y-4">
 							{board.guesses.map((guess, guessIndex) => {
 								if (board.currentGuess === guessIndex) {
 									return (
-										<GuessForm currentGuess={board.currentGuess} error={error} cheat={!!showWord} />
+										<GuessForm
+											currentGuess={board.currentGuess}
+											error={error}
+											cheat={!!showWord}
+										/>
 									)
 								}
 
 								return (
-									<div key={`guess-number-${guessIndex}`} class="grid grid-cols-5 gap-4">
+									<div
+										key={`guess-number-${guessIndex}`}
+										class="grid grid-cols-5 gap-4"
+									>
 										{guess.letters.map((letter) => {
 											return (
 												<input

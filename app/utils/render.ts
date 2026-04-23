@@ -56,7 +56,9 @@ export function renderFragment(node: Remix.RemixNode, init?: ResponseInit) {
 
 async function resolveClientEntry(entryId: string, component: unknown) {
 	if (!entryId.startsWith("file://")) {
-		throw new Error(`Expected \`import.meta.url\` for clientEntry ID, received "${entryId}"`)
+		throw new Error(
+			`Expected \`import.meta.url\` for clientEntry ID, received "${entryId}"`,
+		)
 	}
 
 	let componentName = typeof component === "function" ? component.name : ""

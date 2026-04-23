@@ -61,7 +61,11 @@ export function assertNotContains(html: string, text: string): void {
 /**
  * Login and return the session cookie
  */
-export async function login(router: Router, email: string, password: string): Promise<string> {
+export async function login(
+	router: Router,
+	email: string,
+	password: string,
+): Promise<string> {
 	let loginResponse = await router.fetch("https://wordle.mcan.sh/login", {
 		method: "POST",
 		body: new URLSearchParams({ email, password }),

@@ -186,7 +186,9 @@ describe("boardToEmoji", () => {
 	it("throws error for unknown letter state", () => {
 		let guesses = [
 			{
-				letters: [{ id: "1", letter: "x", state: "Invalid" as any }] satisfies Array<ComputedGuess>,
+				letters: [
+					{ id: "1", letter: "x", state: "Invalid" as any },
+				] satisfies Array<ComputedGuess>,
 			},
 		]
 
