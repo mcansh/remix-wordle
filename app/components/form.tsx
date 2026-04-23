@@ -33,22 +33,31 @@ export function GuessForm() {
 							focusedInput.value = ""
 						}
 						event.preventDefault()
-						if (focusedInput?.previousElementSibling) {
-							let previousInput = focusedInput.previousElementSibling
-							if (previousInput instanceof HTMLInputElement) {
-								previousInput.select()
-							}
+						let letterInputs = Array.from(
+							event.currentTarget.querySelectorAll('input[name="letter"]'),
+						)
+						let focusedIndex = letterInputs.indexOf(focusedInput as HTMLInputElement)
+						let previousInput = focusedIndex > 0 ? letterInputs[focusedIndex - 1] : undefined
+						if (previousInput instanceof HTMLInputElement) {
+							previousInput.focus()
+							previousInput.select()
 						}
 					}),
 					on("input", (event) => {
 						let target = event.target
 						if (!(target instanceof HTMLInputElement)) return
 						if (target.value === "") return
-						if (target.nextElementSibling) {
-							let nextInput = target.nextElementSibling
-							if (nextInput instanceof HTMLInputElement) {
-								nextInput.select()
-							}
+						let letterInputs = Array.from(
+							event.currentTarget.querySelectorAll('input[name="letter"]'),
+						)
+						let focusedIndex = letterInputs.indexOf(target)
+						let nextInput =
+							focusedIndex >= 0 && focusedIndex < letterInputs.length - 1
+								? letterInputs[focusedIndex + 1]
+								: undefined
+						if (nextInput instanceof HTMLInputElement) {
+							nextInput.focus()
+							nextInput.select()
 						}
 					}),
 				]}
