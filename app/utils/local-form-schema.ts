@@ -105,7 +105,7 @@ export function object<schema extends FormDataSchema>(
 
 		let abortEarly = shouldAbortEarly(context.options)
 		let issues: Issue[] = []
-		let output: Record<keyof schema, unknown> = fromAny({})
+		let output: { [key in keyof schema]?: unknown } = {}
 
 		for (let [key, entrySchema] of Object.entries(schema) as [
 			keyof schema & string,
@@ -129,7 +129,7 @@ export function object<schema extends FormDataSchema>(
 			return { issues }
 		}
 
-		return { value: output as ParsedFormData<schema> }
+		return { value: fromAny<ParsedFormData<schema>, typeof output>(output) }
 	})
 }
 
