@@ -3,6 +3,7 @@ import { Queue, Worker } from "bullmq"
 import { startOfDay } from "date-fns"
 
 import { env } from "../constants.ts"
+import type { Game } from "../generated/prisma/client.ts"
 import { db } from "./db.ts"
 
 const connection = { url: env.REDIS_URL } satisfies ConnectionOptions
@@ -34,14 +35,20 @@ const worker = new Worker(
 			},
 		})
 
+		let promises: Array<Promise<Game>> = []
+
 		for (let game of incompleteGames) {
-			await db.game.update({
-				where: { id: game.id },
-				data: { status: "COMPLETE" },
-			})
+			promises.push(
+				db.game.update({
+					where: { id: game.id },
+					data: { status: "COMPLETE" },
+				}),
+			)
 
 			console.log(`Marked game ${game.id} as COMPLETE`)
 		}
+
+		await Promise.all(promises)
 	},
 	{ connection },
 )

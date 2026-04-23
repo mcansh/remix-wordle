@@ -1,17 +1,20 @@
 import { getContext } from "remix/async-context-middleware"
-import type * as Remix from "remix/component"
+import type { RemixNode } from "remix/component"
 import { renderToStream } from "remix/component/server"
+import type { Router } from "remix/fetch-router"
 import { createHtmlResponse } from "remix/response/html"
 
-import { router } from "../router.ts"
 import { assetServer } from "./assets"
 
-export function render(node: Remix.RemixNode, init?: ResponseInit) {
+export function render(node: RemixNode, init?: ResponseInit) {
 	let context = getContext()
 	let request = context.request
+	let router = context.router
 
 	let stream = renderToStream(node, {
-		resolveFrame: (src) => resolveFrame(request, src),
+		async resolveFrame(src) {
+			return resolveFrame(request, router, src)
+		},
 		onError: console.error,
 		resolveClientEntry,
 	})
@@ -19,7 +22,7 @@ export function render(node: Remix.RemixNode, init?: ResponseInit) {
 	return createHtmlResponse(stream, init)
 }
 
-async function resolveFrame(request: Request, src: string) {
+async function resolveFrame(request: Request, router: Router, src: string) {
 	let url = new URL(src, request.url)
 
 	let headers = new Headers()
@@ -45,7 +48,7 @@ async function resolveFrame(request: Request, src: string) {
 	return res.text()
 }
 
-export function renderFragment(node: Remix.RemixNode, init?: ResponseInit) {
+export function renderFragment(node: RemixNode, init?: ResponseInit) {
 	let headers = new Headers(init?.headers)
 	if (!headers.has("Cache-Control")) {
 		headers.set("Cache-Control", "no-store")
