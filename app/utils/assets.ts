@@ -2,7 +2,7 @@ import * as path from "node:path"
 
 import { createAssetServer } from "remix/assets"
 
-import { env } from "../constants.ts"
+import { env } from "../env.ts"
 import { assetsBase } from "../routes.ts"
 
 const isDevelopment = env.NODE_ENV === "development"

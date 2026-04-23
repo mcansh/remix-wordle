@@ -1,17 +1,6 @@
-import { minLength } from "remix/data-schema/checks"
-
-import * as s from "./utils/local-schema.ts"
 import { Range } from "./utils/range.ts"
 
-const envSchema = s.object({
-	SESSION_SECRET: s.string().pipe(minLength(1)),
-	DATABASE_URL: s.string().pipe(minLength(1)),
-	REDIS_URL: s.string().pipe(minLength(1)),
-	NODE_ENV: s.enum_(["development", "production", "test"]),
-})
-
-export const env = s.parse(envSchema, process.env)
 export const WORD_LENGTH = 5
-export const LETTER_INPUTS = Array.from(new Range(WORD_LENGTH))
+export const LETTER_INPUTS = Array.from(new Range(WORD_LENGTH - 1))
 export const TOTAL_GUESSES = 6
 export const REVEAL_WORD = "cheat"

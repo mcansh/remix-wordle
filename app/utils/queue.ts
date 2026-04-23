@@ -2,7 +2,7 @@ import type { ConnectionOptions } from "bullmq"
 import { Queue, Worker } from "bullmq"
 import { startOfDay } from "date-fns"
 
-import { env } from "../constants.ts"
+import { env } from "../env.ts"
 import type { Game } from "../generated/prisma/client.ts"
 import { db } from "./db.ts"
 
