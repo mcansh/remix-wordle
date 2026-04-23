@@ -33,11 +33,13 @@ export function GuessForm() {
 							focusedInput.value = ""
 						}
 						event.preventDefault()
-						let letterInputs = Array.from(
-							event.currentTarget.querySelectorAll(":scope > input[name=\"letter\"]"),
-						)
-						let focusedIndex = letterInputs.indexOf(focusedInput as HTMLInputElement)
-						let previousInput = focusedIndex > 0 ? letterInputs[focusedIndex - 1] : undefined
+						let previousInput = focusedInput?.previousElementSibling
+						while (
+							previousInput &&
+							(!(previousInput instanceof HTMLInputElement) || previousInput.name !== "letter")
+						) {
+							previousInput = previousInput.previousElementSibling
+						}
 						if (previousInput instanceof HTMLInputElement) {
 							previousInput.focus()
 							previousInput.select()
@@ -47,14 +49,13 @@ export function GuessForm() {
 						let target = event.target
 						if (!(target instanceof HTMLInputElement)) return
 						if (target.value === "") return
-						let letterInputs = Array.from(
-							event.currentTarget.querySelectorAll(":scope > input[name=\"letter\"]"),
-						)
-						let focusedIndex = letterInputs.indexOf(target)
-						let nextInput =
-							focusedIndex >= 0 && focusedIndex < letterInputs.length - 1
-								? letterInputs[focusedIndex + 1]
-								: undefined
+						let nextInput = target.nextElementSibling
+						while (
+							nextInput &&
+							(!(nextInput instanceof HTMLInputElement) || nextInput.name !== "letter")
+						) {
+							nextInput = nextInput.nextElementSibling
+						}
 						if (nextInput instanceof HTMLInputElement) {
 							nextInput.focus()
 							nextInput.select()
