@@ -17,9 +17,7 @@ vi.mock("../routes", () => ({
 }))
 
 describe("GuessForm", () => {
-	let handle = fromPartial<Handle>({
-		update: vi.fn(async () => {}),
-	})
+	let handle: Handle
 
 	beforeEach(() => {
 		handle = fromPartial<Handle>({
