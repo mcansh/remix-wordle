@@ -155,14 +155,14 @@ export async function createGuess(
 	}
 }
 
-export async function getGameById(id: Game["id"]): Promise<GameBoard> {
+export async function getGameById(id: Game["id"]): Promise<GameBoard | null> {
 	let game = await db.game.findUnique({
 		select: FULL_GAME_SELECT,
 		where: { id },
 	})
 
 	if (!game) {
-		throw new Response("Not found", { status: 404 })
+		return null
 	}
 
 	return getFullBoard(game)

@@ -16,7 +16,7 @@ const server = http.createServer(
 	}),
 )
 
-const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 44100
+const port = process.env.PORT ? Number.parseInt(process.env.PORT, 10) : 44_100
 
 server.listen(port, () => {
 	console.log(`✅ App is running on http://localhost:${port}`)
@@ -24,8 +24,10 @@ server.listen(port, () => {
 
 let shuttingDown = false
 
-async function shutdown() {
-	if (shuttingDown) return
+async function shutdown(): Promise<void> {
+	if (shuttingDown) {
+		return
+	}
 	shuttingDown = true
 
 	await assetServer.close()

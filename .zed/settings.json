@@ -3,7 +3,7 @@
 		"oxlint": {
 			"initialization_options": {
 				"settings": {
-					"configPath": "./vite.config.ts",
+					"configPath": "./oxlint.config.ts",
 					"run": "onType",
 					"disableNestedConfig": false,
 					"fixKind": "safe_fix",
@@ -15,7 +15,7 @@
 		"oxfmt": {
 			"initialization_options": {
 				"settings": {
-					"configPath": "./vite.config.ts",
+					"configPath": "./oxfmt.config.ts",
 					"run": "onSave"
 				}
 			}

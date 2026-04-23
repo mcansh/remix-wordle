@@ -3,7 +3,7 @@ import { run } from "remix/component"
 const app = run({
 	async loadModule(moduleUrl: string, exportName: string) {
 		let mod = await import(moduleUrl)
-		let Component = (mod as any)[exportName]
+		let Component = mod[exportName]
 		if (!Component) {
 			throw new Error(`Unknown component: ${moduleUrl}#${exportName}`)
 		}
@@ -17,7 +17,9 @@ const app = run({
 		if (!response.ok) {
 			return `<pre>Frame error: ${response.status} ${response.statusText}</pre>`
 		}
-		if (response.body) return response.body
+		if (response.body) {
+			return response.body
+		}
 		return response.text()
 	},
 })

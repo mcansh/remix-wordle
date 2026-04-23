@@ -1,13 +1,32 @@
 import { defineConfig } from "oxlint"
 
 export default defineConfig({
-	plugins: ["unicorn", "typescript", "oxc"],
+	env: {
+		builtin: true,
+	},
+	globals: {},
+	ignorePatterns: [
+		"app/generated/**",
+		".agents/**/*",
+		"app/utils/local-form-schema.ts",
+		"app/utils/local-schema.ts",
+	],
 	jsPlugins: ["./oxlint-plugins/prefer-let-locals-plugin.ts"],
-	categories: {},
+	options: {
+		typeAware: true,
+		typeCheck: true,
+	},
+	plugins: ["unicorn", "typescript", "oxc", "import"],
 	rules: {
 		"remix-style/prefer-const-module-scope": "error",
 		"remix-style/prefer-let-locals": "error",
-		"import/extensions": ["error", "ignorePackages"],
+		"import/extensions": [
+			"error",
+			{
+				checkTypeImports: true,
+				ignorePackages: true,
+			},
+		],
 		"constructor-super": "warn",
 		"for-direction": "warn",
 		"no-async-promise-executor": "warn",
@@ -114,31 +133,22 @@ export default defineConfig({
 		"unicorn/prefer-string-starts-ends-with": "warn",
 	},
 	settings: {
-		"jsx-a11y": {
-			components: {},
-			attributes: {},
-		},
 		jsdoc: {
-			ignorePrivate: false,
-			ignoreInternal: false,
-			ignoreReplacesDocs: true,
-			overrideReplacesDocs: true,
 			augmentsExtendsReplacesDocs: false,
-			implementsReplacesDocs: false,
 			exemptDestructuredRootsFromChecks: false,
+			ignoreInternal: false,
+			ignorePrivate: false,
+			ignoreReplacesDocs: true,
+			implementsReplacesDocs: false,
+			overrideReplacesDocs: true,
 			tagNamePreference: {},
+		},
+		"jsx-a11y": {
+			attributes: {},
+			components: {},
 		},
 		vitest: {
 			typecheck: false,
 		},
-	},
-	env: {
-		builtin: true,
-	},
-	globals: {},
-	ignorePatterns: [],
-	options: {
-		typeAware: true,
-		typeCheck: true,
 	},
 })

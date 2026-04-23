@@ -14,8 +14,9 @@ export const health = {
 			// and make a HEAD request to ourselves, then we're good.
 			await Promise.all([
 				db.user.count(),
-				fetch(url.toString(), { method: "HEAD" }).then((r) => {
+				fetch(url.toString(), { method: "HEAD" }).then(async (r) => {
 					if (!r.ok) return Promise.reject(r)
+					return Promise.resolve()
 				}),
 			])
 			return new Response("OK")
