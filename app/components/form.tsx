@@ -3,14 +3,13 @@
 import type { Handle } from "remix/component"
 import { on, keysEvents } from "remix/component"
 
-import { LETTER_INPUTS } from "#app/constants.ts"
+import { CHEAT_SESSION_KEY, LETTER_INPUTS } from "#app/constants.ts"
 import { routes } from "#app/routes.ts"
 
 import { LetterInput } from "./letter-input"
 
 const CHEAT_CODE = "cheat"
 const CHEAT_WINDOW_MS = 2_000
-const CHEAT_SESSION_KEY = "wordle-cheat-enabled"
 
 export function GuessForm(handle: Handle) {
 	let cheatEnabled = false
@@ -89,8 +88,13 @@ export function GuessForm(handle: Handle) {
 						}
 
 						if (!CHEAT_CODE.startsWith(cheatBuffer)) {
-							cheatBuffer = letter === CHEAT_CODE[0] ? letter : ""
-							cheatStartedAt = cheatBuffer === "" ? 0 : now
+							if (letter === CHEAT_CODE[0]) {
+								cheatBuffer = letter
+								cheatStartedAt = now
+							} else {
+								cheatBuffer = ""
+								cheatStartedAt = 0
+							}
 							return
 						}
 

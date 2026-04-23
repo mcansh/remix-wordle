@@ -3,7 +3,7 @@ import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { WORD_LENGTH } from "#app/constants.ts"
+import { CHEAT_SESSION_KEY, WORD_LENGTH } from "#app/constants.ts"
 import { getReturnToQuery, requireAuth } from "#app/middleware/auth.ts"
 import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "#app/models/game.ts"
 import { routes } from "#app/routes.ts"
@@ -13,8 +13,6 @@ import * as s from "#app/utils/local-schema.ts"
 import { render } from "#app/utils/render.ts"
 
 import { Page } from "./page"
-
-const CHEAT_SESSION_KEY = "wordle-cheat-enabled"
 
 export function validLength(length: number): s.Check<Array<string>> {
 	return {
