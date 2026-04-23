@@ -105,6 +105,7 @@ export function object<schema extends FormDataSchema>(
 
 		let abortEarly = shouldAbortEarly(context.options)
 		let issues: Issue[] = []
+		// Keep this as an explicit optional mapped type so we don't depend on Partial here.
 		let output: { [key in keyof schema]?: unknown } = {}
 
 		for (let [key, entrySchema] of Object.entries(schema) as [
