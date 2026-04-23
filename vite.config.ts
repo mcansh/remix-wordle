@@ -182,33 +182,7 @@ export default defineConfig({
 		},
 	},
 	server: { port: 44100 },
-	builder: {
-		async buildApp(builder) {
-			if (builder.environments.ssr == null || builder.environments.client == null) {
-				throw new Error("missing ssr and client environments")
-			}
-			await builder.build(builder.environments.ssr)
-			await builder.build(builder.environments.client)
-		},
-	},
-	environments: {
-		client: {
-			build: {
-				outDir: "./dist/client",
-				rollupOptions: {
-					input: "./app/entry.browser",
-				},
-			},
-		},
-		ssr: {
-			build: {
-				outDir: "./dist/ssr",
-				rollupOptions: {
-					input: "./app/entry.server",
-				},
-			},
-		},
-	},
+
 	plugins: [remix(), devtoolsJson(), tailwindcss(), svgSprite()],
 
 	test: {
