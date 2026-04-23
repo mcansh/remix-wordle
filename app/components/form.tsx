@@ -1,5 +1,6 @@
 "use client"
 
+import type { Handle } from "remix/component"
 import { on, keysEvents } from "remix/component"
 
 import { LETTER_INPUTS } from "#app/constants.ts"
@@ -11,7 +12,7 @@ const CHEAT_CODE = "cheat"
 const CHEAT_WINDOW_MS = 2_000
 const CHEAT_SESSION_KEY = "wordle-cheat-enabled"
 
-export function GuessForm() {
+export function GuessForm(handle: Handle) {
 	let cheatEnabled = false
 	let cheatBuffer = ""
 	let cheatStartedAt = 0
@@ -30,7 +31,8 @@ export function GuessForm() {
 			hydrated = true
 			cheatEnabled = cheat === true
 			if (typeof window !== "undefined") {
-				cheatEnabled ||= window.sessionStorage.getItem(CHEAT_SESSION_KEY) === "true"
+				cheatEnabled =
+					cheatEnabled || window.sessionStorage.getItem(CHEAT_SESSION_KEY) === "true"
 			}
 		}
 
@@ -72,7 +74,7 @@ export function GuessForm() {
 							}
 						}
 					}),
-					on("keydown", (event) => {
+					on("keydown", async (event) => {
 						let target = event.target
 						if (!(target instanceof HTMLInputElement)) return
 						if (!/^[a-zA-Z]$/.test(event.key)) return
@@ -100,18 +102,7 @@ export function GuessForm() {
 								if (typeof window !== "undefined") {
 									window.sessionStorage.setItem(CHEAT_SESSION_KEY, "true")
 								}
-
-								let form = event.currentTarget
-								if (form instanceof HTMLFormElement) {
-									let hiddenCheatInput = form.querySelector('input[name="cheat"]')
-									if (!hiddenCheatInput) {
-										let hiddenInput = document.createElement("input")
-										hiddenInput.type = "hidden"
-										hiddenInput.name = "cheat"
-										hiddenInput.value = "true"
-										form.append(hiddenInput)
-									}
-								}
+								await handle.update()
 							}
 						}
 					}),
