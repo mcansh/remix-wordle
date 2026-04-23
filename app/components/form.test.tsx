@@ -113,22 +113,22 @@ describe("GuessForm", () => {
 		expect(input).toHaveAttribute("maxLength", "1")
 	})
 
-	it("enables cheat when cheat is typed within 2 seconds", () => {
+	it("enables cheat when cheat is typed within 2 seconds", async () => {
 		vi.useFakeTimers()
 		let Component = GuessForm()
-		let { container } = render(Component({ currentGuess: 0 }))
+		render(Component({ currentGuess: 0 }))
 
-		let form = container.querySelector("form")
-		let input = form?.querySelector('input[name="letter"]')
+		let input = screen.getByRole("textbox", { name: "letter 1" })
 		expect(input).toBeInTheDocument()
 
 		for (let letter of "cheat") {
-			fireEvent.keyDown(input!, { key: letter })
+			fireEvent.keyDown(input, { key: letter })
 			vi.advanceTimersByTime(300)
 		}
 
-		let cheatInput = form?.querySelector('input[name="cheat"]')
-		expect(cheatInput).toHaveAttribute("value", "true")
+		vi.runAllTimers()
+		let cheatInput = await screen.findByDisplayValue("true")
+		expect(cheatInput).toHaveAttribute("name", "cheat")
 		expect(window.sessionStorage.getItem("wordle-cheat-enabled")).toBe("true")
 	})
 
@@ -147,6 +147,7 @@ describe("GuessForm", () => {
 			fireEvent.keyDown(input!, { key: letter })
 			vi.advanceTimersByTime(100)
 		}
+		vi.runAllTimers()
 
 		let cheatInput = form?.querySelector('input[name="cheat"]')
 		expect(cheatInput).not.toBeInTheDocument()
