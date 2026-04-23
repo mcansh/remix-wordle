@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/vitest"
-import { render, screen } from "@mcansh/remix-testing-library"
-import { describe, it, expect, vi } from "vitest"
+import { fireEvent, render, screen } from "@mcansh/remix-testing-library"
+import { afterEach, beforeEach, describe, it, expect, vi } from "vitest"
 
 import { GuessForm } from "./form"
 
@@ -15,6 +15,14 @@ vi.mock("../routes", () => ({
 }))
 
 describe("GuessForm", () => {
+	beforeEach(() => {
+		window.sessionStorage.clear()
+	})
+
+	afterEach(() => {
+		vi.useRealTimers()
+	})
+
 	it.skip("renders 5 letter inputs", () => {
 		let Component = GuessForm()
 		render(Component({ currentGuess: 0 }))
@@ -103,5 +111,45 @@ describe("GuessForm", () => {
 		expect(input).toHaveAttribute("type", "text")
 		expect(input).toHaveAttribute("pattern", "[a-zA-Z]{1}")
 		expect(input).toHaveAttribute("maxLength", "1")
+	})
+
+	it("enables cheat when cheat is typed within 2 seconds", () => {
+		vi.useFakeTimers()
+		let Component = GuessForm()
+		let { container } = render(Component({ currentGuess: 0 }))
+
+		let form = container.querySelector("form")
+		let input = form?.querySelector('input[name="letter"]')
+		expect(input).toBeInTheDocument()
+
+		for (let letter of "cheat") {
+			fireEvent.keyDown(input!, { key: letter })
+			vi.advanceTimersByTime(300)
+		}
+
+		let cheatInput = form?.querySelector('input[name="cheat"]')
+		expect(cheatInput).toHaveAttribute("value", "true")
+		expect(window.sessionStorage.getItem("wordle-cheat-enabled")).toBe("true")
+	})
+
+	it("does not enable cheat when typing cheat takes more than 2 seconds", () => {
+		vi.useFakeTimers()
+		let Component = GuessForm()
+		let { container } = render(Component({ currentGuess: 0 }))
+
+		let form = container.querySelector("form")
+		let input = form?.querySelector('input[name="letter"]')
+		expect(input).toBeInTheDocument()
+
+		fireEvent.keyDown(input!, { key: "c" })
+		vi.advanceTimersByTime(2_100)
+		for (let letter of "heat") {
+			fireEvent.keyDown(input!, { key: letter })
+			vi.advanceTimersByTime(100)
+		}
+
+		let cheatInput = form?.querySelector('input[name="cheat"]')
+		expect(cheatInput).not.toBeInTheDocument()
+		expect(window.sessionStorage.getItem("wordle-cheat-enabled")).toBeNull()
 	})
 })
