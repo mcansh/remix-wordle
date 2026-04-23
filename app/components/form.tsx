@@ -34,7 +34,7 @@ export function GuessForm() {
 						}
 						event.preventDefault()
 						let letterInputs = Array.from(
-							event.currentTarget.querySelectorAll('input[name="letter"]'),
+							event.currentTarget.querySelectorAll("input[name=\"letter\"]"),
 						)
 						let focusedIndex = letterInputs.indexOf(focusedInput as HTMLInputElement)
 						let previousInput = focusedIndex > 0 ? letterInputs[focusedIndex - 1] : undefined
@@ -48,7 +48,7 @@ export function GuessForm() {
 						if (!(target instanceof HTMLInputElement)) return
 						if (target.value === "") return
 						let letterInputs = Array.from(
-							event.currentTarget.querySelectorAll('input[name="letter"]'),
+							event.currentTarget.querySelectorAll("input[name=\"letter\"]"),
 						)
 						let focusedIndex = letterInputs.indexOf(target)
 						let nextInput =
