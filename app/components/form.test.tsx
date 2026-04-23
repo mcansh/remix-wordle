@@ -113,7 +113,7 @@ describe("GuessForm", () => {
 		expect(input).toHaveAttribute("maxLength", "1")
 	})
 
-	it("enables cheat when cheat is typed within 2 seconds", async () => {
+	it("enables cheat when typing c-h-e-a-t sequence within 2 seconds", async () => {
 		vi.useFakeTimers()
 		let Component = GuessForm()
 		render(Component({ currentGuess: 0 }))
@@ -132,7 +132,7 @@ describe("GuessForm", () => {
 		expect(window.sessionStorage.getItem("wordle-cheat-enabled")).toBe("true")
 	})
 
-	it("does not enable cheat when typing cheat takes more than 2 seconds", () => {
+	it("does not enable cheat when c-h-e-a-t sequence takes more than 2 seconds", () => {
 		vi.useFakeTimers()
 		let Component = GuessForm()
 		let { container } = render(Component({ currentGuess: 0 }))
