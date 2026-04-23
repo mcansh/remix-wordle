@@ -1,5 +1,4 @@
 import type { InferOutput, Issue, ParseOptions, Schema } from "./local-schema.ts"
-import { fromAny } from "@total-typescript/shoehorn"
 import { createIssue, createSchema, fail } from "./local-schema.ts"
 
 type FormDataEntryKind = "field" | "fields" | "file" | "files"
@@ -105,8 +104,7 @@ export function object<schema extends FormDataSchema>(
 
 		let abortEarly = shouldAbortEarly(context.options)
 		let issues: Issue[] = []
-		// Keep this as an explicit optional mapped type so we don't depend on Partial here.
-		let output: { [key in keyof schema]?: unknown } = {}
+		let output: Partial<Record<keyof schema, unknown>> = {}
 
 		for (let [key, entrySchema] of Object.entries(schema) as [
 			keyof schema & string,
@@ -130,8 +128,7 @@ export function object<schema extends FormDataSchema>(
 			return { issues }
 		}
 
-		// At this point every schema key has been validated and assigned.
-		return { value: fromAny<ParsedFormData<schema>, typeof output>(output) }
+		return { value: output as ParsedFormData<schema> }
 	})
 }
 

@@ -11,7 +11,7 @@ import { LetterInput } from "./letter-input"
 const CHEAT_CODE = "cheat"
 const CHEAT_WINDOW_MS = 2_000
 
-export function GuessForm(handle?: Pick<Handle, "update">) {
+export function GuessForm(handle: Handle) {
 	let cheatEnabled = false
 	let cheatBuffer = ""
 	let cheatStartedAt = 0
@@ -106,9 +106,7 @@ export function GuessForm(handle?: Pick<Handle, "update">) {
 								if (typeof window !== "undefined") {
 									window.sessionStorage.setItem(CHEAT_SESSION_KEY, "true")
 								}
-								if (handle) {
-									await handle.update()
-								}
+								await handle.update()
 							}
 						}
 					}),
