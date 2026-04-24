@@ -7,7 +7,7 @@ export const LetterState = {
 	Match: "Match", // Letter exists and is in the right location
 } as const
 
-type LetterState = (typeof LetterState)[keyof typeof LetterState]
+export type LetterState = (typeof LetterState)[keyof typeof LetterState]
 
 export type ComputedGuess = {
 	id: string

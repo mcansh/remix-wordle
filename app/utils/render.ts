@@ -32,7 +32,7 @@ async function resolveFrame(request: Request, router: Router, src: string) {
 	let cookie = request.headers.get("cookie")
 	if (cookie) headers.set("cookie", cookie)
 
-	let res = await router.fetch(
+	let response = await router.fetch(
 		new Request(url, {
 			method: "GET",
 			headers,
@@ -40,12 +40,12 @@ async function resolveFrame(request: Request, router: Router, src: string) {
 		}),
 	)
 
-	if (!res.ok) {
-		return `<pre>Frame error: ${res.status} ${res.statusText}</pre>`
+	if (!response.ok) {
+		return `<pre>Frame error: ${response.status} ${response.statusText}</pre>`
 	}
 
-	if (res.body) return res.body
-	return res.text()
+	if (response.body) return response.body
+	return response.text()
 }
 
 export function renderFragment(node: RemixNode, init?: ResponseInit) {
