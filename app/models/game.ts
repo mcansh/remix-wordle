@@ -13,7 +13,6 @@ import {
 	keyboardWithStatus,
 	LetterState,
 } from "../utils/game.ts"
-import { range } from "../utils/range.ts"
 
 const TOTAL_GUESSES = 6
 
@@ -60,17 +59,13 @@ export type GameBoard = ReturnType<typeof getFullBoard>
 
 export function getFullBoard(game: FullGame) {
 	let fillerGuessesToMake = TOTAL_GUESSES - game.guesses.length
-	let fillerGuesses = range(fillerGuessesToMake)
-		.toArray()
-		.map<{ letters: Array<ComputedGuess> }>(() => {
-			return {
-				letters: range(WORD_LENGTH)
-					.toArray()
-					.map(() => {
-						return createEmptyLetter()
-					}),
-			}
-		})
+	let fillerGuesses = Array.from({ length: fillerGuessesToMake }, () => {
+		return {
+			letters: Array.from({ length: WORD_LENGTH }, () => {
+				return createEmptyLetter()
+			}),
+		}
+	})
 
 	let computedGuesses: Array<{ letters: Array<ComputedGuess> }> =
 		game.guesses.flatMap((guess) => {

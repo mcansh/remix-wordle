@@ -2,7 +2,6 @@ import { invariant } from "@epic-web/invariant"
 import { render, screen } from "@mcansh/remix-testing-library"
 import { describe, expect, it, vi } from "vitest"
 
-import { range } from "../utils/range"
 import { GuessForm } from "./form"
 
 vi.mock("../routes.ts", () => ({
@@ -27,10 +26,6 @@ describe("GuessForm", () => {
 	it("renders inputs with correct labels", () => {
 		let Component = GuessForm()
 		render(Component({ currentGuess: 0 }))
-
-		for (let i of range(5)) {
-			console.log({ i })
-		}
 
 		for (let i = 1; i <= 5; i += 1) {
 			expect(
