@@ -2,6 +2,7 @@ import * as http from "node:http"
 
 import { createRequestListener } from "remix/node-fetch-server"
 
+import { startQueue, stopQueue } from "./app/utils/queue.ts"
 import { router } from "./app/router.ts"
 import { assetServer } from "./app/utils/assets.ts"
 
@@ -18,26 +19,27 @@ const server = http.createServer(
 
 const port = process.env.PORT ? Number.parseInt(process.env.PORT, 10) : 44_100
 
-server.listen(port, () => {
+server.listen(port, async () => {
 	console.log(`✅ App is running on http://localhost:${port}`)
-})
+	await startQueue()
+	let shuttingDown = false
 
-let shuttingDown = false
+	async function shutdown(): Promise<void> {
+		if (shuttingDown) {
+			return
+		}
+		shuttingDown = true
 
-async function shutdown(): Promise<void> {
-	if (shuttingDown) {
-		return
+		await stopQueue()
+		await assetServer.close()
+		server.close(() => process.exit(0))
+		server.closeAllConnections()
 	}
-	shuttingDown = true
 
-	await assetServer.close()
-	server.close(() => process.exit(0))
-	server.closeAllConnections()
-}
-
-process.on("SIGINT", () => {
-	void shutdown()
-})
-process.on("SIGTERM", () => {
-	void shutdown()
+	process.on("SIGINT", () => {
+		void shutdown()
+	})
+	process.on("SIGTERM", () => {
+		void shutdown()
+	})
 })
