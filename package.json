@@ -8,8 +8,8 @@
 	"scripts": {
 		"dev": "pnpm run \"/^dev:.*\"/",
 		"dev:server": "NODE_ENV=development tsx --env-file .env --watch server.ts",
-		"dev:css": "tailwindcss --input app/app.css --output public/app.css --watch",
-		"build": "tailwindcss --input app/app.css --output public/app.css --minify",
+		"dev:css": "tailwindcss --input app/app.css --output public/build/app.css --watch",
+		"build": "tailwindcss --input app/app.css --output public/build/app.css --minify",
 		"start": "tsx server.ts",
 		"lint": "oxlint",
 		"format": "oxfmt",

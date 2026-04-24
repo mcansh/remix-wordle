@@ -27,7 +27,7 @@ if (process.env.NODE_ENV === "development") {
 
 middleware.push(compression())
 middleware.push(
-	staticFiles("./public/app.css", {
+	staticFiles("./public/build", {
 		cacheControl:
 			process.env.NODE_ENV === "production"
 				? "max-age=31536000, immutable"
