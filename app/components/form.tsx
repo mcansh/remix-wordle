@@ -33,22 +33,32 @@ export function GuessForm() {
 							focusedInput.value = ""
 						}
 						event.preventDefault()
-						if (focusedInput?.previousElementSibling) {
-							let previousInput = focusedInput.previousElementSibling
-							if (previousInput instanceof HTMLInputElement) {
-								previousInput.select()
-							}
+						let previousInput = focusedInput?.previousElementSibling
+						while (
+							previousInput &&
+							(!(previousInput instanceof HTMLInputElement) || previousInput.name !== "letter")
+						) {
+							previousInput = previousInput.previousElementSibling
+						}
+						if (previousInput instanceof HTMLInputElement) {
+							previousInput.focus()
+							previousInput.select()
 						}
 					}),
 					on("input", (event) => {
 						let target = event.target
 						if (!(target instanceof HTMLInputElement)) return
 						if (target.value === "") return
-						if (target.nextElementSibling) {
-							let nextInput = target.nextElementSibling
-							if (nextInput instanceof HTMLInputElement) {
-								nextInput.select()
-							}
+						let nextInput = target.nextElementSibling
+						while (
+							nextInput &&
+							(!(nextInput instanceof HTMLInputElement) || nextInput.name !== "letter")
+						) {
+							nextInput = nextInput.nextElementSibling
+						}
+						if (nextInput instanceof HTMLInputElement) {
+							nextInput.focus()
+							nextInput.select()
 						}
 					}),
 				]}

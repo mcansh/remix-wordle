@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom/vitest"
 import { render, screen } from "@mcansh/remix-testing-library"
+import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
 
 import { GuessForm } from "./form"
@@ -103,5 +104,20 @@ describe("GuessForm", () => {
 		expect(input).toHaveAttribute("type", "text")
 		expect(input).toHaveAttribute("pattern", "[a-zA-Z]{1}")
 		expect(input).toHaveAttribute("maxLength", "1")
+	})
+
+	it("moves focus to the next input after typing a letter", async () => {
+		let user = userEvent.setup()
+		let Component = GuessForm()
+		render(Component({ currentGuess: 0 }))
+
+		let firstInput = screen.getByRole("textbox", { name: "letter 1" })
+		let secondInput = screen.getByRole("textbox", { name: "letter 2" })
+
+		firstInput.focus()
+		await user.type(firstInput, "a")
+
+		expect(firstInput).toHaveValue("a")
+		expect(secondInput).toHaveFocus()
 	})
 })
