@@ -3,7 +3,7 @@ import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { REVEAL_WORD, WORD_LENGTH } from "#app/constants.ts"
+import { CHEAT_SESSION_KEY, WORD_LENGTH } from "#app/constants.ts"
 import { getReturnToQuery, requireAuth } from "#app/middleware/auth.ts"
 import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "#app/models/game.ts"
 import { routes } from "#app/routes.ts"
@@ -65,7 +65,11 @@ export const home = {
 				session.flash("error", error)
 			}
 
-			return redirect(routes.home.index.href(undefined, data.value.cheat ? { cheat: "true" } : {}))
+			if (data.value.cheat) {
+				session.set(CHEAT_SESSION_KEY, true)
+			}
+
+			return redirect(routes.home.index.href())
 		},
 
 		async index(context) {
@@ -81,7 +85,7 @@ export const home = {
 
 			let showModal = isGameComplete(game.status)
 
-			let showWord = showModal || context.url.searchParams.has(REVEAL_WORD) ? board.word : undefined
+			let showWord = showModal || session.get(CHEAT_SESSION_KEY) === true ? board.word : undefined
 
 			let errorMessage = session.get("error") || undefined
 

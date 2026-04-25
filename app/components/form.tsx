@@ -1,13 +1,22 @@
 "use client"
 
+import type { Handle } from "remix/component"
 import { on, keysEvents } from "remix/component"
 
-import { LETTER_INPUTS } from "#app/constants.ts"
+import { CHEAT_SESSION_KEY, LETTER_INPUTS } from "#app/constants.ts"
 import { routes } from "#app/routes.ts"
 
 import { LetterInput } from "./letter-input"
 
-export function GuessForm() {
+const CHEAT_CODE = "cheat"
+const CHEAT_WINDOW_MS = 2_000
+
+export function GuessForm(handle?: Pick<Handle, "update">) {
+	let cheatEnabled = false
+	let cheatBuffer = ""
+	let cheatStartedAt = 0
+	let hydrated = false
+
 	return ({
 		currentGuess,
 		cheat,
@@ -17,6 +26,19 @@ export function GuessForm() {
 		error?: string
 		cheat?: boolean
 	}) => {
+		if (!hydrated) {
+			hydrated = true
+			cheatEnabled = cheat === true
+			if (typeof window !== "undefined") {
+				cheatEnabled =
+					cheatEnabled || window.sessionStorage.getItem(CHEAT_SESSION_KEY) === "true"
+			}
+		}
+
+		if (cheat && !cheatEnabled) {
+			cheatEnabled = true
+		}
+
 		return (
 			<form
 				method="POST"
@@ -51,9 +73,48 @@ export function GuessForm() {
 							}
 						}
 					}),
+					on("keydown", async (event) => {
+						let target = event.target
+						if (!(target instanceof HTMLInputElement)) return
+						if (!/^[a-zA-Z]$/.test(event.key)) return
+
+						let now = Date.now()
+						let letter = event.key.toLowerCase()
+						if (cheatBuffer === "" || now - cheatStartedAt > CHEAT_WINDOW_MS) {
+							cheatBuffer = letter
+							cheatStartedAt = now
+						} else {
+							cheatBuffer += letter
+						}
+
+						if (!CHEAT_CODE.startsWith(cheatBuffer)) {
+							if (letter === CHEAT_CODE[0]) {
+								cheatBuffer = letter
+								cheatStartedAt = now
+							} else {
+								cheatBuffer = ""
+								cheatStartedAt = 0
+							}
+							return
+						}
+
+						if (cheatBuffer === CHEAT_CODE && now - cheatStartedAt <= CHEAT_WINDOW_MS) {
+							cheatBuffer = ""
+							cheatStartedAt = 0
+							if (!cheatEnabled) {
+								cheatEnabled = true
+								if (typeof window !== "undefined") {
+									window.sessionStorage.setItem(CHEAT_SESSION_KEY, "true")
+								}
+								if (handle) {
+									await handle.update()
+								}
+							}
+						}
+					}),
 				]}
 			>
-				{cheat ? <input type="hidden" name="cheat" value="true" /> : null}
+				{cheatEnabled ? <input type="hidden" name="cheat" value="true" /> : null}
 				{LETTER_INPUTS.map((index) => (
 					<LetterInput key={`input-number-${index}`} index={index} errorMessage={error} />
 				))}

@@ -15,13 +15,15 @@ export function Keyboard() {
 						>
 							{row.map((letter) => {
 								return (
-									<div
+									<button
+										type="button"
 										data-state={letter.state}
 										class={`flex size-10 items-center justify-center rounded text-center text-white uppercase data-[state=Blank]:bg-gray-400 data-[state=Match]:bg-green-500 data-[state=Miss]:bg-red-500 data-[state=Present]:bg-yellow-500`}
 										key={`keyboard-letter-${letter.letter}`}
+										aria-label={`keyboard letter ${letter.letter}`}
 									>
 										{letter.letter}
-									</div>
+									</button>
 								)
 							})}
 						</div>
