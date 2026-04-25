@@ -62,8 +62,8 @@ catalog:
   "@testing-library/user-event": ^14.6.1
   "@total-typescript/tsconfig": ^1.0.4
   "@types/node": ^25.5.2
-  "@vitest/coverage-v8": ^4.1.4
-  "@vitest/ui": 4.1.4
+  "@vitest/coverage-v8": ^4.1.5
+  "@vitest/ui": 4.1.5
   bcryptjs: ^3.0.3
   bullmq: ^5.74.1
   clsx: ^2.1.1
