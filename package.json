@@ -48,6 +48,7 @@
 		"oxlint": "catalog:",
 		"oxlint-tsgolint": "catalog:",
 		"prisma": "catalog:",
+		"tailwindcss": "catalog:",
 		"tsx": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"

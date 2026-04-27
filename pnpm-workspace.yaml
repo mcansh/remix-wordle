@@ -75,6 +75,7 @@ catalog:
   oxlint-tsgolint: ^0.21.1
   prisma: ^7.8.0
   remix: ^3.0.0-alpha.5
+  tailwindcss: ^4.2.4
   tsx: ^4.21.0
   typescript: ^6.0.3
   vitest: ^4.1.5

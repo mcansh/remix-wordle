@@ -93,6 +93,9 @@ catalogs:
     remix:
       specifier: ^3.0.0-alpha.5
       version: 3.0.0-alpha.5
+    tailwindcss:
+      specifier: ^4.2.4
+      version: 4.2.4
     tsx:
       specifier: ^4.21.0
       version: 4.21.0
@@ -195,6 +198,9 @@ importers:
       prisma:
         specifier: 'catalog:'
         version: 7.8.0(@types/react@19.2.7)(magicast@0.5.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 4.2.4
       tsx:
         specifier: 'catalog:'
         version: 4.21.0
