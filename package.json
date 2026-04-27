@@ -41,6 +41,7 @@
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"@vitest/ui": "catalog:",
+		"better-result": "catalog:",
 		"happy-dom": "catalog:",
 		"msw": "catalog:",
 		"oxfmt": "catalog:",

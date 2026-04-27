@@ -1,4 +1,15 @@
 import wordBank from "./word-bank.json"
+import { TaggedError } from "better-result"
+
+export interface GameRules {
+	wordLength: number
+	maxGuesses: number
+}
+
+export const GAME_RULES = {
+	wordLength: 5,
+	maxGuesses: 6,
+} as const satisfies GameRules
 
 export const LetterState = {
 	Blank: "Blank", // The letter is blank
@@ -8,6 +19,35 @@ export const LetterState = {
 } as const
 
 export type LetterState = (typeof LetterState)[keyof typeof LetterState]
+
+const GameCompleteError = TaggedError("GameCompleteError")<{}>()
+const WrongLengthError = TaggedError("WrongLengthError")<{ length: number }>()
+const InvalidWordError = TaggedError("InvalidWordError")<{ word: string }>()
+const DuplicateGuessError = TaggedError("DuplicateGuessError")<{ word: string }>()
+const UnknownGameError = TaggedError("UnknownGameError")<{ message: string }>()
+
+export type GuessError =
+	| InstanceType<typeof GameCompleteError>
+	| InstanceType<typeof WrongLengthError>
+	| InstanceType<typeof InvalidWordError>
+	| InstanceType<typeof DuplicateGuessError>
+	| InstanceType<typeof UnknownGameError>
+
+export function gameCompleteError() {
+	return new GameCompleteError({})
+}
+export function wrongLengthError(length: number) {
+	return new WrongLengthError({ length })
+}
+export function invalidWordError(word: string) {
+	return new InvalidWordError({ word })
+}
+export function duplicateGuessError(word: string) {
+	return new DuplicateGuessError({ word })
+}
+export function unknownGameError(message: string) {
+	return new UnknownGameError({ message })
+}
 
 export type ComputedGuess = {
 	id: string

@@ -1,20 +1,24 @@
 import { endOfDay, startOfDay } from "date-fns"
+import { Result } from "better-result"
 
-import { WORD_LENGTH } from "../constants.ts"
+import { TOTAL_GUESSES, WORD_LENGTH } from "../constants.ts"
 import type { Game, User } from "../generated/prisma/client.ts"
 import { GameStatus, Prisma } from "../generated/prisma/client.ts"
 import { db } from "../utils/db.ts"
-import type { ComputedGuess } from "../utils/game.ts"
+import type { ComputedGuess, GuessError } from "../utils/game.ts"
 import {
 	computeGuess,
 	createEmptyLetter,
+	duplicateGuessError,
+	gameCompleteError,
 	getRandomWord,
+	invalidWordError,
 	isValidWord,
 	keyboardWithStatus,
 	LetterState,
+	wrongLengthError,
+	unknownGameError,
 } from "../utils/game.ts"
-
-const TOTAL_GUESSES = 6
 
 const FULL_GAME_SELECT = {
 	id: true,
@@ -103,22 +107,22 @@ export async function createGame(userId: User["id"]): Promise<FullGame> {
 	return game
 }
 
-export async function createGuess(
+export async function submitTurn(
 	userId: User["id"],
 	guessedWord: string,
-): Promise<string | null> {
+): Promise<Result<void, GuessError>> {
 	let game = await getTodaysGame(userId)
 
 	if (game.guesses.length >= TOTAL_GUESSES || isGameComplete(game.status)) {
-		return `Game is already complete`
+		return Result.err(gameCompleteError())
 	}
 
 	if (guessedWord.length !== WORD_LENGTH) {
-		return `You must guess a word of length ${WORD_LENGTH}`
+		return Result.err(wrongLengthError(WORD_LENGTH))
 	}
 
 	if (!isValidWord(guessedWord)) {
-		return `${guessedWord.toUpperCase()} is not a valid word`
+		return Result.err(invalidWordError(guessedWord))
 	}
 
 	try {
@@ -136,20 +140,20 @@ export async function createGuess(
 			},
 		})
 
-		return null
+		return Result.ok(undefined)
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			if (error.code === "P2002") {
-				return `You already guessed "${guessedWord.toUpperCase()}"`
+				return Result.err(duplicateGuessError(guessedWord))
 			}
 		}
 
 		console.error(error)
 		if (error instanceof Error) {
-			return error.message
+			return Result.err(unknownGameError(error.message))
 		}
 
-		return String(error) || "An unknown error occurred"
+		return Result.err(unknownGameError(String(error) || "An unknown error occurred"))
 	}
 }
 

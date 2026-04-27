@@ -5,7 +5,7 @@ import { Session } from "remix/session"
 import { REVEAL_WORD, WORD_LENGTH } from "../../constants.ts"
 import { requireAuth } from "../../middleware/auth.ts"
 import {
-	createGuess,
+	submitTurn,
 	getFullBoard,
 	getTodaysGame,
 	isGameComplete,
@@ -16,7 +16,6 @@ import * as f from "../../utils/local-form-schema.ts"
 import * as s from "../../utils/local-schema.ts"
 import { render } from "../../utils/render.ts"
 import { Page } from "./page"
-
 export function validLength(length: number): s.Check<Array<string>> {
 	return {
 		check(value) {
@@ -58,11 +57,11 @@ export const home = {
 			}
 
 			let guessedWord = data.value.letters.join("")
-			let error = await createGuess(identity.user.id, guessedWord)
+			let result = await submitTurn(identity.user.id, guessedWord)
 
-			if (error) {
-				console.error({ error })
-				session.flash("error", error)
+			if (result.isErr()) {
+				console.error({ error: result.error })
+				session.flash("error", result.error.message)
 			}
 
 			return redirect(
