@@ -10,12 +10,8 @@ import * as f from "remix/data-schema/form-data"
 import { redirect } from "remix/response/redirect"
 
 import { routes } from "../routes.ts"
-import {
-	normalizeEmail,
-	parseAuthSession,
-	type AuthIdentity,
-	type AuthSession,
-} from "../utils/auth-session.ts"
+import type { AuthIdentity, AuthSession } from "../utils/auth-session.ts"
+import { normalizeEmail, parseAuthSession } from "../utils/auth-session.ts"
 import { db } from "../utils/db.ts"
 
 const loginSchema = f.object({
