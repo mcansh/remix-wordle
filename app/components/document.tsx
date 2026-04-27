@@ -1,4 +1,5 @@
 import type { RemixNode } from "remix/component"
+import { RMX_01, RMX_01_GLYPHS } from "remix/ui/theme"
 
 import { getAssetEntry } from "../middleware/asset-entry.ts"
 
@@ -21,6 +22,8 @@ export function Document() {
 					<meta name="viewport" content="width=device-width, initial-scale=1" />
 					<link rel="stylesheet" href="/app.css" />
 					{head}
+					<RMX_01 />
+					<RMX_01_GLYPHS />
 					<link rel="canonical" href={canonical} />
 					{preloads.map((href) => (
 						<link key={href} rel="modulepreload" href={href} />

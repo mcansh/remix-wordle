@@ -1,4 +1,5 @@
 import type { Handle } from "remix/component"
+import { Button } from "remix/ui/button"
 
 import { Document } from "../../components/document.tsx"
 import { GuessForm } from "../../components/form.tsx"
@@ -85,13 +86,13 @@ export function Page(_handle: Handle, { url }: { url: URL }) {
 								)
 							})}
 
-							<input
-								enterKeyHint="send"
+							<Button
 								form="current-guess"
 								type="submit"
 								class="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
-								value="Submit Guess"
-							/>
+							>
+								Submit Guess
+							</Button>
 						</div>
 
 						<Keyboard board={board.keyboardWithStatus} />

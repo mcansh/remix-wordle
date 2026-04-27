@@ -1,4 +1,4 @@
-import { NONE, SELF } from "@mcansh/http-helmet"
+import { NONE, SELF, UNSAFE_INLINE } from "@mcansh/http-helmet"
 import { asyncContext } from "remix/async-context-middleware"
 import { compression } from "remix/compression-middleware"
 import { createRouter } from "remix/fetch-router"
@@ -40,10 +40,11 @@ middleware.push(
 				: "no-store, must-revalidate",
 	}),
 )
+middleware.push(asyncContext())
 middleware.push(formData())
 middleware.push(methodOverride())
 middleware.push(session(sessionCookie, sessionStorage))
-middleware.push(asyncContext())
+middleware.push(loadAuth())
 middleware.push(loadAssetEntry())
 middleware.push(
 	securityHeaders({
@@ -54,7 +55,7 @@ middleware.push(
 				SELF,
 				...(process.env.NODE_ENV === "development" ? ["ws"] : []),
 			],
-			"style-src": [SELF],
+			"style-src": [SELF, UNSAFE_INLINE],
 			"img-src": [SELF, "https://cdn.usefathom.com"],
 		},
 		"X-Content-Type-Options": "nosniff",
@@ -65,7 +66,6 @@ middleware.push(
 		"Referrer-Policy": "strict-origin-when-cross-origin",
 	}),
 )
-middleware.push(loadAuth())
 
 export const router = createRouter({ middleware })
 
