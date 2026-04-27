@@ -8,12 +8,8 @@ import {
 import { redirect } from "remix/response/redirect"
 
 import { routes } from "../routes.ts"
-import {
-	normalizeEmail,
-	parseAuthSession,
-	type AuthIdentity,
-	type AuthSession,
-} from "../utils/auth-session.ts"
+import type { AuthIdentity, AuthSession } from "../utils/auth-session.ts"
+import { normalizeEmail, parseAuthSession } from "../utils/auth-session.ts"
 import { db } from "../utils/db.ts"
 import * as f from "../utils/local-form-schema.ts"
 import * as s from "../utils/local-schema.ts"
