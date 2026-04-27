@@ -2,9 +2,9 @@ import * as http from "node:http"
 
 import { createRequestListener } from "remix/node-fetch-server"
 
-import { startQueue, stopQueue } from "./app/utils/queue.ts"
 import { router } from "./app/router.ts"
 import { assetServer } from "./app/utils/assets.ts"
+import { startQueue, stopQueue } from "./app/utils/queue.ts"
 
 const server = http.createServer(
 	createRequestListener(async (request) => {

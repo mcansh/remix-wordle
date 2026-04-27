@@ -1,3 +1,4 @@
+import * as s from "remix/data-schema"
 import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
@@ -5,7 +6,6 @@ import { Session } from "remix/session"
 import { Document } from "../../../components/document.tsx"
 import { createUser, getUserByEmail, joinSchema } from "../../../models/user.ts"
 import { routes } from "../../../routes.ts"
-import * as s from "../../../utils/local-schema.ts"
 import { render } from "../../../utils/render.ts"
 
 export const registerController = {

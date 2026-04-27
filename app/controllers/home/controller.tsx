@@ -1,3 +1,5 @@
+import * as s from "remix/data-schema"
+import * as f from "remix/data-schema/form-data"
 import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
@@ -12,10 +14,9 @@ import {
 } from "../../models/game.ts"
 import { routes } from "../../routes.ts"
 import { getCurrentUser } from "../../utils/context.ts"
-import * as f from "../../utils/local-form-schema.ts"
-import * as s from "../../utils/local-schema.ts"
 import { render } from "../../utils/render.ts"
 import { Page } from "./page"
+
 export function validLength(length: number): s.Check<Array<string>> {
 	return {
 		check(value) {

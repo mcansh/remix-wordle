@@ -1,5 +1,6 @@
-import wordBank from "./word-bank.json"
 import { TaggedError } from "better-result"
+
+import wordBank from "./word-bank.json"
 
 export interface GameRules {
 	wordLength: number
@@ -23,7 +24,9 @@ export type LetterState = (typeof LetterState)[keyof typeof LetterState]
 const GameCompleteError = TaggedError("GameCompleteError")<{}>()
 const WrongLengthError = TaggedError("WrongLengthError")<{ length: number }>()
 const InvalidWordError = TaggedError("InvalidWordError")<{ word: string }>()
-const DuplicateGuessError = TaggedError("DuplicateGuessError")<{ word: string }>()
+const DuplicateGuessError = TaggedError("DuplicateGuessError")<{
+	word: string
+}>()
 const UnknownGameError = TaggedError("UnknownGameError")<{ message: string }>()
 
 export type GuessError =

@@ -1,5 +1,5 @@
-import { endOfDay, startOfDay } from "date-fns"
 import { Result } from "better-result"
+import { endOfDay, startOfDay } from "date-fns"
 
 import { TOTAL_GUESSES, WORD_LENGTH } from "../constants.ts"
 import type { Game, User } from "../generated/prisma/client.ts"
@@ -153,7 +153,9 @@ export async function submitTurn(
 			return Result.err(unknownGameError(error.message))
 		}
 
-		return Result.err(unknownGameError(String(error) || "An unknown error occurred"))
+		return Result.err(
+			unknownGameError(String(error) || "An unknown error occurred"),
+		)
 	}
 }
 

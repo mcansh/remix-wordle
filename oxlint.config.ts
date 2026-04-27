@@ -5,12 +5,7 @@ export default defineConfig({
 		builtin: true,
 	},
 	globals: {},
-	ignorePatterns: [
-		"app/generated/**",
-		".agents/**/*",
-		"app/utils/local-form-schema.ts",
-		"app/utils/local-schema.ts",
-	],
+	ignorePatterns: ["app/generated/**", ".agents/**/*"],
 	jsPlugins: ["./oxlint-plugins/prefer-let-locals-plugin.ts"],
 	options: {
 		typeAware: true,
