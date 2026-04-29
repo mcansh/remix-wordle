@@ -1,10 +1,10 @@
 import bcrypt from "bcryptjs"
+import * as s from "remix/data-schema"
 import { email, minLength } from "remix/data-schema/checks"
 import * as f from "remix/data-schema/form-data"
 
 import type { User } from "#app/generated/prisma/client.ts"
 import { db } from "#app/utils/db.ts"
-import * as s from "#app/utils/local-schema.ts"
 
 export const joinSchema = f.object({
 	email: f.field(s.string().pipe(email())),

@@ -1,5 +1,6 @@
+import * as s from "remix/data-schema"
+
 import type { User } from "#app/generated/prisma/client.ts"
-import * as s from "#app/utils/local-schema.ts"
 
 export function normalizeEmail(email: string): string {
 	return email.trim().toLowerCase()

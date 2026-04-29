@@ -1,6 +1,6 @@
 "use client"
 
-import { on, keysEvents } from "remix/component"
+import { on } from "remix/ui"
 
 import { LETTER_INPUTS } from "#app/constants.ts"
 import { routes } from "#app/routes.ts"
@@ -26,8 +26,7 @@ export function GuessForm() {
 				id="current-guess"
 				autoComplete="off"
 				mix={[
-					keysEvents(),
-					on(keysEvents.backspace, (event) => {
+					on("keydown:Backspace", (event) => {
 						let focusedInput = event.currentTarget.querySelector("input:focus")
 						if (focusedInput instanceof HTMLInputElement) {
 							focusedInput.value = ""

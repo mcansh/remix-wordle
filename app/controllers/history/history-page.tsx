@@ -1,5 +1,5 @@
 import { clsx } from "clsx"
-import type { Handle } from "remix/component"
+import type { Handle } from "remix/ui"
 
 import { Document } from "#app/components/document.tsx"
 import type { Prisma } from "#app/generated/prisma/client.ts"

@@ -2,7 +2,7 @@
 	"extends": "@total-typescript/tsconfig/bundler/dom",
 	"compilerOptions": {
 		"jsx": "react-jsx",
-		"jsxImportSource": "remix/component",
+		"jsxImportSource": "remix/ui",
 		"strict": true,
 		"types": ["node", "vite/client"],
 		"allowImportingTsExtensions": true

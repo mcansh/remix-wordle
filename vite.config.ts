@@ -26,14 +26,6 @@ export default defineConfig({
 		},
 		semi: false,
 		useTabs: true,
-		overrides: [
-			{
-				files: ["./app/utils/local-schema.ts", "./app/utils/local-form-schema.ts"],
-				options: {
-					singleQuote: true,
-				},
-			},
-		],
 	},
 	lint: {
 		plugins: ["unicorn", "typescript", "oxc"],

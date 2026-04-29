@@ -27,7 +27,7 @@
 		"clsx": "catalog:",
 		"date-fns": "catalog:",
 		"ioredis": "catalog:",
-		"remix": "github:remix-run/remix#preview/main&path:packages/remix"
+		"remix": "catalog:"
 	},
 	"devDependencies": {
 		"@mcansh/remix-testing-library": "catalog:",
@@ -36,7 +36,6 @@
 		"@mswjs/http-middleware": "catalog:",
 		"@oxlint/plugins": "catalog:",
 		"@redwoodjs/agent-ci": "catalog:",
-		"@remix-run/cli": "catalog:",
 		"@tailwindcss/vite": "catalog:",
 		"@testing-library/jest-dom": "catalog:",
 		"@testing-library/user-event": "catalog:",
@@ -46,6 +45,7 @@
 		"@vitest/ui": "catalog:",
 		"happy-dom": "catalog:",
 		"msw": "catalog:",
+		"playwright": "catalog:",
 		"prisma": "catalog:",
 		"tailwindcss": "catalog:",
 		"typescript": "catalog:",

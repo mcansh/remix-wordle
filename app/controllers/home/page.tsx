@@ -1,4 +1,4 @@
-import type { Handle } from "remix/component"
+import type { Handle } from "remix/ui"
 
 import { Document } from "#app/components/document.tsx"
 import { GuessForm } from "#app/components/form.tsx"

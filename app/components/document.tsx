@@ -1,8 +1,8 @@
 import "@mcansh/vite-plugin-remix/types"
-import type { RemixNode } from "remix/component"
+import type { RemixNode } from "remix/ui"
 
 import clientAssets from "#app/entry.browser.ts?assets=client"
-import serverAssets from "#app/entry.server.tsx?assets=ssr"
+import serverAssets from "#app/entry.server.ts?assets=ssr"
 
 import appStylesHref from "#app/app.css?url"
 

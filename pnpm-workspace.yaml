@@ -4,7 +4,6 @@ allowBuilds:
   "@remix-run/async-context-middleware": true
   "@remix-run/auth": true
   "@remix-run/auth-middleware": true
-  "@remix-run/cli": true
   "@remix-run/component": true
   "@remix-run/compression-middleware": true
   "@remix-run/cookie": true
@@ -55,7 +54,6 @@ catalog:
   "@prisma/adapter-pg": ^7.8.0
   "@prisma/client": ^7.8.0
   "@redwoodjs/agent-ci": ^0.13.0
-  "@remix-run/cli": github:remix-run/remix#preview/pr-11204&path:packages/cli
   "@standard-schema/spec": ^1.1.0
   "@tailwindcss/vite": ^4.2.4
   "@testing-library/jest-dom": ^6.9.1
@@ -71,8 +69,9 @@ catalog:
   happy-dom: ^20.9.0
   ioredis: ^5.10.1
   msw: ^2.13.6
+  playwright: ^1.59.1
   prisma: ^7.8.0
-  remix: github:remix-run/remix#preview/main&path:packages/remix
+  remix: ^3.0.0-alpha.6
   tailwindcss: ^4.2.4
   typescript: ^6.0.3
   vite: npm:@voidzero-dev/vite-plus-core@latest
