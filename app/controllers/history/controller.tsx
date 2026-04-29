@@ -36,21 +36,19 @@ export const history = {
 				return createHistoricalGameListItem(game)
 			})
 
-			return render(<HistoricalGameList setup={{ url: context.url }} games={formattedGames} />)
+			return render(<HistoricalGameList url={context.url} games={formattedGames} />)
 		},
 
 		async game(context) {
 			let game = await getGameById(context.params.id)
 
 			if (!game) {
-				return render(<GameNotFound setup={{ url: context.url }} />, { status: 404 })
+				return render(<GameNotFound url={context.url} />, { status: 404 })
 			}
 
 			let showModal = isGameComplete(game.status)
 
-			return render(
-				<HistoricalGame setup={{ url: context.url }} game={game} showModal={showModal} />,
-			)
+			return render(<HistoricalGame url={context.url} game={game} showModal={showModal} />)
 		},
 	},
 } satisfies Controller<typeof routes.history>

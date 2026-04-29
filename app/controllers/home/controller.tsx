@@ -91,7 +91,7 @@ export const home = {
 
 			return render(
 				<Page
-					setup={{ url: context.url }}
+					url={context.url}
 					showModal={showModal}
 					showWord={showWord}
 					board={board}

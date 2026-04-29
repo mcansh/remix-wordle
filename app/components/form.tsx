@@ -26,16 +26,18 @@ export function GuessForm() {
 				id="current-guess"
 				autoComplete="off"
 				mix={[
-					on("keydown:Backspace", (event) => {
-						let focusedInput = event.currentTarget.querySelector("input:focus")
-						if (focusedInput instanceof HTMLInputElement) {
-							focusedInput.value = ""
-						}
-						event.preventDefault()
-						if (focusedInput?.previousElementSibling) {
-							let previousInput = focusedInput.previousElementSibling
-							if (previousInput instanceof HTMLInputElement) {
-								previousInput.select()
+					on("keydown", (event) => {
+						if (event.key === "Backspace") {
+							let focusedInput = event.currentTarget.querySelector("input:focus")
+							if (focusedInput instanceof HTMLInputElement) {
+								focusedInput.value = ""
+							}
+							event.preventDefault()
+							if (focusedInput?.previousElementSibling) {
+								let previousInput = focusedInput.previousElementSibling
+								if (previousInput instanceof HTMLInputElement) {
+									previousInput.select()
+								}
 							}
 						}
 					}),
