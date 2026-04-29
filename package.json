@@ -7,6 +7,7 @@
 	"sideEffects": false,
 	"scripts": {
 		"dev": "NODE_ENV=development tsx --env-file .env --watch server.ts",
+		"build": "exit 0",
 		"start": "tsx server.ts",
 		"lint": "oxlint",
 		"format": "oxfmt",
@@ -24,7 +25,7 @@
 		"clsx": "catalog:",
 		"date-fns": "catalog:",
 		"ioredis": "catalog:",
-		"remix": "github:remix-run/remix#preview/pr-11269&path:packages/remix"
+		"remix": "catalog:"
 	},
 	"devDependencies": {
 		"@mcansh/remix-testing-library": "catalog:",
@@ -43,6 +44,7 @@
 		"oxfmt": "catalog:",
 		"oxlint": "catalog:",
 		"oxlint-tsgolint": "catalog:",
+		"playwright": "catalog:",
 		"prisma": "catalog:",
 		"tailwindcss": "catalog:",
 		"tsx": "catalog:",
