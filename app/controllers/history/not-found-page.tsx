@@ -1,11 +1,14 @@
-import type { Handle } from "remix/component"
+import type { Handle } from "remix/ui"
 
 import { Document } from "../../components/document"
 
-export function GameNotFound(_handle: Handle, { url }: { url: URL }) {
+export function GameNotFound(handle: Handle<{ url: URL }>) {
 	return () => {
 		return (
-			<Document url={url} head={<title>Remix Wordle - Game Not Found</title>}>
+			<Document
+				url={handle.props.url}
+				head={<title>Remix Wordle - Game Not Found</title>}
+			>
 				<div class="mx-auto h-full max-w-sm">
 					<header>
 						<h1 class="py-4 text-center text-4xl font-semibold">

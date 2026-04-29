@@ -1,9 +1,6 @@
 import { getContext } from "remix/async-context-middleware"
 import type { AuthState } from "remix/auth-middleware"
-
-export const Auth = createContextKey<AuthState<AuthIdentity>>()
-
-import { createContextKey } from "remix/fetch-router"
+import { Auth } from "remix/auth-middleware"
 
 import type { AuthIdentity } from "./auth-session"
 export function getCurrentUser(): AuthIdentity {
@@ -25,5 +22,5 @@ export function getCurrentUserSafely(): AuthIdentity | null {
 }
 
 function getCurrentAuth(): AuthState<AuthIdentity> {
-	return getContext().get(Auth)
+	return getContext().get(Auth) as AuthState<AuthIdentity>
 }
