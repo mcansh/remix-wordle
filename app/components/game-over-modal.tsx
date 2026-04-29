@@ -51,7 +51,7 @@ export function GameOverModal(handle: Handle) {
 											type="button"
 											class="mx-auto my-4 flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:text-sm"
 											mix={[
-												on("rmx:press", async () => {
+												on("pointerdown", async () => {
 													let guessString = (winner ? currentGuess : "X") + "/" + totalGuesses
 
 													let text =
