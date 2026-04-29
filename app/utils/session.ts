@@ -1,7 +1,9 @@
 import { createCookie } from "remix/cookie"
-import { createCookieSessionStorage } from "remix/session/cookie-storage"
+import { createRedisSessionStorage } from "remix/session-storage-redis"
 
 import { env } from "#app/env.ts"
+
+import { redis } from "./db"
 
 export const sessionCookie = createCookie("session", {
 	secrets: [env.SESSION_SECRET],
@@ -12,4 +14,4 @@ export const sessionCookie = createCookie("session", {
 	secure: import.meta.env.PROD,
 })
 
-export const sessionStorage = createCookieSessionStorage()
+export const sessionStorage = createRedisSessionStorage(redis)
