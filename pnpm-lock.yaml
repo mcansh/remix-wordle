@@ -12,9 +12,6 @@ catalogs:
     '@mcansh/remix-testing-library':
       specifier: ^0.0.1
       version: 0.0.1
-    '@mcansh/vite-plugin-remix':
-      specifier: ^0.0.1
-      version: 0.0.1
     '@mcansh/vite-plugin-svg-sprite':
       specifier: ^0.7.1
       version: 0.7.1
@@ -143,8 +140,8 @@ importers:
         specifier: 'catalog:'
         version: 0.0.1(@remix-run/component@0.7.0)
       '@mcansh/vite-plugin-remix':
-        specifier: 'catalog:'
-        version: 0.0.1(@voidzero-dev/vite-plus-core@0.1.19(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.3))
+        specifier: file:.yalc/@mcansh/vite-plugin-remix
+        version: file:.yalc/@mcansh/vite-plugin-remix(@voidzero-dev/vite-plus-core@0.1.19(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.3))(remix@3.0.0-alpha.6(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(mysql2@3.15.3)(pg@8.20.0)(playwright@1.59.1))
       '@mcansh/vite-plugin-svg-sprite':
         specifier: 'catalog:'
         version: 0.7.1(@voidzero-dev/vite-plus-core@0.1.19(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.3))
@@ -538,9 +535,10 @@ packages:
     peerDependencies:
       '@remix-run/component': '*'
 
-  '@mcansh/vite-plugin-remix@0.0.1':
-    resolution: {integrity: sha512-KNh+WO5VhnFGiUPkP7UoOX3B+0L5dbYoMxHHUJgfhpLXjJP5/CsPPIhc0frvkySI01fqaDB6nBwL5kIqmoKk4w==}
+  '@mcansh/vite-plugin-remix@file:.yalc/@mcansh/vite-plugin-remix':
+    resolution: {directory: .yalc/@mcansh/vite-plugin-remix, type: directory}
     peerDependencies:
+      remix: ^3.0.0-0
       vite: ^8.0.0-0
 
   '@mcansh/vite-plugin-svg-sprite@0.7.1':
@@ -3867,11 +3865,12 @@ snapshots:
       '@testing-library/dom': 10.4.1
       pretty-dom: 1.0.0
 
-  '@mcansh/vite-plugin-remix@0.0.1(@voidzero-dev/vite-plus-core@0.1.19(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.3))':
+  '@mcansh/vite-plugin-remix@file:.yalc/@mcansh/vite-plugin-remix(@voidzero-dev/vite-plus-core@0.1.19(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.3))(remix@3.0.0-alpha.6(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(mysql2@3.15.3)(pg@8.20.0)(playwright@1.59.1))':
     dependencies:
       '@hiogawa/vite-plugin-fullstack': 0.0.11(@voidzero-dev/vite-plus-core@0.1.19(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.3))
       dedent: 1.7.2
       magic-string: 0.30.21
+      remix: 3.0.0-alpha.6(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(mysql2@3.15.3)(pg@8.20.0)(playwright@1.59.1)
       vite: '@voidzero-dev/vite-plus-core@0.1.19(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.8.3)'
     transitivePeerDependencies:
       - babel-plugin-macros

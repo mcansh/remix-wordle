@@ -1,0 +1,39 @@
+{
+  "name": "@mcansh/vite-plugin-remix",
+  "version": "0.0.1",
+  "description": "a Vite plugin for Remix v3 (modified from https://github.com/jacob-ebey/vite-plugin-remix/tree/a5f372a4d48f9545e94d60cc401b865031ceecd7z)",
+  "license": "MIT",
+  "author": "Logan McAnsh <logan@mcan.sh> (https://mcan.sh)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcansh/vite-plugin-remix.git"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./runtime": "./dist/runtime.js",
+    "./package.json": "./package.json",
+    "./types": "./src/types.ts"
+  },
+  "scripts": {
+    "prepublishOnly": "node --run build",
+    "build": "tsdown",
+    "test": "vitest",
+    "format": "oxfmt",
+    "typecheck": "tsgo"
+  },
+  "dependencies": {
+    "@hiogawa/vite-plugin-fullstack": "^0.0.11",
+    "dedent": "^1.7.2",
+    "magic-string": "^0.30.21"
+  },
+  "peerDependencies": {
+    "remix": "^3.0.0-0",
+    "vite": "^8.0.0-0"
+  },
+  "yalcSig": "06db8c406312e3ecb2f55d7ed1b51776"
+}

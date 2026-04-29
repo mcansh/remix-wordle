@@ -31,7 +31,7 @@
 	},
 	"devDependencies": {
 		"@mcansh/remix-testing-library": "catalog:",
-		"@mcansh/vite-plugin-remix": "catalog:",
+		"@mcansh/vite-plugin-remix": "file:.yalc/@mcansh/vite-plugin-remix",
 		"@mcansh/vite-plugin-svg-sprite": "catalog:",
 		"@mswjs/http-middleware": "catalog:",
 		"@oxlint/plugins": "catalog:",
