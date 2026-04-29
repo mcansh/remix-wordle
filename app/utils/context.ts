@@ -1,5 +1,6 @@
 import { getContext } from "remix/async-context-middleware"
-import { Auth, type AuthState } from "remix/auth-middleware"
+import type { AuthState } from "remix/auth-middleware"
+import { Auth } from "remix/auth-middleware"
 
 import type { AuthIdentity } from "./auth-session"
 export function getCurrentUser(): AuthIdentity {

@@ -5,10 +5,10 @@ import { Session } from "remix/session"
 import { REVEAL_WORD, WORD_LENGTH } from "../../constants.ts"
 import { requireAuth } from "../../middleware/auth.ts"
 import {
-	submitTurn,
 	getFullBoard,
 	getTodaysGame,
 	isGameComplete,
+	submitTurn,
 } from "../../models/game.ts"
 import { routes } from "../../routes.ts"
 import { getCurrentUser } from "../../utils/context.ts"
@@ -95,7 +95,7 @@ export const home = {
 
 			return render(
 				<Page
-					setup={{ url: context.url }}
+					url={context.url}
 					showModal={showModal}
 					showWord={showWord}
 					board={board}

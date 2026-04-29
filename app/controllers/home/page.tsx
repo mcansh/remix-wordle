@@ -1,4 +1,4 @@
-import type { Handle } from "remix/component"
+import type { Handle } from "remix/ui"
 
 import { Document } from "../../components/document.tsx"
 import { GuessForm } from "../../components/form.tsx"
@@ -7,7 +7,7 @@ import { Keyboard } from "../../components/keyboard.tsx"
 import { TOTAL_GUESSES } from "../../constants.ts"
 import type { GameBoard } from "../../models/game.ts"
 
-export function Page(_handle: Handle, { url }: { url: URL }) {
+export function Page(handle: Handle<{ url: URL }>) {
 	return ({
 		showModal,
 		showWord,
@@ -20,7 +20,7 @@ export function Page(_handle: Handle, { url }: { url: URL }) {
 		error?: string
 	}) => {
 		return (
-			<Document url={url} head={<title>Remix Wordle</title>}>
+			<Document url={handle.props.url} head={<title>Remix Wordle</title>}>
 				{showModal ? (
 					<GameOverModal
 						currentGuess={board.currentGuess}

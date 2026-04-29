@@ -1,5 +1,5 @@
 import { clsx } from "clsx"
-import type { Handle } from "remix/component"
+import type { Handle } from "remix/ui"
 
 import { Document } from "../../components/document.tsx"
 import { GameOverModal } from "../../components/game-over-modal.tsx"
@@ -8,10 +8,13 @@ import { TOTAL_GUESSES } from "../../constants.ts"
 import type { GameBoard } from "../../models/game.ts"
 import { LetterState } from "../../utils/game.ts"
 
-export function HistoricalGame(_handle: Handle, { url }: { url: URL }) {
+export function HistoricalGame(handle: Handle<{ url: URL }>) {
 	return ({ game, showModal }: { game: GameBoard; showModal: boolean }) => {
 		return (
-			<Document url={url} head={<title>Remix Wordle - Game {game.id}</title>}>
+			<Document
+				url={handle.props.url}
+				head={<title>Remix Wordle - Game {game.id}</title>}
+			>
 				{showModal ? (
 					<GameOverModal
 						currentGuess={game.currentGuess}

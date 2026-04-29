@@ -14,13 +14,14 @@ export const assetServer = createAssetServer({
 		[`${assetsBase}/app/*path`]: "app/*path",
 		[`${assetsBase}/node_modules/*path`]: "node_modules/.pnpm/*path",
 	},
+	sourceMaps: isDevelopment ? "external" : undefined,
+	target: { es: "2020" },
 	scripts: {
-		sourceMaps: isDevelopment ? "external" : undefined,
-		minify: !isDevelopment,
 		define: {
 			"process.env.NODE_ENV": JSON.stringify(env.NODE_ENV),
 		},
 	},
+	minify: !isDevelopment,
 	fingerprint: isDevelopment
 		? undefined
 		: { buildId: process.env.GITHUB_SHA || String(Date.now()) },

@@ -31,10 +31,7 @@ export const history = {
 			})
 
 			return render(
-				<HistoricalGameList
-					setup={{ url: context.url }}
-					games={formattedGames}
-				/>,
+				<HistoricalGameList url={context.url} games={formattedGames} />,
 			)
 		},
 
@@ -42,7 +39,7 @@ export const history = {
 			let game = await getGameById(context.params.id)
 
 			if (!game) {
-				return render(<GameNotFound setup={{ url: context.url }} />, {
+				return render(<GameNotFound url={context.url} />, {
 					status: 404,
 				})
 			}
@@ -50,11 +47,7 @@ export const history = {
 			let showModal = isGameComplete(game.status)
 
 			return render(
-				<HistoricalGame
-					setup={{ url: context.url }}
-					game={game}
-					showModal={showModal}
-				/>,
+				<HistoricalGame url={context.url} game={game} showModal={showModal} />,
 			)
 		},
 	},

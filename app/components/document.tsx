@@ -1,4 +1,4 @@
-import type { RemixNode } from "remix/component"
+import type { RemixNode } from "remix/ui"
 
 import { getAssetEntry } from "../middleware/asset-entry.ts"
 
@@ -12,20 +12,20 @@ export function Document() {
 		head?: RemixNode
 		url: URL
 	}) => {
-		let { src, preloads } = getAssetEntry()
+		let assets = getAssetEntry()
 		let canonical = url.origin + url.pathname
 		return (
 			<html lang="en">
 				<head>
 					<meta charSet="utf-8" />
 					<meta name="viewport" content="width=device-width, initial-scale=1" />
-					<link rel="stylesheet" href="/app.css" />
-					{head}
+					<link rel="stylesheet" href={assets.stylesheetHref} />
 					<link rel="canonical" href={canonical} />
-					{preloads.map((href) => (
-						<link key={href} rel="modulepreload" href={href} />
-					))}
-					<script type="module" async src={src} />
+					{assets.scriptPreloads.map((href) => {
+						return <link key={href} rel="modulepreload" href={href} />
+					})}
+					<script type="module" async src={assets.scriptSrc} />
+					{head}
 				</head>
 				<body>{children}</body>
 			</html>
