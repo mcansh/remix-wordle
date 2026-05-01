@@ -71,7 +71,7 @@ catalog:
   msw: ^2.13.6
   playwright: ^1.59.1
   prisma: ^7.8.0
-  remix: ^3.0.0-alpha.6
+  remix: ^3.0.0-beta.0
   tailwindcss: ^4.2.4
   typescript: ^6.0.3
   vite: npm:@voidzero-dev/vite-plus-core@latest
