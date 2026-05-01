@@ -102,7 +102,7 @@ export const registerController = {
 				password: result.password,
 			})
 
-			session.set("userId", user.id)
+			session.set("auth", { userId: user.id })
 			return redirect(routes.home.index.href())
 		},
 	},

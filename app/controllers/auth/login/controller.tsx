@@ -21,10 +21,7 @@ export const loginController = {
 				}
 
 				let session = completeAuth(context)
-				session.set("auth", {
-					userId: user.id,
-					loginMethod: "credentials",
-				})
+				session.set("auth", { userId: user.id })
 
 				return redirect(getPostAuthRedirect(context.url))
 			} catch {
