@@ -1,4 +1,5 @@
 import * as s from "remix/data-schema"
+import { minLength } from "remix/data-schema/checks"
 import * as f from "remix/data-schema/form-data"
 import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
@@ -9,6 +10,9 @@ import { resetPassword } from "#app/models/user.ts"
 import { routes } from "#app/routes.ts"
 import { render } from "#app/utils/render.ts"
 
+import { ResetPasswordConfirmed } from "./confirmed-page"
+import { ResetPasswordForm } from "./reset-page"
+
 export const resetPasswordController = {
 	actions: {
 		index(context) {
@@ -17,45 +21,8 @@ export const resetPasswordController = {
 			let error = session.get("error")
 
 			return render(
-				<Document url={context.url} head={<title>Reset Password - Remix Wordle</title>}>
-					<div class="card" style="max-width: 500px; margin: 2rem auto;">
-						<h1>Reset Password</h1>
-						<p>Enter your new password below.</p>
-
-						{typeof error === "string" ? (
-							<div class="alert alert-error" style="margin-bottom: 1.5rem;">
-								{error}
-							</div>
-						) : null}
-
-						<form method="POST" action={routes.auth.resetPassword.action.href({ token })}>
-							<div>
-								<label for="password">New Password</label>
-								<input
-									type="password"
-									id="password"
-									name="password"
-									required
-									autoComplete="new-password"
-								/>
-							</div>
-
-							<div>
-								<label for="confirmPassword">Confirm Password</label>
-								<input
-									type="password"
-									id="confirmPassword"
-									name="confirmPassword"
-									required
-									autoComplete="new-password"
-								/>
-							</div>
-
-							<button type="submit" class="btn">
-								Reset Password
-							</button>
-						</form>
-					</div>
+				<Document url={context.url} head={<title>Login - Remix Wordle</title>}>
+					<ResetPasswordForm token={token} error={error} />
 				</Document>,
 			)
 		},
@@ -64,19 +31,24 @@ export const resetPasswordController = {
 			let session = context.get(Session)
 			let formData = context.get(FormData)
 
-			let resetPasswordSchema = f.object({
-				password: f.field(s.string()),
-				confirmPassword: f.field(s.string()),
+			let schema = f.object({
+				password: f.field(s.string().pipe(minLength(8))),
+				confirmPassword: f.field(s.string().pipe(minLength(8))),
 			})
 
-			let parsed = s.parse(resetPasswordSchema, formData)
+			let result = s.parseSafe(schema, formData)
 
-			if (parsed.password !== parsed.confirmPassword) {
+			if (result.success === false) {
+				session.flash("error", "Password must be at least 8 characters long.")
+				return redirect(routes.auth.resetPassword.index.href({ token: context.params.token }))
+			}
+
+			if (result.value.password !== result.value.confirmPassword) {
 				session.flash("error", "Passwords do not match.")
 				return redirect(routes.auth.resetPassword.index.href({ token: context.params.token }))
 			}
 
-			let success = resetPassword(context.params.token, parsed.password)
+			let success = resetPassword(context.params.token, result.value.password)
 
 			if (!success) {
 				session.flash("error", "Invalid or expired reset token.")
@@ -84,17 +56,8 @@ export const resetPasswordController = {
 			}
 
 			return render(
-				<Document url={context.url} head={<title>Reset Password - Remix Wordle</title>}>
-					<div class="card" style="max-width: 500px; margin: 2rem auto;">
-						<div class="alert alert-success">
-							Password reset successfully! You can now login with your new password.
-						</div>
-						<p>
-							<a href={routes.auth.login.index.href()} class="btn">
-								Login
-							</a>
-						</p>
-					</div>
+				<Document url={context.url} head={<title>Login - Remix Wordle</title>}>
+					<ResetPasswordConfirmed />
 				</Document>,
 			)
 		},

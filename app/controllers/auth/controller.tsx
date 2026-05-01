@@ -8,7 +8,7 @@ import { routes } from "#app/routes.ts"
 import { forgotPasswordController } from "./forgot-password/controller.tsx"
 import { loginController } from "./login/controller.tsx"
 import { registerController } from "./register/controller.tsx"
-import { resetPasswordController } from "./resetPassword/controller.tsx"
+import { resetPasswordController } from "./reset-password/controller.tsx"
 
 export const auth = {
 	middleware: [loadAuth()],
