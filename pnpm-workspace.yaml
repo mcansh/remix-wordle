@@ -68,7 +68,7 @@ catalog:
   date-fns: ^4.1.0
   happy-dom: ^20.9.0
   ioredis: ^5.10.1
-  msw: ^2.13.6
+  msw: ^2.14.2
   playwright: ^1.59.1
   prisma: ^7.8.0
   remix: ^3.0.0-beta.0
