@@ -30,10 +30,15 @@ const FULL_GAME_SELECT = {
 
 export type FullGame = Prisma.GameGetPayload<{ select: typeof FULL_GAME_SELECT }>
 
-export async function getTodaysGame(userId: User["id"]): Promise<FullGame> {
-	let now = new Date()
+export function getTodayRange(now: Date) {
 	let start = startOfDay(now)
 	let end = endOfDay(now)
+	return { start, end }
+}
+
+export async function getTodaysGame(userId: User["id"]): Promise<FullGame> {
+	let now = new Date()
+	let { start, end } = getTodayRange(now)
 
 	let game = await db.game.findFirst({
 		select: FULL_GAME_SELECT,

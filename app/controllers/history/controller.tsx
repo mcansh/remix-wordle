@@ -3,7 +3,7 @@ import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 
 import { getReturnToQuery, requireAuth } from "#app/middleware/auth.ts"
-import { getGameById, isGameComplete } from "#app/models/game.ts"
+import { getGameById, getTodayRange, isGameComplete } from "#app/models/game.ts"
 import { routes } from "#app/routes.ts"
 import type { AuthIdentity } from "#app/utils/auth-session.ts"
 import { db } from "#app/utils/db.ts"
@@ -32,8 +32,16 @@ export const history = {
 				select: HISTORICAL_GAME_SELECT,
 			})
 
+			let { start, end } = getTodayRange(new Date())
+
 			let formattedGames = games.map((game) => {
-				return createHistoricalGameListItem(game)
+				let historicalGame = createHistoricalGameListItem(game)
+				let isTodaysGame = game.createdAt >= start && game.createdAt <= end
+				if (isTodaysGame && !isGameComplete(game.status)) {
+					return { ...historicalGame, word: "" }
+				}
+
+				return historicalGame
 			})
 
 			return render(<HistoricalGameList url={context.url} games={formattedGames} />)
