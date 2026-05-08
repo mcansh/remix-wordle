@@ -1,3 +1,4 @@
+import type { Err, Ok, Result } from "better-result"
 import type { Router } from "remix/fetch-router"
 import { Cookie, SetCookie } from "remix/headers"
 
@@ -81,4 +82,24 @@ export async function login(router: Router, email: string, password: string): Pr
  */
 export function loginAsCustomer(router: Router): Promise<string> {
 	return login(router, "customer@example.com", "password123")
+}
+
+/**
+ * Asserts that a Result is Ok
+ * @param {Result<T, E>} result - The result to check
+ */
+export function assertOk<T, E>(result: Result<T, E>): asserts result is Ok<T, E> {
+	if (result.isErr()) {
+		throw new Error(`Expected ok result, received error`)
+	}
+}
+
+/**
+ * Asserts that a Result is Err
+ * @param {Result<T, E>} result - The result to check
+ */
+export function assertErr<T, E>(result: Result<T, E>): asserts result is Err<T, E> {
+	if (result.isOk()) {
+		throw new Error("Expected an error result, received ok")
+	}
 }

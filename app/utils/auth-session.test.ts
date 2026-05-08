@@ -1,27 +1,8 @@
-import type { Err, Ok, Result } from "better-result"
 import { describe, expect, it } from "vite-plus/test"
 
+import { assertErr, assertOk } from "#test/helpers.ts"
+
 import { normalizeEmail, parseAuthSession } from "./auth-session.ts"
-
-/**
- * Asserts that a Result is Ok
- * @param {Result<T, E>} result - The result to check
- */
-function assertOk<T, E>(result: Result<T, E>): asserts result is Ok<T, E> {
-	if (result.isErr()) {
-		throw new Error(`Expected ok result, received error`)
-	}
-}
-
-/**
- * Asserts that a Result is Err
- * @param {Result<T, E>} result - The result to check
- */
-function assertErr<T, E>(result: Result<T, E>): asserts result is Err<T, E> {
-	if (result.isOk()) {
-		throw new Error("Expected an error result, received ok")
-	}
-}
 
 describe("normalizeEmail", () => {
 	it("lowercases an already-lowercase email", () => {

@@ -1,7 +1,9 @@
+import { UnhandledException } from "better-result"
 import { beforeEach, describe, expect, it, vi } from "vite-plus/test"
 
 import { GameStatus, Prisma } from "#app/generated/prisma/client.ts"
 import { db } from "#app/utils/db.ts"
+import { assertErr, assertOk } from "#test/helpers.ts"
 
 import { createGuess, createGuessErrorMessage, type FullGame, getGameById } from "./game"
 
@@ -44,22 +46,18 @@ describe("createGuess", () => {
 	it("returns GuessLengthError for non-5-letter guesses", async () => {
 		let result = await createGuess("user-1", "abc")
 
-		expect(result.isErr()).toBe(true)
-		if (result.isErr()) {
-			expect(result.error._tag).toBe("GuessLengthError")
-			expect(createGuessErrorMessage(result.error)).toBe("You must guess a word of length 5")
-		}
+		assertErr(result)
+		expect(result.error._tag).toBe("GuessLengthError")
+		expect(createGuessErrorMessage(result.error)).toBe("You must guess a word of length 5")
 		expect(gameDb.update).not.toHaveBeenCalled()
 	})
 
 	it("returns InvalidWordError for words not in dictionary", async () => {
 		let result = await createGuess("user-1", "zzzzz")
 
-		expect(result.isErr()).toBe(true)
-		if (result.isErr()) {
-			expect(result.error._tag).toBe("InvalidWordError")
-			expect(createGuessErrorMessage(result.error)).toBe("ZZZZZ is not a valid word")
-		}
+		assertErr(result)
+		expect(result.error._tag).toBe("InvalidWordError")
+		expect(createGuessErrorMessage(result.error)).toBe("ZZZZZ is not a valid word")
 		expect(gameDb.update).not.toHaveBeenCalled()
 	})
 
@@ -73,11 +71,9 @@ describe("createGuess", () => {
 
 		let result = await createGuess("user-1", "apple")
 
-		expect(result.isErr()).toBe(true)
-		if (result.isErr()) {
-			expect(result.error._tag).toBe("DuplicateGuessError")
-			expect(createGuessErrorMessage(result.error)).toBe('You already guessed "APPLE"')
-		}
+		assertErr(result)
+		expect(result.error._tag).toBe("DuplicateGuessError")
+		expect(createGuessErrorMessage(result.error)).toBe('You already guessed "APPLE"')
 		expect(consoleError).toHaveBeenCalled()
 	})
 
@@ -87,11 +83,9 @@ describe("createGuess", () => {
 
 		let result = await createGuess("user-1", "apple")
 
-		expect(result.isErr()).toBe(true)
-		if (result.isErr()) {
-			expect(result.error._tag).toBe("CreateGuessFailedError")
-			expect(createGuessErrorMessage(result.error)).toBe("database unavailable")
-		}
+		assertErr(result)
+		expect(result.error._tag).toBe("CreateGuessFailedError")
+		expect(createGuessErrorMessage(result.error)).toBe("database unavailable")
 		expect(consoleError).toHaveBeenCalled()
 	})
 
@@ -100,12 +94,63 @@ describe("createGuess", () => {
 
 		let result = await createGuess("user-1", "apple")
 
-		expect(result.isErr()).toBe(true)
-		if (result.isErr()) {
-			expect(result.error._tag).toBe("GameAlreadyCompleteError")
-			expect(createGuessErrorMessage(result.error)).toBe("Game is already complete")
-		}
+		assertErr(result)
+		expect(result.error._tag).toBe("GameAlreadyCompleteError")
+		expect(createGuessErrorMessage(result.error)).toBe("Game is already complete")
 		expect(gameDb.update).not.toHaveBeenCalled()
+	})
+
+	it("returns ok and marks game won when guess matches word", async () => {
+		gameDb.findFirst.mockResolvedValue(buildGame({ word: "apple", guesses: [] }))
+		gameDb.update.mockResolvedValue(undefined)
+
+		let result = await createGuess("user-1", "apple")
+
+		assertOk(result)
+		expect(gameDb.update).toHaveBeenCalledWith(
+			expect.objectContaining({
+				data: expect.objectContaining({ status: GameStatus.WON }),
+			}),
+		)
+	})
+
+	it("returns ok and marks game in progress for non-final miss", async () => {
+		gameDb.findFirst.mockResolvedValue(buildGame({ word: "apple", guesses: [{ guess: "baker" }] }))
+		gameDb.update.mockResolvedValue(undefined)
+
+		let result = await createGuess("user-1", "candy")
+
+		assertOk(result)
+		expect(gameDb.update).toHaveBeenCalledWith(
+			expect.objectContaining({
+				data: expect.objectContaining({ status: GameStatus.IN_PROGRESS }),
+			}),
+		)
+	})
+
+	it("returns ok and marks game complete on final non-winning guess", async () => {
+		gameDb.findFirst.mockResolvedValue(
+			buildGame({
+				word: "apple",
+				guesses: [
+					{ guess: "baker" },
+					{ guess: "candy" },
+					{ guess: "delta" },
+					{ guess: "eagle" },
+					{ guess: "fable" },
+				],
+			}),
+		)
+		gameDb.update.mockResolvedValue(undefined)
+
+		let result = await createGuess("user-1", "grape")
+
+		assertOk(result)
+		expect(gameDb.update).toHaveBeenCalledWith(
+			expect.objectContaining({
+				data: expect.objectContaining({ status: GameStatus.COMPLETE }),
+			}),
+		)
 	})
 })
 
@@ -119,12 +164,10 @@ describe("getGameById", () => {
 
 		let result = await getGameById("missing-game")
 
-		expect(result.isErr()).toBe(true)
-		if (result.isErr()) {
-			expect(result.error._tag).toBe("GameNotFoundError")
-			expect(result.error.message).toBe("Game not found")
-			expect(result.error.gameId).toBe("missing-game")
-		}
+		assertErr(result)
+		expect(result.error._tag).toBe("GameNotFoundError")
+		expect(result.error.message).toBe("Game not found")
+		expect(result.error.gameId).toBe("missing-game")
 	})
 
 	it("returns board when game exists", async () => {
@@ -138,12 +181,17 @@ describe("getGameById", () => {
 
 		let result = await getGameById("game-1")
 
-		expect(result.isOk()).toBe(true)
-		if (result.isOk()) {
-			expect(result.value.id).toBe("game-1")
-			expect(result.value.currentGuess).toBe(2)
-			expect(result.value.guesses).toHaveLength(6)
-			expect(result.value.guesses[0]?.letters).toHaveLength(5)
-		}
+		assertOk(result)
+		expect(result.value.id).toBe("game-1")
+		expect(result.value.currentGuess).toBe(2)
+		expect(result.value.guesses).toHaveLength(6)
+		expect(result.value.guesses[0]?.letters).toHaveLength(5)
+	})
+})
+
+describe("createGuessErrorMessage", () => {
+	it("returns unknown error fallback for UnhandledException", () => {
+		let error = new UnhandledException({ cause: "boom" })
+		expect(createGuessErrorMessage(error)).toContain("Unhandled exception")
 	})
 })
