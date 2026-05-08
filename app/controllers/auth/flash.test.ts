@@ -1,11 +1,10 @@
-import type { Session } from "remix/session"
 import { describe, expect, it, vi } from "vite-plus/test"
 
 import { flashLoginRequestError, flashRegisterError, flashResetPasswordError } from "./flash"
 
 function makeSession() {
 	let flash = vi.fn()
-	let session = { flash } as unknown as Session
+	let session = { flash }
 	return { session, flash }
 }
 

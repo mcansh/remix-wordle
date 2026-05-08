@@ -2,28 +2,22 @@ import { UnhandledException } from "better-result"
 import { beforeEach, describe, expect, it, vi } from "vite-plus/test"
 
 import { GameStatus, Prisma } from "#app/generated/prisma/client.ts"
-import { db } from "#app/utils/db.ts"
 import { assertErr, assertOk } from "#test/helpers.ts"
 
 import { createGuess, createGuessErrorMessage, type FullGame, getGameById } from "./game"
 
-vi.mock("#app/utils/db.ts", () => ({
-	db: {
-		game: {
-			findFirst: vi.fn(),
-			create: vi.fn(),
-			update: vi.fn(),
-			findUnique: vi.fn(),
-		},
-	},
+const gameDb = vi.hoisted(() => ({
+	findFirst: vi.fn(),
+	create: vi.fn(),
+	update: vi.fn(),
+	findUnique: vi.fn(),
 }))
 
-const gameDb = db.game as unknown as {
-	findFirst: ReturnType<typeof vi.fn>
-	create: ReturnType<typeof vi.fn>
-	update: ReturnType<typeof vi.fn>
-	findUnique: ReturnType<typeof vi.fn>
-}
+vi.mock("#app/utils/db.ts", () => ({
+	db: {
+		game: gameDb,
+	},
+}))
 
 function buildGame(overrides: Partial<FullGame> = {}): FullGame {
 	return {
