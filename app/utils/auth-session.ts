@@ -1,3 +1,4 @@
+import { Result, TaggedError } from "better-result"
 import * as s from "remix/data-schema"
 
 import type { User } from "#app/generated/prisma/client.ts"
@@ -18,16 +19,22 @@ const authSessionSchema = s.object({
 	userId: s.string(),
 })
 
-export function parseAuthSession(value: unknown): AuthSession | null {
+class InvalidAuthSessionError extends TaggedError("InvalidAuthSessionError")<{
+	message: string
+}>() {}
+
+export type ParseAuthSessionError = InvalidAuthSessionError
+
+export function parseAuthSession(value: unknown): Result<AuthSession, ParseAuthSessionError> {
 	let result = s.parseSafe(authSessionSchema, value)
 
 	if (result.success === false) {
-		return null
+		return Result.err(new InvalidAuthSessionError({ message: "Invalid auth session" }))
 	}
 
 	let authSession = {
 		userId: result.value.userId,
 	} satisfies AuthSession
 
-	return authSession
+	return Result.ok(authSession)
 }

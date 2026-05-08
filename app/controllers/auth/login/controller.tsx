@@ -1,8 +1,10 @@
+import { Result, UnhandledException } from "better-result"
 import { completeAuth, verifyCredentials } from "remix/auth"
 import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
+import { flashLoginRequestError } from "#/app/controllers/auth/flash.ts"
 import { Document } from "#app/components/document.tsx"
 import { getPostAuthRedirect, getReturnToQuery, passwordProvider } from "#app/middleware/auth.ts"
 import { routes } from "#app/routes.ts"
@@ -11,24 +13,36 @@ import { render } from "#app/utils/render.ts"
 export const loginController = {
 	actions: {
 		async action(context) {
-			try {
-				let user = await verifyCredentials(passwordProvider, context)
+			let userResult = await Result.tryPromise({
+				try: () => verifyCredentials(passwordProvider, context),
+				catch: (error) => new UnhandledException({ cause: error }),
+			})
 
-				if (user == null) {
-					let session = context.get(Session)
-					session.flash("error", "Invalid email or password. Please try again.")
-					return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
-				}
+			if (userResult.isErr()) {
+				console.error(userResult.error)
+				return flashLoginRequestError(context.get(Session), context.url)
+			}
 
-				let session = completeAuth(context)
-				session.set("auth", { userId: user.id })
-
-				return redirect(getPostAuthRedirect(context.url))
-			} catch {
+			if (userResult.value == null) {
 				let session = context.get(Session)
-				session.flash("error", "We could not complete that sign-in request.")
+				session.flash("error", "Invalid email or password. Please try again.")
 				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
 			}
+
+			let sessionResult = Result.try({
+				try: () => completeAuth(context),
+				catch: (error) => new UnhandledException({ cause: error }),
+			})
+
+			if (sessionResult.isErr()) {
+				console.error(sessionResult.error)
+				return flashLoginRequestError(context.get(Session), context.url)
+			}
+
+			let session = sessionResult.value
+			session.set("auth", { userId: userResult.value.id })
+
+			return redirect(getPostAuthRedirect(context.url))
 		},
 		index(context) {
 			let session = context.get(Session)

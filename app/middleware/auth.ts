@@ -28,7 +28,8 @@ export function loadAuth() {
 		schemes: [
 			createSessionAuthScheme<AuthIdentity, AuthSession>({
 				read(session) {
-					return parseAuthSession(session.get("auth"))
+					let authSession = parseAuthSession(session.get("auth"))
+					return authSession.isOk() ? authSession.value : null
 				},
 				async verify(value) {
 					let user = await db.user.findFirst({

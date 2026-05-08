@@ -48,11 +48,13 @@ export const history = {
 		},
 
 		async game(context) {
-			let game = await getGameById(context.params.id)
+			let gameResult = await getGameById(context.params.id)
 
-			if (!game) {
+			if (gameResult.isErr()) {
 				return render(<GameNotFound url={context.url} />, { status: 404 })
 			}
+
+			let game = gameResult.value
 
 			let showModal = isGameComplete(game.status)
 

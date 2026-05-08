@@ -1,6 +1,27 @@
+import type { Err, Ok, Result } from "better-result"
 import { describe, expect, it } from "vite-plus/test"
 
 import { normalizeEmail, parseAuthSession } from "./auth-session.ts"
+
+/**
+ * Asserts that a Result is Ok
+ * @param {Result<T, E>} result - The result to check
+ */
+function assertOk<T, E>(result: Result<T, E>): asserts result is Ok<T, E> {
+	if (result.isErr()) {
+		throw new Error(`Expected ok result, received error`)
+	}
+}
+
+/**
+ * Asserts that a Result is Err
+ * @param {Result<T, E>} result - The result to check
+ */
+function assertErr<T, E>(result: Result<T, E>): asserts result is Err<T, E> {
+	if (result.isOk()) {
+		throw new Error("Expected an error result, received ok")
+	}
+}
 
 describe("normalizeEmail", () => {
 	it("lowercases an already-lowercase email", () => {
@@ -42,61 +63,65 @@ describe("normalizeEmail", () => {
 
 describe("parseAuthSession", () => {
 	it("returns an AuthSession for a valid object with userId string", () => {
-		expect(parseAuthSession({ userId: "user-123" })).toEqual({ userId: "user-123" })
+		let result = parseAuthSession({ userId: "user-123" })
+		assertOk(result)
+		expect(result.value).toEqual({ userId: "user-123" })
 	})
 
-	it("returns null for null input", () => {
-		expect(parseAuthSession(null)).toBeNull()
+	it("returns an error for null input", () => {
+		assertErr(parseAuthSession(null))
 	})
 
-	it("returns null for undefined input", () => {
-		expect(parseAuthSession(undefined)).toBeNull()
+	it("returns an error for undefined input", () => {
+		assertErr(parseAuthSession(undefined))
 	})
 
-	it("returns null for an empty object", () => {
-		expect(parseAuthSession({})).toBeNull()
+	it("returns an error for an empty object", () => {
+		assertErr(parseAuthSession({}))
 	})
 
-	it("returns null when userId is a number", () => {
-		expect(parseAuthSession({ userId: 123 })).toBeNull()
+	it("returns an error when userId is a number", () => {
+		assertErr(parseAuthSession({ userId: 123 }))
 	})
 
-	it("returns null when userId is missing", () => {
-		expect(parseAuthSession({ other: "value" })).toBeNull()
+	it("returns an error when userId is missing", () => {
+		assertErr(parseAuthSession({ other: "value" }))
 	})
 
-	it("returns null for a string input", () => {
-		expect(parseAuthSession("user-123")).toBeNull()
+	it("returns an error for a string input", () => {
+		assertErr(parseAuthSession("user-123"))
 	})
 
-	it("returns null for an array input", () => {
-		expect(parseAuthSession(["user-123"])).toBeNull()
+	it("returns an error for an array input", () => {
+		assertErr(parseAuthSession(["user-123"]))
 	})
 
-	it("returns null for a boolean input", () => {
-		expect(parseAuthSession(true)).toBeNull()
+	it("returns an error for a boolean input", () => {
+		assertErr(parseAuthSession(true))
 	})
 
-	it("returns null for a number input", () => {
-		expect(parseAuthSession(42)).toBeNull()
+	it("returns an error for a number input", () => {
+		assertErr(parseAuthSession(42))
 	})
 
 	it("returns an AuthSession with extra fields stripped", () => {
 		// Extra keys beyond userId are irrelevant; only userId matters
 		let result = parseAuthSession({ userId: "abc", extra: "ignored" })
-		expect(result).toEqual({ userId: "abc" })
+		assertOk(result)
+		expect(result.value).toEqual({ userId: "abc" })
 	})
 
-	it("returns null when userId is null", () => {
-		expect(parseAuthSession({ userId: null })).toBeNull()
+	it("returns an error when userId is null", () => {
+		assertErr(parseAuthSession({ userId: null }))
 	})
 
-	it("returns null when userId is an empty object", () => {
-		expect(parseAuthSession({ userId: {} })).toBeNull()
+	it("returns an error when userId is an empty object", () => {
+		assertErr(parseAuthSession({ userId: {} }))
 	})
 
 	it("preserves the exact userId string value", () => {
 		let result = parseAuthSession({ userId: "a-very-specific-uuid-value" })
-		expect(result?.userId).toBe("a-very-specific-uuid-value")
+		assertOk(result)
+		expect(result.value.userId).toBe("a-very-specific-uuid-value")
 	})
 })

@@ -1,3 +1,4 @@
+import { Result, TaggedError, UnhandledException } from "better-result"
 import { endOfDay, startOfDay } from "date-fns"
 
 import { WORD_LENGTH } from "#app/constants.ts"
@@ -15,6 +16,32 @@ import {
 } from "#app/utils/game.ts"
 
 const TOTAL_GUESSES = 6
+
+class GameAlreadyCompleteError extends TaggedError("GameAlreadyCompleteError")<{
+	message: string
+}>() {}
+
+class GuessLengthError extends TaggedError("GuessLengthError")<{
+	message: string
+}>() {}
+
+class InvalidWordError extends TaggedError("InvalidWordError")<{
+	message: string
+}>() {}
+
+class DuplicateGuessError extends TaggedError("DuplicateGuessError")<{
+	message: string
+}>() {}
+
+class CreateGuessFailedError extends TaggedError("CreateGuessFailedError")<{
+	message: string
+	cause?: unknown
+}>() {}
+
+class GameNotFoundError extends TaggedError("GameNotFoundError")<{
+	message: string
+	gameId: string
+}>() {}
 
 const FULL_GAME_SELECT = {
 	id: true,
@@ -104,64 +131,100 @@ export async function createGame(userId: User["id"]): Promise<FullGame> {
 	return game
 }
 
-export async function createGuess(userId: User["id"], guessedWord: string): Promise<string | null> {
+export type CreateGuessError =
+	| GameAlreadyCompleteError
+	| GuessLengthError
+	| InvalidWordError
+	| DuplicateGuessError
+	| CreateGuessFailedError
+	| UnhandledException
+
+export async function createGuess(
+	userId: User["id"],
+	guessedWord: string,
+): Promise<Result<void, CreateGuessError>> {
 	let game = await getTodaysGame(userId)
 
 	if (game.guesses.length >= TOTAL_GUESSES || isGameComplete(game.status)) {
-		return `Game is already complete`
+		return Result.err(new GameAlreadyCompleteError({ message: "Game is already complete" }))
 	}
 
 	if (guessedWord.length !== WORD_LENGTH) {
-		return `You must guess a word of length ${WORD_LENGTH}`
+		return Result.err(
+			new GuessLengthError({ message: `You must guess a word of length ${WORD_LENGTH}` }),
+		)
 	}
 
 	if (!isValidWord(guessedWord)) {
-		return `${guessedWord.toUpperCase()} is not a valid word`
+		return Result.err(
+			new InvalidWordError({ message: `${guessedWord.toUpperCase()} is not a valid word` }),
+		)
 	}
 
-	try {
-		let computedGuess = computeGuess(guessedWord, game.word)
-		let won = computedGuess.every((l) => l.state === LetterState.Match)
-		await db.game.update({
-			where: { id: game.id },
-			data: {
-				guesses: { create: { guess: guessedWord } },
-				status: won
-					? GameStatus.WON
-					: game.guesses.length + 1 >= TOTAL_GUESSES
-						? GameStatus.COMPLETE
-						: GameStatus.IN_PROGRESS,
-			},
-		})
-
-		return null
-	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			if (error.code === "P2002") {
-				return `You already guessed "${guessedWord.toUpperCase()}"`
+	let result = await Result.tryPromise({
+		try: async () => {
+			let computedGuess = computeGuess(guessedWord, game.word)
+			let won = computedGuess.every((l) => l.state === LetterState.Match)
+			await db.game.update({
+				where: { id: game.id },
+				data: {
+					guesses: { create: { guess: guessedWord } },
+					status: won
+						? GameStatus.WON
+						: game.guesses.length + 1 >= TOTAL_GUESSES
+							? GameStatus.COMPLETE
+							: GameStatus.IN_PROGRESS,
+				},
+			})
+			return
+		},
+		catch: (error) => {
+			if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+				return new DuplicateGuessError({
+					message: `You already guessed "${guessedWord.toUpperCase()}"`,
+				})
 			}
-		}
 
-		console.error(error)
-		if (error instanceof Error) {
-			return error.message
-		}
+			if (error instanceof Error) {
+				return new CreateGuessFailedError({ message: error.message, cause: error })
+			}
 
-		return String(error) || "An unknown error occurred"
+			return new UnhandledException({ cause: error })
+		},
+	})
+
+	if (result.isErr()) {
+		console.error(result.error)
 	}
+
+	return result
 }
 
-export async function getGameById(id: Game["id"]): Promise<GameBoard> {
+export function createGuessErrorMessage(error: CreateGuessError): string {
+	if ("message" in error && typeof error.message === "string" && error.message.length > 0) {
+		return error.message
+	}
+
+	if (error instanceof UnhandledException) {
+		return "An unknown error occurred"
+	}
+
+	return "An unknown error occurred"
+}
+
+export type GetGameByIdError = GameNotFoundError
+
+export async function getGameById(id: Game["id"]): Promise<Result<GameBoard, GetGameByIdError>> {
 	let game = await db.game.findUnique({
 		select: FULL_GAME_SELECT,
 		where: { id },
 	})
 
 	if (!game) {
-		throw new Response("Not found", { status: 404 })
+		return Result.err(new GameNotFoundError({ message: "Game not found", gameId: id }))
 	}
 
-	return getFullBoard(game)
+	return Result.ok(getFullBoard(game))
 }
 
 export function isGameComplete(status: GameStatus) {

@@ -23,6 +23,7 @@
 		"@prisma/client": "catalog:",
 		"@standard-schema/spec": "catalog:",
 		"bcryptjs": "catalog:",
+		"better-result": "catalog:",
 		"bullmq": "catalog:",
 		"clsx": "catalog:",
 		"date-fns": "catalog:",

@@ -57,6 +57,9 @@ catalogs:
     bcryptjs:
       specifier: ^3.0.3
       version: 3.0.3
+    better-result:
+      specifier: ^2.9.2
+      version: 2.9.2
     bullmq:
       specifier: ^5.76.2
       version: 5.76.2
@@ -120,6 +123,9 @@ importers:
       bcryptjs:
         specifier: 'catalog:'
         version: 3.0.3
+      better-result:
+        specifier: 'catalog:'
+        version: 2.9.2
       bullmq:
         specifier: 'catalog:'
         version: 5.76.2
@@ -2112,9 +2118,8 @@ packages:
     resolution: {integrity: sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==}
     hasBin: true
 
-  better-result@2.8.2:
-    resolution: {integrity: sha512-YOf0VSj5nUPI27doTtXF+BBnsiRq3qY7avHqfIWnppxTLGyvkLq1QV2RTxkwoZwJ60ywLfZ0raFF4J/G886i7A==}
-    hasBin: true
+  better-result@2.9.2:
+    resolution: {integrity: sha512-WIFoBPCdnTOdk9inkE1ZRvCZ4P0CpSkAiLlchC65N7n9DcjZ3NhqkBOlafzpOVnO8ixyi37kicmSJ3ENhPZl7Q==}
 
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -4453,7 +4458,7 @@ snapshots:
   '@prisma/streams-local@0.1.2':
     dependencies:
       ajv: 8.20.0
-      better-result: 2.8.2
+      better-result: 2.9.2
       env-paths: 3.0.0
       proper-lockfile: 4.1.2
 
@@ -5088,7 +5093,7 @@ snapshots:
 
   bcryptjs@3.0.3: {}
 
-  better-result@2.8.2: {}
+  better-result@2.9.2: {}
 
   bl@4.1.0:
     dependencies:

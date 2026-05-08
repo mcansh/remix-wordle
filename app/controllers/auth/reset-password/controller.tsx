@@ -2,9 +2,9 @@ import * as s from "remix/data-schema"
 import { minLength } from "remix/data-schema/checks"
 import * as f from "remix/data-schema/form-data"
 import type { Controller } from "remix/fetch-router"
-import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
+import { flashResetPasswordError } from "#/app/controllers/auth/flash.ts"
 import { Document } from "#app/components/document.tsx"
 import { resetPassword } from "#app/models/user.ts"
 import { routes } from "#app/routes.ts"
@@ -28,7 +28,6 @@ export const resetPasswordController = {
 		},
 
 		async action(context) {
-			let session = context.get(Session)
 			let formData = context.get(FormData)
 
 			let schema = f.object({
@@ -39,20 +38,29 @@ export const resetPasswordController = {
 			let result = s.parseSafe(schema, formData)
 
 			if (result.success === false) {
-				session.flash("error", "Password must be at least 8 characters long.")
-				return redirect(routes.auth.resetPassword.index.href({ token: context.params.token }))
+				return flashResetPasswordError(
+					context.get(Session),
+					context.params.token,
+					"Password must be at least 8 characters long.",
+				)
 			}
 
 			if (result.value.password !== result.value.confirmPassword) {
-				session.flash("error", "Passwords do not match.")
-				return redirect(routes.auth.resetPassword.index.href({ token: context.params.token }))
+				return flashResetPasswordError(
+					context.get(Session),
+					context.params.token,
+					"Passwords do not match.",
+				)
 			}
 
 			let success = resetPassword(context.params.token, result.value.password)
 
 			if (!success) {
-				session.flash("error", "Invalid or expired reset token.")
-				return redirect(routes.auth.resetPassword.index.href({ token: context.params.token }))
+				return flashResetPasswordError(
+					context.get(Session),
+					context.params.token,
+					"Invalid or expired reset token.",
+				)
 			}
 
 			return render(

@@ -7,7 +7,13 @@ import { Session } from "remix/session"
 
 import { REVEAL_WORD, WORD_LENGTH } from "#app/constants.ts"
 import { getReturnToQuery, requireAuth } from "#app/middleware/auth.ts"
-import { createGuess, getFullBoard, getTodaysGame, isGameComplete } from "#app/models/game.ts"
+import {
+	createGuess,
+	createGuessErrorMessage,
+	getFullBoard,
+	getTodaysGame,
+	isGameComplete,
+} from "#app/models/game.ts"
 import { routes } from "#app/routes.ts"
 import type { AuthIdentity } from "#app/utils/auth-session.ts"
 import { render } from "#app/utils/render.ts"
@@ -58,11 +64,10 @@ export const home = {
 			}
 
 			let guessedWord = data.value.letters.join("")
-			let error = await createGuess(auth.identity.user.id, guessedWord)
+			let guessResult = await createGuess(auth.identity.user.id, guessedWord)
 
-			if (error) {
-				console.error({ error })
-				session.flash("error", error)
+			if (guessResult.isErr()) {
+				session.flash("error", createGuessErrorMessage(guessResult.error))
 			}
 
 			return redirect(routes.home.index.href(undefined, data.value.cheat ? { cheat: "true" } : {}))
