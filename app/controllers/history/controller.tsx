@@ -1,6 +1,6 @@
-import { Auth, type BadAuth, type GoodAuth } from "remix/auth-middleware"
-import type { Controller } from "remix/fetch-router"
+import { Auth, type BadAuth, type GoodAuth } from "remix/middleware/auth"
 import { redirect } from "remix/response/redirect"
+import type { Controller } from "remix/router"
 
 import { getReturnToQuery, requireAuth } from "#app/middleware/auth.ts"
 import { getGameById, getTodayRange, isGameComplete } from "#app/models/game.ts"
@@ -23,7 +23,9 @@ export const history = {
 		async index(context) {
 			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
 			if (auth.ok === false) {
-				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+				return redirect(
+					routes.auth.login.index.href(undefined, { searchParams: getReturnToQuery(context.url) }),
+				)
 			}
 
 			let games = await db.game.findMany({

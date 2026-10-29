@@ -1,5 +1,5 @@
 import { createCookie } from "remix/cookie"
-import { createRedisSessionStorage } from "remix/session-storage-redis"
+import { createRedisSessionStorage } from "remix/session-storage/redis"
 
 import { env } from "#app/env.ts"
 

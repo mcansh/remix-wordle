@@ -1,6 +1,9 @@
 import clsx from "clsx"
-export function LetterInput() {
-	return ({ errorMessage, index }: { errorMessage?: string | null; index: number }) => {
+import type { Handle } from "remix/component"
+
+export function LetterInput(handle: Handle<{ errorMessage?: string | null; index: number }>) {
+	return () => {
+		let { errorMessage, index } = handle.props
 		return (
 			<input
 				class={clsx(

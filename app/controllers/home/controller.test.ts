@@ -1,3 +1,4 @@
+/** @vitest-environment node */
 import { parse, parseSafe } from "remix/data-schema"
 import { describe, expect, it, vi } from "vite-plus/test"
 

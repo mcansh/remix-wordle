@@ -1,6 +1,6 @@
 import { SELF } from "@mcansh/http-helmet"
-import { createRouter } from "remix/fetch-router"
-import { describe, expect, it, vi } from "vitest"
+import { createRouter } from "remix/router"
+import { describe, expect, it, vi } from "vite-plus/test"
 
 import { securityHeaders } from "./security.ts"
 

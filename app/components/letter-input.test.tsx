@@ -1,8 +1,7 @@
 import { cleanup, render, screen } from "@mcansh/remix-testing-library"
 import "@testing-library/jest-dom/vitest"
 import { userEvent } from "@testing-library/user-event"
-import { afterEach } from "vite-plus/test"
-import { describe, it, expect } from "vitest"
+import { afterEach, describe, expect, it } from "vite-plus/test"
 
 import { LetterInput } from "./letter-input.tsx"
 

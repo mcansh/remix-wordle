@@ -1,8 +1,9 @@
-import { getContext } from "remix/async-context-middleware"
+import type * as Remix from "remix/component"
+import { renderToStream } from "remix/component/server"
+import { getContext } from "remix/middleware/async-context"
 import { createHtmlResponse } from "remix/response/html"
-import type * as Remix from "remix/ui"
-import { renderToStream } from "remix/ui/server"
 
+import { assetManifestAvailable, assets } from "#app/assets.ts"
 import { router } from "#app/router.ts"
 
 export function render(node: Remix.RemixNode, init?: ResponseInit) {
@@ -12,6 +13,19 @@ export function render(node: Remix.RemixNode, init?: ResponseInit) {
 	let stream = renderToStream(node, {
 		resolveFrame: (src) => resolveFrame(request, src),
 		onError: console.error,
+		resolveClientEntry: async (entryId, component) => {
+			let hashIndex = entryId.lastIndexOf("#")
+			let sourceId = hashIndex === -1 ? entryId : entryId.slice(0, hashIndex)
+			let explicitExportName = hashIndex === -1 ? "" : entryId.slice(hashIndex + 1)
+			let exportName = explicitExportName || component.name
+
+			if (sourceId.startsWith("file:") && assetManifestAvailable) {
+				let { href, importMap, preloads } = await assets.getScriptEntry(sourceId)
+				return { href, importMap, exportName, preloads }
+			}
+
+			return { href: sourceId, exportName }
+		},
 	})
 
 	return createHtmlResponse(stream, init)

@@ -1,7 +1,10 @@
+import type { Handle } from "remix/component"
+
 import { routes } from "#/app/routes.ts"
 
-export function ResetPasswordForm() {
-	return ({ error, token }: { error?: unknown; token: string }) => {
+export function ResetPasswordForm(handle: Handle<{ error?: unknown; token: string }>) {
+	return () => {
+		let { error, token } = handle.props
 		return (
 			<div class="card" style="max-width: 500px; margin: 2rem auto;">
 				<h1>Reset Password</h1>
