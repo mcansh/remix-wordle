@@ -1,6 +1,7 @@
 import "@mcansh/vite-plugin-remix/types"
 import type { RemixNode } from "remix/ui"
 
+import { ROBOTS_CONTENT, SITE_DESCRIPTION, SITE_TITLE } from "#app/constants.ts"
 import clientAssets from "#app/entry.browser.ts?assets=client"
 import serverAssets from "#app/entry.server.ts?assets=ssr"
 
@@ -16,12 +17,14 @@ export function Document() {
 				<head>
 					<meta charSet="utf-8" />
 					<meta name="viewport" content="width=device-width, initial-scale=1" />
+					<meta name="robots" content={ROBOTS_CONTENT} />
+					<meta name="description" content={SITE_DESCRIPTION} />
 					<link rel="stylesheet" href={appStylesHref} />
 					{assets.css.map((attrs) => (
 						<link key={attrs.href} {...attrs} rel="stylesheet" />
 					))}
 
-					{head}
+					{head ?? <title>{SITE_TITLE}</title>}
 
 					<link rel="canonical" href={canonical} />
 				</head>
