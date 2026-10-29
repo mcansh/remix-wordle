@@ -7,6 +7,29 @@ import { assertContains, loginAsCustomer, requestWithSession } from "#test/helpe
 
 import { guessWordSchema } from "./controller.tsx"
 
+vi.mock("#app/entry.browser.ts?assets=client", () => {
+	let assets = {
+		entry: "/assets/client.js",
+		js: [],
+		css: [],
+		merge() {
+			return assets
+		},
+	}
+	return { default: assets }
+})
+vi.mock("#app/entry.server.ts?assets=ssr", () => {
+	let assets = {
+		entry: "/assets/ssr.js",
+		js: [],
+		css: [],
+		merge() {
+			return assets
+		},
+	}
+	return { default: assets }
+})
+
 vi.mock("#app/utils/db.ts", () => ({
 	redis: {
 		get: vi.fn().mockResolvedValue(null),

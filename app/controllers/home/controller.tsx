@@ -6,7 +6,7 @@ import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
 import { REVEAL_WORD, WORD_LENGTH } from "#app/constants.ts"
-import { getReturnToQuery, requireAuth } from "#app/middleware/auth.ts"
+import { getReturnToQuery } from "#app/middleware/auth.ts"
 import {
 	createGuess,
 	createGuessErrorMessage,
@@ -18,6 +18,7 @@ import { routes } from "#app/routes.ts"
 import type { AuthIdentity } from "#app/utils/auth-session.ts"
 import { render } from "#app/utils/render.ts"
 
+import { LandingPage } from "./landing-page"
 import { Page } from "./page"
 
 export function validLength(length: number): s.Check<Array<string>> {
@@ -45,7 +46,6 @@ export const guessWordSchema = f.object({
 })
 
 export const home = {
-	middleware: [requireAuth],
 	actions: {
 		async action(context) {
 			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
@@ -76,7 +76,7 @@ export const home = {
 		async index(context) {
 			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
 			if (auth.ok === false) {
-				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+				return render(<LandingPage url={context.url} />)
 			}
 
 			let session = context.get(Session)
