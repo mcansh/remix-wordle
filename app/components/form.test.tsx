@@ -1,10 +1,10 @@
 import "@testing-library/jest-dom/vitest"
 import { render, screen } from "@mcansh/remix-testing-library"
-import { describe, it, expect, vi } from "vitest"
+import { describe, it, expect, vi } from "vite-plus/test"
 
 import { GuessForm } from "./form"
 
-vi.mock("../routes", () => ({
+vi.mock("#app/routes.ts", () => ({
 	routes: {
 		home: {
 			action: {
@@ -16,16 +16,14 @@ vi.mock("../routes", () => ({
 
 describe("GuessForm", () => {
 	it.skip("renders 5 letter inputs", () => {
-		let Component = GuessForm()
-		render(Component({ currentGuess: 0 }))
+		render(<GuessForm currentGuess={0} />)
 
 		let inputs = screen.getAllByRole("textbox")
 		expect(inputs).toHaveLength(5)
 	})
 
 	it("renders inputs with correct labels", () => {
-		let Component = GuessForm()
-		render(Component({ currentGuess: 0 }))
+		render(<GuessForm currentGuess={0} />)
 
 		for (let i = 1; i <= 5; i++) {
 			expect(screen.getByRole("textbox", { name: `letter ${i}` })).toBeInTheDocument()
@@ -33,8 +31,7 @@ describe("GuessForm", () => {
 	})
 
 	it("renders form with correct attributes", () => {
-		let Component = GuessForm()
-		let { container } = render(Component({ currentGuess: 0 }))
+		let { container } = render(<GuessForm currentGuess={0} />)
 
 		let form = container.querySelector("form")
 		expect(form).toHaveAttribute("method", "POST")
@@ -44,8 +41,7 @@ describe("GuessForm", () => {
 	})
 
 	it("renders cheat input when cheat prop is true", () => {
-		let Component = GuessForm()
-		let { container } = render(Component({ currentGuess: 0, cheat: true }))
+		let { container } = render(<GuessForm currentGuess={0} cheat={true} />)
 
 		let form = container.querySelector("form")
 		let cheatInput = form?.querySelector('input[name="cheat"]')
@@ -54,8 +50,7 @@ describe("GuessForm", () => {
 	})
 
 	it("does not render cheat input when cheat prop is false", () => {
-		let Component = GuessForm()
-		let { container } = render(Component({ currentGuess: 0, cheat: false }))
+		let { container } = render(<GuessForm currentGuess={0} cheat={false} />)
 
 		let form = container.querySelector("form")
 		let cheatInput = form?.querySelector('input[name="cheat"]')
@@ -63,8 +58,7 @@ describe("GuessForm", () => {
 	})
 
 	it("does not render cheat input when cheat prop is undefined", () => {
-		let Component = GuessForm()
-		let { container } = render(Component({ currentGuess: 0 }))
+		let { container } = render(<GuessForm currentGuess={0} />)
 
 		let form = container.querySelector("form")
 		let cheatInput = form?.querySelector('input[name="cheat"]')
@@ -72,8 +66,7 @@ describe("GuessForm", () => {
 	})
 
 	it("passes error message to letter inputs", () => {
-		let Component = GuessForm()
-		let { container } = render(Component({ currentGuess: 0, error: "invalid word" }))
+		let { container } = render(<GuessForm currentGuess={0} error="invalid word" />)
 
 		let form = container.querySelector("form")
 		let inputs = form?.querySelectorAll('input[name="letter"]')
@@ -84,8 +77,7 @@ describe("GuessForm", () => {
 	})
 
 	it("first input has auto focus", () => {
-		let Component = GuessForm()
-		let { container } = render(Component({ currentGuess: 0 }))
+		let { container } = render(<GuessForm currentGuess={0} />)
 
 		let form = container.querySelector("form")
 		let inputs = form?.querySelectorAll('input[name="letter"]')
@@ -94,8 +86,7 @@ describe("GuessForm", () => {
 	})
 
 	it("has correct input attributes", () => {
-		let Component = GuessForm()
-		let { container } = render(Component({ currentGuess: 0 }))
+		let { container } = render(<GuessForm currentGuess={0} />)
 
 		let form = container.querySelector("form")
 		let input = form?.querySelector('input[name="letter"]') as HTMLInputElement | null

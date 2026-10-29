@@ -1,6 +1,6 @@
 import * as s from "remix/data-schema"
-import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
+import type { Controller } from "remix/router"
 import { Session } from "remix/session"
 
 import { flashRegisterError } from "#/app/controllers/auth/flash.ts"
@@ -12,7 +12,7 @@ import { render } from "#app/utils/render.ts"
 export const registerController = {
 	actions: {
 		index(context) {
-			let session = context.get(Session)
+			let session = context.get(Session)!
 			let error = session.get("error")
 
 			return render(
@@ -93,7 +93,7 @@ export const registerController = {
 
 			if (await getUserByEmail(result.email)) {
 				return flashRegisterError(
-					context.get(Session),
+					context.get(Session)!,
 					"An account with this email already exists.",
 				)
 			}
@@ -104,7 +104,7 @@ export const registerController = {
 				password: result.password,
 			})
 
-			let session = context.get(Session)
+			let session = context.get(Session)!
 			session.set("auth", { userId: user.id })
 			return redirect(routes.home.index.href())
 		},

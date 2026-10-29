@@ -1,8 +1,8 @@
-import { Auth, type BadAuth, type GoodAuth } from "remix/auth-middleware"
 import * as s from "remix/data-schema"
 import * as f from "remix/data-schema/form-data"
-import type { Controller } from "remix/fetch-router"
+import { Auth, type BadAuth, type GoodAuth } from "remix/middleware/auth"
 import { redirect } from "remix/response/redirect"
+import type { Controller } from "remix/router"
 import { Session } from "remix/session"
 
 import { REVEAL_WORD, WORD_LENGTH } from "#app/constants.ts"
@@ -50,10 +50,12 @@ export const home = {
 		async action(context) {
 			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
 			if (auth.ok === false) {
-				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+				return redirect(
+					routes.auth.login.index.href(undefined, { searchParams: getReturnToQuery(context.url) }),
+				)
 			}
 
-			let session = context.get(Session)
+			let session = context.get(Session)!
 			let formData = context.get(FormData)
 
 			let data = s.parseSafe(guessWordSchema, formData)
@@ -70,16 +72,23 @@ export const home = {
 				session.flash("error", createGuessErrorMessage(guessResult.error))
 			}
 
-			return redirect(routes.home.index.href(undefined, data.value.cheat ? { cheat: "true" } : {}))
+			return redirect(
+				routes.home.index.href(
+					undefined,
+					data.value.cheat ? { searchParams: { cheat: "true" } } : undefined,
+				),
+			)
 		},
 
 		async index(context) {
 			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
 			if (auth.ok === false) {
-				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+				return redirect(
+					routes.auth.login.index.href(undefined, { searchParams: getReturnToQuery(context.url) }),
+				)
 			}
 
-			let session = context.get(Session)
+			let session = context.get(Session)!
 
 			let game = await getTodaysGame(auth.identity.user.id)
 			let board = getFullBoard(game)

@@ -1,38 +1,42 @@
-import "@mcansh/vite-plugin-remix/types"
-import type { RemixNode } from "remix/ui"
+import type { Handle, RemixNode } from "remix/component"
+import { ImportMap } from "remix/component/server"
 
-import clientAssets from "#app/entry.browser.ts?assets=client"
-import serverAssets from "#app/entry.server.ts?assets=ssr"
+import "#app/app.css"
+import { scriptEntry, stylesheets } from "#app/assets.ts"
 
-import appStylesHref from "#app/app.css?url"
+type DocumentProps = {
+	children?: RemixNode
+	head?: RemixNode
+	url: URL
+}
 
-const assets = clientAssets.merge(serverAssets)
-
-export function Document() {
-	return ({ children, url, head }: { children: RemixNode; head?: RemixNode; url: URL }) => {
+export function Document(handle: Handle<DocumentProps>) {
+	return () => {
+		let { children, url, head } = handle.props
 		let canonical = url.origin + url.pathname
+		let { href, importMap, preloads } = scriptEntry
+		let hasImportMap = Object.keys(importMap.imports).length > 0
+
 		return (
 			<html lang="en">
 				<head>
 					<meta charSet="utf-8" />
 					<meta name="viewport" content="width=device-width, initial-scale=1" />
-					<link rel="stylesheet" href={appStylesHref} />
-					{assets.css.map((attrs) => (
-						<link key={attrs.href} {...attrs} rel="stylesheet" />
+					{stylesheets.map((stylesheetHref) => (
+						<link key={stylesheetHref} rel="stylesheet" href={stylesheetHref} />
 					))}
 
 					{head}
 
 					<link rel="canonical" href={canonical} />
-				</head>
-				<body>
-					{children}
 
-					{assets.js.map((attrs) => (
-						<link key={attrs.href} {...attrs} rel="modulepreload" />
+					{hasImportMap ? <ImportMap value={importMap} /> : null}
+					{preloads.map((preloadHref) => (
+						<link key={preloadHref} rel="modulepreload" href={preloadHref} />
 					))}
-					<script async type="module" src={clientAssets.entry} />
-				</body>
+					<script async type="module" src={href} />
+				</head>
+				<body>{children}</body>
 			</html>
 		)
 	}

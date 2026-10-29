@@ -1,9 +1,9 @@
-import { run } from "remix/ui"
+import { revalidate } from "pitlane/vite-plugin-remix/hmr"
+import { run } from "remix/component"
 
 const app = run({
 	async loadModule(moduleUrl, exportName) {
-		let chunks = JSON.parse(moduleUrl) as string[]
-		let [mod] = await Promise.all(chunks.map((chunk) => import(/* @vite-ignore */ chunk)))
+		let mod = await import(/* @vite-ignore */ moduleUrl)
 		return mod[exportName]
 	},
 	async resolveFrame(src) {
@@ -17,5 +17,5 @@ app.ready().catch((error) => {
 })
 
 if (import.meta.hot) {
-	import.meta.hot.accept()
+	import.meta.hot.on("server:update", () => revalidate(app))
 }

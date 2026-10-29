@@ -85,4 +85,7 @@ For GitHub Actions, consider using [`voidzero-dev/setup-vp`](https://github.com/
 
 - [ ] Run `vp install` after pulling remote changes and before getting started.
 - [ ] Run `vp check` and `vp test` to validate changes.
+
 <!--VITE PLUS END-->
+
+Before changing Pitlane code, read `node_modules/pitlane/INDEX.md` and `.agents/skills/pitlane/SKILL.md`; prefer the installed documentation over memory or the latest website.
