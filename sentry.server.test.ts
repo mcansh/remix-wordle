@@ -35,6 +35,7 @@ function expectInitOptions(dsn: string) {
 			{ name: "Http" },
 			{ name: "Http.Server" },
 			{ name: "RequestData" },
+			{ name: "Console" },
 			{ name: "OnUncaughtException" },
 		]),
 	).toEqual([{ name: "OnUncaughtException" }])

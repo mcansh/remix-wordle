@@ -36,11 +36,13 @@ type ServerReporterInit = {
 	readonly integrations: (integrations: SentryIntegration[]) => SentryIntegration[]
 }
 
-// These integrations copy the request URL onto the event. reset-password/:token is a secret.
-const REQUEST_INTEGRATION_NAMES = new Set(["Http", "Http.Server", "RequestData"])
+// Http copies the request URL. Console copies console.log. Both can include reset-password/:token.
+const SECRET_COPYING_INTEGRATION_NAMES = new Set(["Http", "Http.Server", "RequestData", "Console"])
 
-function withoutRequestIntegrations(integrations: SentryIntegration[]): SentryIntegration[] {
-	return integrations.filter((integration) => !REQUEST_INTEGRATION_NAMES.has(integration.name))
+function withoutSecretCopyingIntegrations(integrations: SentryIntegration[]): SentryIntegration[] {
+	return integrations.filter(
+		(integration) => !SECRET_COPYING_INTEGRATION_NAMES.has(integration.name),
+	)
 }
 
 type RuntimeReporter =
@@ -82,7 +84,7 @@ async function installOnce(env: ServerEnv): Promise<ServerReporter> {
 			dsn: parsed.dsn,
 			tracesSampleRate: 0,
 			enableRuntimeChannelInjection: false,
-			integrations: withoutRequestIntegrations,
+			integrations: withoutSecretCopyingIntegrations,
 		}
 		// The SDK default is true, and that path patches `pg`. This process uses `pg`.
 		sdk.init(initOptions)
