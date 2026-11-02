@@ -2,7 +2,6 @@ import * as http from "node:http"
 
 import { createRequestListener } from "remix/node-fetch-server"
 
-// @ts-ignore - no types for this
 import ssr from "./dist/ssr/index.js"
 import { flushServerReporter, reportRequestError } from "./sentry.server.ts"
 
@@ -12,7 +11,7 @@ const server = http.createServer(
 			return await ssr.fetch(request)
 		} catch (error) {
 			console.error(error)
-			reportRequestError(error, request)
+			reportRequestError(error, request.signal)
 			return new Response("Internal Server Error", { status: 500 })
 		}
 	}),

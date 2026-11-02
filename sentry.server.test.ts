@@ -67,14 +67,14 @@ it("stays idle when SENTRY_DSN is missing, empty, or whitespace", async () => {
 	}
 })
 
-it("arms any trimmed string and does not check URL shape", async () => {
+it("parses any trimmed string and does not check URL shape", async () => {
 	let { serverReporterFromEnv, installServerReporter } = await loadReporter()
 	expect(serverReporterFromEnv({ SENTRY_DSN: `  ${DSN}  ` })).toEqual({
-		state: "armed",
+		state: "has-dsn",
 		dsn: DSN,
 	})
 	expect(serverReporterFromEnv({ SENTRY_DSN: "not a url" })).toEqual({
-		state: "armed",
+		state: "has-dsn",
 		dsn: "not a url",
 	})
 	expect(sentry.loads).toBe(0)
@@ -107,26 +107,20 @@ it("ignores a 404 response and a client abort", async () => {
 	expect(reportRequestError(new Response("redirect", { status: 302 }))).toBe("ignored")
 
 	let controller = new AbortController()
-	let aborted = new Request("https://example.test/reset-password/secret", {
-		signal: controller.signal,
-	})
 	controller.abort()
-	expect(reportRequestError(aborted.signal.reason, aborted)).toBe("ignored")
+	expect(reportRequestError(controller.signal.reason, controller.signal)).toBe("ignored")
 	expect(reportRequestError(new DOMException("The operation was aborted.", "AbortError"))).toBe(
 		"ignored",
 	)
 
 	let boom = new Error("boom")
-	expect(reportRequestError(boom, aborted)).toBe("captured")
+	expect(reportRequestError(boom, controller.signal)).toBe("captured")
 	expect(reportRequestError(new Response("nope", { status: 500 }))).toBe("captured")
 	expect(reportRequestError({ status: 299 })).toBe("captured")
 	expect(reportRequestError({ status: "404" })).toBe("captured")
 
 	expect(sentry.captureException).toHaveBeenCalledWith(boom, { mechanism })
-	for (let call of sentry.captureException.mock.calls) {
-		expect(JSON.stringify(call)).not.toContain("secret")
-		expect(JSON.stringify(call)).not.toContain("reset-password")
-	}
+	expect(sentry.captureException.mock.calls[0]).toEqual([boom, { mechanism }])
 })
 
 it("keeps the first install when a later env differs", async () => {

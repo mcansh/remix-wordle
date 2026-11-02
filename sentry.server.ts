@@ -6,6 +6,13 @@ export type IdleServerReporter = {
 	readonly state: "idle"
 }
 
+export type ParsedSentryDsn = {
+	readonly state: "has-dsn"
+	readonly dsn: SentryDsn
+}
+
+export type ServerReporterFromEnv = IdleServerReporter | ParsedSentryDsn
+
 export type ArmedServerReporter = {
 	readonly state: "armed"
 	readonly dsn: SentryDsn
@@ -45,12 +52,12 @@ const FLUSH_TIMEOUT_MS = 2000
 let slot: Promise<ServerReporter> | undefined
 let installed: RuntimeReporter | undefined
 
-export function serverReporterFromEnv(env: ServerEnv): ServerReporter {
+export function serverReporterFromEnv(env: ServerEnv): ServerReporterFromEnv {
 	let dsn = env.SENTRY_DSN?.trim() ?? ""
 	if (!isSentryDsn(dsn)) {
 		return { state: "idle" }
 	}
-	return { state: "armed", dsn }
+	return { state: "has-dsn", dsn }
 }
 
 function isSentryDsn(value: string): value is SentryDsn {
@@ -63,24 +70,24 @@ export function installServerReporter(env: ServerEnv): Promise<ServerReporter> {
 }
 
 async function installOnce(env: ServerEnv): Promise<ServerReporter> {
-	let reporter = serverReporterFromEnv(env)
-	if (reporter.state === "idle") {
+	let parsed = serverReporterFromEnv(env)
+	if (parsed.state === "idle") {
 		installed = { state: "idle" }
-		return reporter
+		return parsed
 	}
 
 	try {
 		let sdk = await import("@sentry/node")
 		let initOptions: ServerReporterInit = {
-			dsn: reporter.dsn,
+			dsn: parsed.dsn,
 			tracesSampleRate: 0,
 			enableRuntimeChannelInjection: false,
 			integrations: withoutRequestIntegrations,
 		}
 		// The SDK default is true, and that path patches `pg`. This process uses `pg`.
 		sdk.init(initOptions)
-		installed = { state: "armed", dsn: reporter.dsn, sdk }
-		return { state: "armed", dsn: reporter.dsn }
+		installed = { state: "armed", dsn: parsed.dsn, sdk }
+		return { state: "armed", dsn: parsed.dsn }
 	} catch (error) {
 		console.error(error)
 		installed = { state: "idle" }
@@ -88,8 +95,8 @@ async function installOnce(env: ServerEnv): Promise<ServerReporter> {
 	}
 }
 
-function shouldReportRequestError(error: unknown, request?: Request): boolean {
-	if (request?.signal.aborted && error === request.signal.reason) {
+function shouldReportRequestError(error: unknown, abortSignal?: AbortSignal): boolean {
+	if (abortSignal?.aborted && error === abortSignal.reason) {
 		return false
 	}
 	if (isAbortError(error)) {
@@ -121,11 +128,11 @@ function numericStatus(error: unknown): number | undefined {
 	return undefined
 }
 
-export function reportRequestError(error: unknown, request?: Request): ReportResult {
+export function reportRequestError(error: unknown, abortSignal?: AbortSignal): ReportResult {
 	if (installed?.state !== "armed") {
 		return "idle"
 	}
-	if (!shouldReportRequestError(error, request)) {
+	if (!shouldReportRequestError(error, abortSignal)) {
 		return "ignored"
 	}
 	try {
@@ -145,6 +152,7 @@ export function flushServerReporter(): Promise<void> {
 	}
 	let sdk = installed.sdk
 	try {
+		// NodeClient flushes on beforeExit. process.exit does not emit beforeExit.
 		return Promise.resolve(sdk.flush(FLUSH_TIMEOUT_MS)).then(
 			() => undefined,
 			(error: unknown) => {
