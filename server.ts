@@ -3,7 +3,8 @@ import * as http from "node:http"
 import { createRequestListener } from "remix/node-fetch-server"
 
 // @ts-ignore - no types for this
-import ssr from "./dist/ssr/entry.server.js"
+import ssr from "./dist/ssr/index.js"
+import { flushServerReporter, reportRequestError } from "./sentry.server.ts"
 
 const server = http.createServer(
 	createRequestListener(async (request) => {
@@ -11,6 +12,7 @@ const server = http.createServer(
 			return await ssr.fetch(request)
 		} catch (error) {
 			console.error(error)
+			reportRequestError(error, request)
 			return new Response("Internal Server Error", { status: 500 })
 		}
 	}),
@@ -28,7 +30,9 @@ function shutdown() {
 	if (shuttingDown) return
 	shuttingDown = true
 	server.close(() => {
-		process.exit(0)
+		void flushServerReporter().then(() => {
+			process.exit(0)
+		})
 	})
 }
 

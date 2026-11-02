@@ -54,6 +54,7 @@ catalog:
   "@prisma/adapter-pg": ^7.8.0
   "@prisma/client": ^7.8.0
   "@redwoodjs/agent-ci": ^0.13.0
+  "@sentry/node": ^11.10.0
   "@standard-schema/spec": ^1.1.0
   "@tailwindcss/vite": ^4.2.4
   "@testing-library/jest-dom": ^6.9.1
