@@ -15,7 +15,7 @@ export default defineConfig({
 		"*": "vp check --fix",
 	},
 	fmt: {
-		ignorePatterns: ["app/generated/**", ".agents/**/*"],
+		ignorePatterns: ["app/generated/**", ".agents/**/*", ".yalc/**"],
 		experimentalSortImports: {},
 		experimentalSortPackageJson: true,
 		experimentalTailwindcss: {
@@ -167,7 +167,7 @@ export default defineConfig({
 			builtin: true,
 		},
 		globals: {},
-		ignorePatterns: [],
+		ignorePatterns: [".yalc/**"],
 		options: {
 			typeAware: true,
 			typeCheck: true,
