@@ -1,10 +1,9 @@
 import * as s from "remix/data-schema"
-import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
-import { Session } from "remix/session"
+import type { Controller } from "remix/router"
 
-import { flashRegisterError } from "#/app/controllers/auth/flash.ts"
 import { Document } from "#app/components/document.tsx"
+import { flashRegisterError } from "#app/controllers/auth/flash.ts"
 import { createUser, getUserByEmail, joinSchema } from "#app/models/user.ts"
 import { routes } from "#app/routes.ts"
 import { render } from "#app/utils/render.ts"
@@ -12,7 +11,7 @@ import { render } from "#app/utils/render.ts"
 export const registerController = {
 	actions: {
 		index(context) {
-			let session = context.get(Session)
+			let session = context.session
 			let error = session.get("error")
 
 			return render(
@@ -88,14 +87,11 @@ export const registerController = {
 		},
 
 		async action(context) {
-			let formData = context.get(FormData)
+			let formData = context.formData
 			let result = s.parse(joinSchema, formData)
 
 			if (await getUserByEmail(result.email)) {
-				return flashRegisterError(
-					context.get(Session),
-					"An account with this email already exists.",
-				)
+				return flashRegisterError(context.session, "An account with this email already exists.")
 			}
 
 			let user = await createUser({
@@ -104,7 +100,7 @@ export const registerController = {
 				password: result.password,
 			})
 
-			let session = context.get(Session)
+			let session = context.session
 			session.set("auth", { userId: user.id })
 			return redirect(routes.home.index.href())
 		},

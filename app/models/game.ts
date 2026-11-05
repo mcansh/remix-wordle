@@ -91,13 +91,9 @@ export function getFullBoard(game: FullGame) {
 	let fillerGuessesToMake = TOTAL_GUESSES - game.guesses.length
 	let fillerGuesses = Array.from({
 		length: fillerGuessesToMake,
-	}).map((): { letters: Array<ComputedGuess> } => {
-		return {
-			letters: Array.from({ length: WORD_LENGTH }).map(() => {
-				return createEmptyLetter()
-			}),
-		}
-	})
+	}).map((): { letters: Array<ComputedGuess> } => ({
+		letters: Array.from({ length: WORD_LENGTH }).map(() => createEmptyLetter()),
+	}))
 
 	let computedGuesses: Array<{ letters: Array<ComputedGuess> }> = game.guesses.flatMap((guess) => {
 		let computed = computeGuess(guess.guess, game.word)

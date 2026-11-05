@@ -1,6 +1,7 @@
-import { describe, it, expect } from "vite-plus/test"
+import { expect } from "remix/assert"
+import { describe, it } from "remix/test"
 
-import type { ComputedGuess } from "./game"
+import type { ComputedGuess } from "./game.ts"
 import {
 	computeGuess,
 	createEmptyLetter,
@@ -8,70 +9,74 @@ import {
 	isValidWord,
 	keyboardWithStatus,
 	LetterState,
-} from "./game"
+} from "./game.ts"
+
+function letterStates(guess: string, answer: string) {
+	return computeGuess(guess, answer).map(({ letter, state }) => ({ letter, state }))
+}
 
 describe("computeGuess", () => {
 	it("works with match and presents", () => {
-		expect(computeGuess("boost", "basic")).toEqual([
-			expect.objectContaining({ letter: "b", state: LetterState.Match }),
-			expect.objectContaining({ letter: "o", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "o", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "s", state: LetterState.Present }),
-			expect.objectContaining({ letter: "t", state: LetterState.Miss }),
+		expect(letterStates("boost", "basic")).toEqual([
+			{ letter: "b", state: LetterState.Match },
+			{ letter: "o", state: LetterState.Miss },
+			{ letter: "o", state: LetterState.Miss },
+			{ letter: "s", state: LetterState.Present },
+			{ letter: "t", state: LetterState.Miss },
 		])
 	})
 
 	it("full match", () => {
-		expect(computeGuess("boost", "boost")).toEqual([
-			expect.objectContaining({ letter: "b", state: LetterState.Match }),
-			expect.objectContaining({ letter: "o", state: LetterState.Match }),
-			expect.objectContaining({ letter: "o", state: LetterState.Match }),
-			expect.objectContaining({ letter: "s", state: LetterState.Match }),
-			expect.objectContaining({ letter: "t", state: LetterState.Match }),
+		expect(letterStates("boost", "boost")).toEqual([
+			{ letter: "b", state: LetterState.Match },
+			{ letter: "o", state: LetterState.Match },
+			{ letter: "o", state: LetterState.Match },
+			{ letter: "s", state: LetterState.Match },
+			{ letter: "t", state: LetterState.Match },
 		])
 	})
 
 	it("full miss", () => {
-		expect(computeGuess("guard", "boost")).toEqual([
-			expect.objectContaining({ letter: "g", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "u", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "a", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "r", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "d", state: LetterState.Miss }),
+		expect(letterStates("guard", "boost")).toEqual([
+			{ letter: "g", state: LetterState.Miss },
+			{ letter: "u", state: LetterState.Miss },
+			{ letter: "a", state: LetterState.Miss },
+			{ letter: "r", state: LetterState.Miss },
+			{ letter: "d", state: LetterState.Miss },
 		])
 	})
 
 	it("only does one match when two letters exist", () => {
-		expect(computeGuess("solid", "boost")).toEqual([
-			expect.objectContaining({ letter: "s", state: LetterState.Present }),
-			expect.objectContaining({ letter: "o", state: LetterState.Match }),
-			expect.objectContaining({ letter: "l", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "i", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "d", state: LetterState.Miss }),
+		expect(letterStates("solid", "boost")).toEqual([
+			{ letter: "s", state: LetterState.Present },
+			{ letter: "o", state: LetterState.Match },
+			{ letter: "l", state: LetterState.Miss },
+			{ letter: "i", state: LetterState.Miss },
+			{ letter: "d", state: LetterState.Miss },
 		])
 	})
 
 	it("returns empty array when given incomplete guess", () => {
-		expect(computeGuess("so", "boost")).toEqual([])
+		expect(letterStates("so", "boost")).toEqual([])
 	})
 
 	it("when 2 letters are present but answer has only 1 of those letters", () => {
-		expect(computeGuess("allol", "smelt")).toEqual([
-			expect.objectContaining({ letter: "a", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "l", state: LetterState.Present }),
-			expect.objectContaining({ letter: "l", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "o", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "l", state: LetterState.Miss }),
+		expect(letterStates("allol", "smelt")).toEqual([
+			{ letter: "a", state: LetterState.Miss },
+			{ letter: "l", state: LetterState.Present },
+			{ letter: "l", state: LetterState.Miss },
+			{ letter: "o", state: LetterState.Miss },
+			{ letter: "l", state: LetterState.Miss },
 		])
 	})
 
 	it("when 1 letter matches but guess has more of the same letter", () => {
-		expect(computeGuess("allol", "colon")).toEqual([
-			expect.objectContaining({ letter: "a", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "l", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "l", state: LetterState.Match }),
-			expect.objectContaining({ letter: "o", state: LetterState.Match }),
-			expect.objectContaining({ letter: "l", state: LetterState.Miss }),
+		expect(letterStates("allol", "colon")).toEqual([
+			{ letter: "a", state: LetterState.Miss },
+			{ letter: "l", state: LetterState.Miss },
+			{ letter: "l", state: LetterState.Match },
+			{ letter: "o", state: LetterState.Match },
+			{ letter: "l", state: LetterState.Miss },
 		])
 	})
 })
@@ -325,40 +330,38 @@ describe("keyboardWithStatus", () => {
 // Additional edge cases for computeGuess
 describe("computeGuess - additional edge cases", () => {
 	it("handles empty strings", () => {
-		expect(computeGuess("", "")).toEqual([])
+		expect(letterStates("", "")).toEqual([])
 	})
 
 	it("handles single character words", () => {
-		expect(computeGuess("a", "a")).toEqual([
-			expect.objectContaining({ letter: "a", state: LetterState.Match }),
-		])
+		expect(letterStates("a", "a")).toEqual([{ letter: "a", state: LetterState.Match }])
 	})
 
 	it("handles all same letter in guess and answer", () => {
-		expect(computeGuess("aaaaa", "aaaaa")).toEqual([
-			expect.objectContaining({ letter: "a", state: LetterState.Match }),
-			expect.objectContaining({ letter: "a", state: LetterState.Match }),
-			expect.objectContaining({ letter: "a", state: LetterState.Match }),
-			expect.objectContaining({ letter: "a", state: LetterState.Match }),
-			expect.objectContaining({ letter: "a", state: LetterState.Match }),
+		expect(letterStates("aaaaa", "aaaaa")).toEqual([
+			{ letter: "a", state: LetterState.Match },
+			{ letter: "a", state: LetterState.Match },
+			{ letter: "a", state: LetterState.Match },
+			{ letter: "a", state: LetterState.Match },
+			{ letter: "a", state: LetterState.Match },
 		])
 	})
 
 	it("handles guess longer than answer", () => {
-		expect(computeGuess("toolong", "short")).toEqual([])
+		expect(letterStates("toolong", "short")).toEqual([])
 	})
 
 	it("handles answer longer than guess", () => {
-		expect(computeGuess("short", "toolong")).toEqual([])
+		expect(letterStates("short", "toolong")).toEqual([])
 	})
 
 	it("complex letter counting with 3 of same letter", () => {
-		expect(computeGuess("lolly", "hello")).toEqual([
-			expect.objectContaining({ letter: "l", state: LetterState.Miss }),
-			expect.objectContaining({ letter: "o", state: LetterState.Present }),
-			expect.objectContaining({ letter: "l", state: LetterState.Match }),
-			expect.objectContaining({ letter: "l", state: LetterState.Match }),
-			expect.objectContaining({ letter: "y", state: LetterState.Miss }),
+		expect(letterStates("lolly", "hello")).toEqual([
+			{ letter: "l", state: LetterState.Miss },
+			{ letter: "o", state: LetterState.Present },
+			{ letter: "l", state: LetterState.Match },
+			{ letter: "l", state: LetterState.Match },
+			{ letter: "y", state: LetterState.Miss },
 		])
 	})
 

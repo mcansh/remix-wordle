@@ -25,13 +25,20 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v5
 
-      - name: ⎔ Setup VP
-        uses: voidzero-dev/setup-vp@v1
-        with:
-          cache: true
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
 
-      - name: ✅ Type check & lint
-        run: vp check
+      - name: ⎔ Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: ".node-version"
+          cache: pnpm
+
+      - name: 📥 Install
+        run: pnpm install --frozen-lockfile
+
+      - name: ✅ Format, lint, and typecheck
+        run: pnpm check
 
   test:
     name: 🧪 Test
@@ -42,14 +49,74 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v5
 
-      - name: ⚡️ Setup vp Vite+
-        uses: voidzero-dev/setup-vp@v1
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: ⎔ Setup Node
+        uses: actions/setup-node@v5
         with:
-          cache: true
           node-version-file: ".node-version"
+          cache: pnpm
+
+      - name: 📥 Install
+        run: pnpm install --frozen-lockfile
+
+      - name: 🎭 Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: 🎭 Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: 🎭 Install Playwright OS deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
 
       - name: 🧪 Run Tests
-        run: vp test
+        run: pnpm test
+
+  e2e:
+    name: 🧪 E2E
+    if: github.repository == 'mcansh/remix-wordle'
+
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v5
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: ⎔ Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: ".node-version"
+          cache: pnpm
+
+      - name: 📥 Install
+        run: pnpm install --frozen-lockfile
+
+      - name: 🎭 Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: 🎭 Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: 🎭 Install Playwright OS deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+
+      - name: 🧪 Run E2E
+        run: pnpm test:e2e
 
   build:
     name: 🛠️ Build
@@ -60,10 +127,17 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v5
 
-      - name: ⎔ Setup VP
-        uses: voidzero-dev/setup-vp@v1
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: ⎔ Setup Node
+        uses: actions/setup-node@v5
         with:
-          cache: true
+          node-version-file: ".node-version"
+          cache: pnpm
+
+      - name: 📥 Install
+        run: pnpm install --frozen-lockfile
 
       - name: 🛠️ Build
-        run: vp build
+        run: pnpm build

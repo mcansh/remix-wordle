@@ -1,29 +1,20 @@
 import { UnhandledException } from "better-result"
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test"
+import { expect } from "remix/assert"
+import { beforeEach, describe, it } from "remix/test"
 
 import { GameStatus, Prisma } from "#app/generated/prisma/client.ts"
 import { assertErr, assertOk } from "#test/helpers.ts"
+import { gameDb, resetDbMocks } from "#test/mocks/db.ts"
 
-import { createGuess, createGuessErrorMessage, type FullGame, getGameById } from "./game"
+import { createGuess, createGuessErrorMessage, getGameById } from "./game.ts"
+import type { FullGame } from "./game.ts"
 
-const gameDb = vi.hoisted(() => ({
-	findFirst: vi.fn(),
-	create: vi.fn(),
-	update: vi.fn(),
-	findUnique: vi.fn(),
-}))
-
-vi.mock("#app/utils/db.ts", () => ({
-	db: {
-		game: gameDb,
-	},
-}))
-
-function buildGame(overrides: Partial<FullGame> = {}): FullGame {
+function buildGame(overrides: Partial<FullGame> = {}) {
 	return {
 		id: "game-1",
 		createdAt: new Date("2026-05-08T00:00:00.000Z"),
 		updatedAt: new Date("2026-05-08T00:00:00.000Z"),
+		userId: "user-1",
 		guesses: [],
 		status: GameStatus.IN_PROGRESS,
 		word: "apple",
@@ -33,8 +24,8 @@ function buildGame(overrides: Partial<FullGame> = {}): FullGame {
 
 describe("createGuess", () => {
 	beforeEach(() => {
-		vi.clearAllMocks()
-		gameDb.findFirst.mockResolvedValue(buildGame())
+		resetDbMocks()
+		gameDb.findFirst.mock.mockImplementation(async () => buildGame())
 	})
 
 	it("returns GuessLengthError for non-5-letter guesses", async () => {
@@ -55,36 +46,40 @@ describe("createGuess", () => {
 		expect(gameDb.update).not.toHaveBeenCalled()
 	})
 
-	it("maps Prisma P2002 to DuplicateGuessError", async () => {
+	it("maps Prisma P2002 to DuplicateGuessError", async (t) => {
 		let prismaError = new Prisma.PrismaClientKnownRequestError("duplicate", {
 			code: "P2002",
 			clientVersion: "test",
 		})
-		gameDb.update.mockRejectedValue(prismaError)
-		let consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined)
+		gameDb.update.mock.mockImplementation(async () => {
+			throw prismaError
+		})
+		t.mock.method(console, "error", () => undefined)
 
 		let result = await createGuess("user-1", "apple")
 
 		assertErr(result)
 		expect(result.error._tag).toBe("DuplicateGuessError")
 		expect(createGuessErrorMessage(result.error)).toBe('You already guessed "APPLE"')
-		expect(consoleError).toHaveBeenCalled()
+		expect(console.error).toHaveBeenCalled()
 	})
 
-	it("maps generic errors to CreateGuessFailedError", async () => {
-		gameDb.update.mockRejectedValue(new Error("database unavailable"))
-		let consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined)
+	it("maps generic errors to CreateGuessFailedError", async (t) => {
+		gameDb.update.mock.mockImplementation(async () => {
+			throw new Error("database unavailable")
+		})
+		t.mock.method(console, "error", () => undefined)
 
 		let result = await createGuess("user-1", "apple")
 
 		assertErr(result)
 		expect(result.error._tag).toBe("CreateGuessFailedError")
 		expect(createGuessErrorMessage(result.error)).toBe("database unavailable")
-		expect(consoleError).toHaveBeenCalled()
+		expect(console.error).toHaveBeenCalled()
 	})
 
 	it("returns GameAlreadyCompleteError when the game is complete", async () => {
-		gameDb.findFirst.mockResolvedValue(buildGame({ status: GameStatus.COMPLETE }))
+		gameDb.findFirst.mock.mockImplementation(async () => buildGame({ status: GameStatus.COMPLETE }))
 
 		let result = await createGuess("user-1", "apple")
 
@@ -95,35 +90,29 @@ describe("createGuess", () => {
 	})
 
 	it("returns ok and marks game won when guess matches word", async () => {
-		gameDb.findFirst.mockResolvedValue(buildGame({ word: "apple", guesses: [] }))
-		gameDb.update.mockResolvedValue(undefined)
+		gameDb.findFirst.mock.mockImplementation(async () => buildGame({ word: "apple", guesses: [] }))
+		gameDb.update.mock.mockImplementation(async () => undefined)
 
 		let result = await createGuess("user-1", "apple")
 
 		assertOk(result)
-		expect(gameDb.update).toHaveBeenCalledWith(
-			expect.objectContaining({
-				data: expect.objectContaining({ status: GameStatus.WON }),
-			}),
-		)
+		expect(gameDb.update.mock.calls[0]?.arguments[0]?.data.status).toBe(GameStatus.WON)
 	})
 
 	it("returns ok and marks game in progress for non-final miss", async () => {
-		gameDb.findFirst.mockResolvedValue(buildGame({ word: "apple", guesses: [{ guess: "baker" }] }))
-		gameDb.update.mockResolvedValue(undefined)
+		gameDb.findFirst.mock.mockImplementation(async () =>
+			buildGame({ word: "apple", guesses: [{ guess: "baker" }] }),
+		)
+		gameDb.update.mock.mockImplementation(async () => undefined)
 
 		let result = await createGuess("user-1", "candy")
 
 		assertOk(result)
-		expect(gameDb.update).toHaveBeenCalledWith(
-			expect.objectContaining({
-				data: expect.objectContaining({ status: GameStatus.IN_PROGRESS }),
-			}),
-		)
+		expect(gameDb.update.mock.calls[0]?.arguments[0]?.data.status).toBe(GameStatus.IN_PROGRESS)
 	})
 
 	it("returns ok and marks game complete on final non-winning guess", async () => {
-		gameDb.findFirst.mockResolvedValue(
+		gameDb.findFirst.mock.mockImplementation(async () =>
 			buildGame({
 				word: "apple",
 				guesses: [
@@ -135,26 +124,22 @@ describe("createGuess", () => {
 				],
 			}),
 		)
-		gameDb.update.mockResolvedValue(undefined)
+		gameDb.update.mock.mockImplementation(async () => undefined)
 
 		let result = await createGuess("user-1", "grape")
 
 		assertOk(result)
-		expect(gameDb.update).toHaveBeenCalledWith(
-			expect.objectContaining({
-				data: expect.objectContaining({ status: GameStatus.COMPLETE }),
-			}),
-		)
+		expect(gameDb.update.mock.calls[0]?.arguments[0]?.data.status).toBe(GameStatus.COMPLETE)
 	})
 })
 
 describe("getGameById", () => {
 	beforeEach(() => {
-		vi.clearAllMocks()
+		resetDbMocks()
 	})
 
 	it("returns GameNotFoundError when game does not exist", async () => {
-		gameDb.findUnique.mockResolvedValue(null)
+		gameDb.findUnique.mock.mockImplementation(async () => null)
 
 		let result = await getGameById("missing-game")
 
@@ -165,7 +150,7 @@ describe("getGameById", () => {
 	})
 
 	it("returns board when game exists", async () => {
-		gameDb.findUnique.mockResolvedValue(
+		gameDb.findUnique.mock.mockImplementation(async () =>
 			buildGame({
 				guesses: [{ guess: "apple" }, { guess: "baker" }],
 				status: GameStatus.IN_PROGRESS,

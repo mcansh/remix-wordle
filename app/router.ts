@@ -1,14 +1,19 @@
-import { NONE, SELF } from "@mcansh/http-helmet"
-import { asyncContext } from "remix/async-context-middleware"
-import { compression } from "remix/compression-middleware"
-import { createRouter } from "remix/fetch-router"
-import { formData } from "remix/form-data-middleware"
-import { logger } from "remix/logger-middleware"
-import { methodOverride } from "remix/method-override-middleware"
-import { session } from "remix/session-middleware"
-import { staticFiles } from "remix/static-middleware"
+import { asyncContext } from "remix/middleware/async-context"
+import { compression } from "remix/middleware/compression"
+import { csp } from "remix/middleware/csp"
+import { formData } from "remix/middleware/form-data"
+import { logger } from "remix/middleware/logger"
+import { methodOverride } from "remix/middleware/method-override"
+import { session } from "remix/middleware/session"
+import { staticFiles } from "remix/middleware/static"
+import type { RouterContext } from "remix/router"
+import { createRouter } from "remix/router"
 
 import { auth } from "./controllers/auth/controller.tsx"
+import { forgotPasswordController } from "./controllers/auth/forgot-password/controller.tsx"
+import { loginController } from "./controllers/auth/login/controller.tsx"
+import { registerController } from "./controllers/auth/register/controller.tsx"
+import { resetPasswordController } from "./controllers/auth/reset-password/controller.tsx"
 import { health } from "./controllers/health.tsx"
 import { history } from "./controllers/history/controller.tsx"
 import { home } from "./controllers/home/controller.tsx"
@@ -20,52 +25,59 @@ import { securityHeaders } from "./middleware/security.ts"
 import { routes } from "./routes.ts"
 import { sessionCookie, sessionStorage } from "./utils/session.ts"
 
-const middleware = []
+export const router = createRouter({
+	middleware: [
+		logger(),
+		compression(),
+		staticFiles("./dist/client/assets", {
+			cacheControl: "public, max-age=31536000, immutable",
+		}),
+		staticFiles("./dist/client", {
+			cacheControl: "public, max-age=3600",
+		}),
+		formData(),
+		methodOverride(),
+		session(sessionCookie, sessionStorage),
+		asyncContext(),
+		csp({
+			policy({ nonce }) {
+				return {
+					defaultSrc: ["'none'"],
+					scriptSrc: ["'self'", `'nonce-${nonce}'`],
+					connectSrc: ["'self'", ...(process.env.NODE_ENV === "development" ? ["ws"] : [])],
+					styleSrc: ["'self'"],
+					imgSrc: ["'self'", "https://cdn.usefathom.com"],
+				}
+			},
+		}),
+		securityHeaders({
+			"X-Content-Type-Options": "nosniff",
+			"X-DNS-Prefetch-Control": "on",
+			"X-Frame-Options": "DENY",
+			"X-XSS-Protection": "1; mode=block",
+			"Strict-Transport-Security": true,
+			"Referrer-Policy": "strict-origin-when-cross-origin",
+		}),
+		htmlRobotsTag(),
+		loadAuth(),
+	],
+})
 
-if (process.env.NODE_ENV === "development") {
-	middleware.push(logger())
+export type AppContext = RouterContext<typeof router>
+
+declare module "remix" {
+	interface RouterTypes {
+		context: AppContext
+	}
 }
-
-middleware.push(compression())
-middleware.push(
-	staticFiles("./dist/client/assets", {
-		cacheControl: "public, max-age=31536000, immutable",
-	}),
-)
-middleware.push(
-	staticFiles("./dist/client", {
-		cacheControl: "public, max-age=3600",
-	}),
-)
-middleware.push(formData())
-middleware.push(methodOverride())
-middleware.push(session(sessionCookie, sessionStorage))
-middleware.push(asyncContext())
-middleware.push(
-	securityHeaders({
-		"Content-Security-Policy": {
-			"default-src": [NONE],
-			"script-src": [SELF],
-			"connect-src": [SELF, ...(import.meta.env.DEV ? ["ws"] : [])],
-			"style-src": [SELF],
-			"img-src": [SELF, "https://cdn.usefathom.com"],
-		},
-		"X-Content-Type-Options": "nosniff",
-		"X-DNS-Prefetch-Control": "on",
-		"X-Frame-Options": "DENY",
-		"X-XSS-Protection": "1; mode=block",
-		"Strict-Transport-Security": true,
-		"Referrer-Policy": "strict-origin-when-cross-origin",
-	}),
-)
-middleware.push(htmlRobotsTag())
-middleware.push(loadAuth())
-
-export const router = createRouter({ middleware })
 
 router.map(routes.home, home)
 router.map(routes.history, history)
 router.map(routes.auth, auth)
+router.map(routes.auth.login, loginController)
+router.map(routes.auth.register, registerController)
+router.map(routes.auth.forgotPassword, forgotPasswordController)
+router.map(routes.auth.resetPassword, resetPasswordController)
 router.map(routes.health, health)
 router.map(routes.robots, robots)
 router.map(routes.sitemap, sitemap)

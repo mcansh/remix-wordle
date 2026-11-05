@@ -1,0 +1,8 @@
+{
+	"$schema": "./node_modules/remix/schema/remix.json",
+	"test": {
+		"setup": "./test/setup.ts",
+		"type": ["server", "browser"],
+		"exclude": ["node_modules/**", "dist/**", "app/generated/**", ".agents/**", "tools/oxlint/**"]
+	}
+}

@@ -1,6 +1,7 @@
 import { SELF } from "@mcansh/http-helmet"
-import { createRouter } from "remix/fetch-router"
-import { describe, expect, it, vi } from "vitest"
+import { expect } from "remix/assert"
+import { createRouter } from "remix/router"
+import { describe, it, mock } from "remix/test"
 
 import { securityHeaders } from "./security.ts"
 
@@ -24,7 +25,7 @@ function createMockContext(
 }
 
 function createNext(responseBody = "OK") {
-	return vi.fn(() => Promise.resolve(new Response(responseBody)))
+	return mock.fn(() => Promise.resolve(new Response(responseBody)))
 }
 
 type TestContext = ReturnType<typeof createMockContext>
@@ -58,7 +59,7 @@ describe("securityHeaders", () => {
 		assertResponse(result)
 
 		expect(Object.fromEntries(result.headers.entries())).toEqual({
-			"Content-Type": "text/plain;charset=UTF-8",
+			"content-type": "text/plain;charset=UTF-8",
 		})
 	})
 
@@ -103,9 +104,7 @@ describe("securityHeaders", () => {
 			],
 		})
 
-		router.map("*", (context) => {
-			return new Response(`ok:${context.url.pathname}`)
-		})
+		router.map("*", (context) => new Response(`ok:${context.url.pathname}`))
 
 		let get = await router.fetch(new Request("http://localhost"))
 

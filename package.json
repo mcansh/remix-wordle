@@ -9,13 +9,16 @@
 		"#*": "./*"
 	},
 	"scripts": {
-		"build": "vp build",
-		"dev": "vp dev",
+		"build": "vite build",
+		"check": "oxfmt --check && oxlint && tsc --noEmit",
+		"dev": "vite dev",
+		"format": "oxfmt",
+		"lint": "oxlint --fix",
+		"preview": "vite preview",
 		"start": "node ./server.ts",
-		"lint": "vp lint",
-		"format": "vp fmt",
-		"test": "vp test",
-		"typecheck": "tsc"
+		"test": "NODE_OPTIONS=\"${NODE_OPTIONS:+$NODE_OPTIONS }--import ./test/register-node-hooks.mjs\" remix test",
+		"test:e2e": "NODE_OPTIONS=\"${NODE_OPTIONS:+$NODE_OPTIONS }--import ./test/register-node-hooks.mjs\" remix test --type e2e --project chromium",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@mcansh/http-helmet": "catalog:",
@@ -28,32 +31,27 @@
 		"clsx": "catalog:",
 		"date-fns": "catalog:",
 		"ioredis": "catalog:",
+		"pitlane": "catalog:",
 		"remix": "catalog:"
 	},
 	"devDependencies": {
-		"@mcansh/remix-testing-library": "catalog:",
-		"@mcansh/vite-plugin-remix": "file:.yalc/@mcansh/vite-plugin-remix",
 		"@mcansh/vite-plugin-svg-sprite": "catalog:",
 		"@mswjs/http-middleware": "catalog:",
 		"@oxlint/plugins": "catalog:",
 		"@redwoodjs/agent-ci": "catalog:",
 		"@tailwindcss/vite": "catalog:",
-		"@testing-library/jest-dom": "catalog:",
-		"@testing-library/user-event": "catalog:",
 		"@total-typescript/tsconfig": "catalog:",
 		"@types/node": "catalog:",
-		"@vitest/coverage-v8": "catalog:",
-		"@vitest/ui": "catalog:",
-		"happy-dom": "catalog:",
 		"msw": "catalog:",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
+		"oxlint-tsgolint": "catalog:",
 		"playwright": "catalog:",
 		"prisma": "catalog:",
 		"tailwindcss": "catalog:",
 		"typescript": "catalog:",
-		"vite": "npm:@voidzero-dev/vite-plus-core@latest",
-		"vite-plugin-devtools-json": "catalog:",
-		"vite-plus": "catalog:",
-		"vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+		"vite": "catalog:",
+		"vite-plugin-devtools-json": "catalog:"
 	},
 	"packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
 }

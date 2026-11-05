@@ -1,12 +1,12 @@
-import type { BuildAction } from "remix/fetch-router"
+import type { Action } from "remix/router"
 
-import { routes } from "#app/routes.ts"
+import type { routes } from "#app/routes.ts"
 import { db } from "#app/utils/db.ts"
 
 export const health = {
 	middleware: [],
 	async handler({ headers }) {
-		let host = headers.get("X-Forwarded-Host") ?? headers.get("host")
+		let host = headers.get("X-Forwarded-Host") ?? headers.get("Host")
 
 		try {
 			let url = new URL("/", `http://${host}`)
@@ -24,4 +24,4 @@ export const health = {
 			return new Response("ERROR", { status: 500 })
 		}
 	},
-} satisfies BuildAction<"GET", typeof routes.health>
+} satisfies Action<typeof routes.health>

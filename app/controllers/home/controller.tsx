@@ -1,9 +1,7 @@
-import { Auth, type BadAuth, type GoodAuth } from "remix/auth-middleware"
 import * as s from "remix/data-schema"
 import * as f from "remix/data-schema/form-data"
-import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
-import { Session } from "remix/session"
+import type { Controller } from "remix/router"
 
 import { REVEAL_WORD, ROBOTS_INDEX, WORD_LENGTH } from "#app/constants.ts"
 import { getReturnToQuery } from "#app/middleware/auth.ts"
@@ -15,11 +13,10 @@ import {
 	isGameComplete,
 } from "#app/models/game.ts"
 import { routes } from "#app/routes.ts"
-import type { AuthIdentity } from "#app/utils/auth-session.ts"
 import { render } from "#app/utils/render.ts"
 
-import { LandingPage } from "./landing-page"
-import { Page } from "./page"
+import { LandingPage } from "./landing-page.tsx"
+import { Page } from "./page.tsx"
 
 export function validLength(length: number): s.Check<Array<string>> {
 	return {
@@ -37,9 +34,7 @@ export const guessWordSchema = f.object({
 		s
 			.array(s.string())
 			.pipe(validLength(WORD_LENGTH))
-			.transform((value) => {
-				return value.map((letter) => letter.toLowerCase())
-			}),
+			.transform((value) => value.map((letter) => letter.toLowerCase())),
 		{ name: "letter" },
 	),
 	cheat: f.field(s.optional(s.string()).transform((value) => value === "true")),
@@ -48,13 +43,15 @@ export const guessWordSchema = f.object({
 export const home = {
 	actions: {
 		async action(context) {
-			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
+			let auth = context.auth
 			if (auth.ok === false) {
-				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+				return redirect(
+					routes.auth.login.index.href(undefined, { searchParams: getReturnToQuery(context.url) }),
+				)
 			}
 
-			let session = context.get(Session)
-			let formData = context.get(FormData)
+			let session = context.session
+			let formData = context.formData
 
 			let data = s.parseSafe(guessWordSchema, formData)
 
@@ -70,18 +67,22 @@ export const home = {
 				session.flash("error", createGuessErrorMessage(guessResult.error))
 			}
 
-			return redirect(routes.home.index.href(undefined, data.value.cheat ? { cheat: "true" } : {}))
+			return redirect(
+				routes.home.index.href(undefined, {
+					searchParams: data.value.cheat ? { cheat: "true" } : undefined,
+				}),
+			)
 		},
 
 		async index(context) {
-			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
+			let auth = context.auth
 			if (auth.ok === false) {
 				return render(<LandingPage url={context.url} />, {
 					headers: { "X-Robots-Tag": ROBOTS_INDEX },
 				})
 			}
 
-			let session = context.get(Session)
+			let session = context.session
 
 			let game = await getTodaysGame(auth.identity.user.id)
 			let board = getFullBoard(game)
