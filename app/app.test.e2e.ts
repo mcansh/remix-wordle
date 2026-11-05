@@ -1,10 +1,11 @@
 import type { Page } from "playwright"
 import { expect } from "remix/assert"
 import { createTestServer } from "remix/node-fetch-server/test"
-import { describe, it } from "remix/test"
+import { beforeEach, describe, it } from "remix/test"
 import type { TestContext } from "remix/test"
 
 import { router } from "#app/router.ts"
+import { resetDbMocks } from "#test/mocks/db.ts"
 
 type Account = {
 	email: string
@@ -65,6 +66,10 @@ async function readRevealedWord(page: Page) {
 }
 
 describe("player flows", () => {
+	beforeEach(() => {
+		resetDbMocks()
+	})
+
 	it("shows the logged-out landing page", async (t) => {
 		let page = await openApp(t)
 
