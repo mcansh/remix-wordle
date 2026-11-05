@@ -9,6 +9,7 @@ pnpm build
 pnpm preview
 pnpm start
 pnpm test
+pnpm test:e2e
 pnpm typecheck
 pnpm format
 pnpm lint
@@ -17,7 +18,7 @@ pnpm check
 
 `pnpm check` is `oxfmt --check && oxlint && tsc --noEmit`. `pnpm lint` is `oxlint --fix`. `pnpm format` is `oxfmt`. Do not use `vp check`, `vp fmt`, `vp lint`, `vp test`, or `vp build`. This repo no longer uses Vite+ for those jobs.
 
-`pnpm test` runs `remix test` with Node custom hooks that remap `#app/utils/db.ts`, `bcryptjs`, and Vite asset suffixes (`.css`, `.svg`, `?url`, `?assets=`).
+`pnpm test` runs `remix test` with Node custom hooks that remap `#app/utils/db.ts`, `bcryptjs`, and Vite asset suffixes (`.css`, `.svg`, `?url`, `?assets=`). `pnpm test:e2e` runs the same hooks with `remix test --type e2e` and Playwright against `createTestServer(router.fetch)`.
 
 ## Remix and Pitlane
 

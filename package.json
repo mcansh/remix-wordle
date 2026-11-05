@@ -17,6 +17,7 @@
 		"preview": "vite preview",
 		"start": "node ./server.ts",
 		"test": "NODE_OPTIONS=\"${NODE_OPTIONS:+$NODE_OPTIONS }--import ./test/register-node-hooks.mjs\" remix test",
+		"test:e2e": "NODE_OPTIONS=\"${NODE_OPTIONS:+$NODE_OPTIONS }--import ./test/register-node-hooks.mjs\" remix test --type e2e --project chromium",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
