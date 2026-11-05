@@ -27,9 +27,10 @@ Official agent skills:
 
 ```sh
 npx skills add https://github.com/remix-run/remix --skill remix
+npx skills add https://github.com/pitlane-tools/templates --skill pitlane
 ```
 
-That installs `.agents/skills/remix`. Pitlane's published app skill is also named `remix` (`npx skills add https://github.com/pitlane-tools/pitlane --skill remix`) and would overwrite the official one, so it is not installed here. Pitlane contributor skills were not added. `node_modules/pitlane/INDEX.md` is the versioned Pitlane index. Repo-local `remix-ui` and `remix-project-layout` stay.
+Those install `.agents/skills/remix` and `.agents/skills/pitlane`. Remix contributor skills and Pitlane package-release skills were not added. `node_modules/pitlane/INDEX.md` is the versioned Pitlane index. Repo-local `remix-ui` and `remix-project-layout` stay.
 
 ## Lint and format
 

@@ -1,6 +1,13 @@
 {
   "version": 1,
   "skills": {
+    "pitlane": {
+      "source": "pitlane-tools/templates",
+      "sourceType": "github",
+      "skillPath": "cloudflare/.agents/skills/pitlane/SKILL.md",
+      "computedHash": "3459a85a9623104d1947b94863d3fed2e2ed0dc7ca312283147ba5e76c31f12c",
+      "installMode": "copy"
+    },
     "remix": {
       "source": "remix-run/remix",
       "sourceType": "github",
