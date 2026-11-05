@@ -1,6 +1,9 @@
 // adapted from https://github.com/jacob-ebey/vite-plugin-remix/tree/a5f372a4d48f9545e94d60cc401b865031ceecd7z
 // and https://github.com/markmals/remix-3-templates/blob/770cf11b7312304473462765fb4b3bbcfcb1358e/cloudflare/remix.plugin.ts
 
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
 import fullstack from "@hiogawa/vite-plugin-fullstack";
 import type { Program } from "@oxc-project/types";
 import ts from "dedent";
@@ -112,11 +115,14 @@ export function remix({
       name: "remix-preview-server",
       async configurePreviewServer(server) {
         const ssrOutDir = server.config.environments.ssr?.build?.outDir ?? "dist/ssr";
-        const entryPath = `${ssrOutDir}/index.js`;
+        const entryFile = path.isAbsolute(ssrOutDir)
+          ? path.join(ssrOutDir, "index.js")
+          : path.resolve(server.config.root, ssrOutDir, "index.js");
+        const entryUrl = pathToFileURL(entryFile).href;
 
         let mod;
         try {
-          mod = await import(/* @vite-ignore */ entryPath);
+          mod = await import(/* @vite-ignore */ entryUrl);
         } catch {
           return;
         }

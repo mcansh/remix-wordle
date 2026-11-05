@@ -12,6 +12,8 @@ import { auth } from "./controllers/auth/controller.tsx"
 import { health } from "./controllers/health.tsx"
 import { history } from "./controllers/history/controller.tsx"
 import { home } from "./controllers/home/controller.tsx"
+import { robots } from "./controllers/robots.ts"
+import { sitemap } from "./controllers/sitemap.ts"
 import { loadAuth } from "./middleware/auth.ts"
 import { htmlRobotsTag } from "./middleware/robots.ts"
 import { securityHeaders } from "./middleware/security.ts"
@@ -65,3 +67,5 @@ router.map(routes.home, home)
 router.map(routes.history, history)
 router.map(routes.auth, auth)
 router.map(routes.health, health)
+router.map(routes.robots, robots)
+router.map(routes.sitemap, sitemap)

@@ -1,7 +1,7 @@
 import { createRouter } from "remix/fetch-router"
 import { describe, expect, it, vi } from "vite-plus/test"
 
-import { ROBOTS_CONTENT, SITE_DESCRIPTION } from "#app/constants.ts"
+import { ROBOTS_NOINDEX, SITE_DESCRIPTION } from "#app/constants.ts"
 import { router as appRouter } from "#app/router.ts"
 import { assertContains } from "#test/helpers.ts"
 
@@ -91,8 +91,24 @@ describe("htmlRobotsTag", () => {
 		let result = await invokeHtmlRobotsTag(next)
 
 		assertResponse(result)
-		expect(result.headers.get("X-Robots-Tag")).toBe(ROBOTS_CONTENT)
+		expect(result.headers.get("X-Robots-Tag")).toBe(ROBOTS_NOINDEX)
 		expect(await result.text()).toBe("<html></html>")
+	})
+
+	it("keeps an X-Robots-Tag the page already set", async () => {
+		let next = createNext(
+			new Response("<html></html>", {
+				headers: {
+					"Content-Type": "text/html; charset=UTF-8",
+					"X-Robots-Tag": "index, follow",
+				},
+			}),
+		)
+
+		let result = await invokeHtmlRobotsTag(next)
+
+		assertResponse(result)
+		expect(result.headers.get("X-Robots-Tag")).toBe("index, follow")
 	})
 
 	it("does not set X-Robots-Tag on plain text API responses", async () => {
@@ -147,7 +163,7 @@ describe("htmlRobotsTag", () => {
 		})
 
 		let html = await router.fetch(new Request("http://localhost/login"))
-		expect(html.headers.get("X-Robots-Tag")).toBe(ROBOTS_CONTENT)
+		expect(html.headers.get("X-Robots-Tag")).toBe(ROBOTS_NOINDEX)
 		expect(html.headers.get("Content-Type")).toMatch(/text\/html/i)
 
 		let api = await router.fetch(new Request("http://localhost/api"))
@@ -166,12 +182,12 @@ describe("HTML document indexing", () => {
 
 		expect(response.status).toBe(200)
 		expect(response.headers.get("content-type")).toMatch(/text\/html/i)
-		expect(response.headers.get("X-Robots-Tag")).toBe(ROBOTS_CONTENT)
+		expect(response.headers.get("X-Robots-Tag")).toBe(ROBOTS_NOINDEX)
 
 		let html = await response.text()
 		assertContains(html, "<title>Login - Remix Wordle</title>")
 		assertContains(html, `name="robots"`)
-		assertContains(html, ROBOTS_CONTENT)
+		assertContains(html, ROBOTS_NOINDEX)
 		assertContains(html, `name="description"`)
 		assertContains(html, SITE_DESCRIPTION)
 	})

@@ -1,7 +1,36 @@
+/** @vitest-environment node */
 import { describe, expect, it, vi } from "vite-plus/test"
 
 import { router } from "#app/router.ts"
-import { assertContains, assertNotContains, getSessionCookie } from "#test/helpers.ts"
+import {
+	assertContains,
+	assertNotContains,
+	getSessionCookie,
+	requestWithSession,
+} from "#test/helpers.ts"
+
+vi.mock("#app/entry.browser.ts?assets=client", () => {
+	let assets = {
+		entry: "/assets/client.js",
+		js: [],
+		css: [],
+		merge() {
+			return assets
+		},
+	}
+	return { default: assets }
+})
+vi.mock("#app/entry.server.ts?assets=ssr", () => {
+	let assets = {
+		entry: "/assets/ssr.js",
+		js: [],
+		css: [],
+		merge() {
+			return assets
+		},
+	}
+	return { default: assets }
+})
 
 vi.mock("#app/models/user.ts", async (importActual) => {
 	let actual = await importActual<typeof import("../../models/user.ts")>()
@@ -58,56 +87,65 @@ vi.mock("bcryptjs", () => ({
 	},
 }))
 
-vi.mock("#app/utils/db.ts", () => ({
-	redis: {
-		get: vi.fn().mockResolvedValue(null),
-		set: vi.fn().mockResolvedValue("OK"),
-		del: vi.fn().mockResolvedValue(1),
-	},
-	db: {
-		user: {
-			findFirst: vi
-				.fn()
-				.mockImplementation(async ({ where }: { where: Record<string, unknown> }) => {
-					if (where.email === "testuser@example.com") {
-						return {
-							id: "user-123",
-							email: "testuser@example.com",
-							username: "testuser",
-							password: "hashed-mytestaccountpassword",
-						}
-					}
-					if (where.id === "user-123") {
-						return {
-							id: "user-123",
-							email: "testuser@example.com",
-							username: "testuser",
-						}
-					}
-					return null
-				}),
-			findUnique: vi
-				.fn()
-				.mockImplementation(async ({ where }: { where: Record<string, unknown> }) => {
-					if (where.email === "testuser@example.com") {
-						return {
-							id: "user-123",
-							email: "testuser@example.com",
-							username: "testuser",
-							password: "hashed-mytestaccountpassword",
-						}
-					}
-					return null
-				}),
-			create: vi.fn().mockImplementation(async ({ data }: { data: Record<string, unknown> }) => ({
-				id: "new-user-456",
-				email: data.email,
-				username: data.username,
-				password: data.password,
-			})),
+vi.mock("#app/utils/db.ts", () => {
+	let store = new Map<string, string>()
+	return {
+		redis: {
+			get: vi.fn(async (key: string) => store.get(key) ?? null),
+			set: vi.fn(async (key: string, value: string) => {
+				store.set(key, value)
+				return "OK"
+			}),
+			del: vi.fn(async (key: string) => {
+				store.delete(key)
+				return 1
+			}),
 		},
-	},
-}))
+		db: {
+			user: {
+				findFirst: vi
+					.fn()
+					.mockImplementation(async ({ where }: { where: Record<string, unknown> }) => {
+						if (where.email === "testuser@example.com") {
+							return {
+								id: "user-123",
+								email: "testuser@example.com",
+								username: "testuser",
+								password: "hashed-mytestaccountpassword",
+							}
+						}
+						if (where.id === "user-123") {
+							return {
+								id: "user-123",
+								email: "testuser@example.com",
+								username: "testuser",
+							}
+						}
+						return null
+					}),
+				findUnique: vi
+					.fn()
+					.mockImplementation(async ({ where }: { where: Record<string, unknown> }) => {
+						if (where.email === "testuser@example.com") {
+							return {
+								id: "user-123",
+								email: "testuser@example.com",
+								username: "testuser",
+								password: "hashed-mytestaccountpassword",
+							}
+						}
+						return null
+					}),
+				create: vi.fn().mockImplementation(async ({ data }: { data: Record<string, unknown> }) => ({
+					id: "new-user-456",
+					email: data.email,
+					username: data.username,
+					password: data.password,
+				})),
+			},
+		},
+	}
+})
 describe("auth handlers", () => {
 	describe("GET /login", () => {
 		it("renders the login page", async () => {
@@ -161,12 +199,13 @@ describe("auth handlers", () => {
 				redirect: "manual",
 			})
 
-			let sessionCookie = getSessionCookie(response)
+			let cookieValue = getSessionCookie(response)
+			expect(cookieValue).toBeTruthy()
 			let location = response.headers.get("Location")!
 
-			let followUp = await router.fetch("https://wordle.mcan.sh" + location, {
-				headers: { Cookie: `session=${sessionCookie}` },
-			})
+			let followUp = await router.fetch(
+				requestWithSession("https://wordle.mcan.sh" + location, cookieValue!),
+			)
 
 			let html = await followUp.text()
 			assertContains(html, "Invalid email or password")
@@ -281,9 +320,9 @@ describe("auth handlers", () => {
 			let sessionCookie = getSessionCookie(firstResponse)!
 			let location = firstResponse.headers.get("Location")!
 
-			let followUp = await router.fetch("https://wordle.mcan.sh" + location, {
-				headers: { Cookie: `session=${sessionCookie}` },
-			})
+			let followUp = await router.fetch(
+				requestWithSession("https://wordle.mcan.sh" + location, sessionCookie),
+			)
 
 			let html = await followUp.text()
 			assertContains(html, "already exists")
@@ -338,16 +377,16 @@ describe("auth handlers", () => {
 			let sessionCookie = getSessionCookie(loginResponse)!
 			let location = loginResponse.headers.get("Location")!
 
-			let firstVisit = await router.fetch("https://wordle.mcan.sh" + location, {
-				headers: { Cookie: `session=${sessionCookie}` },
-			})
+			let firstVisit = await router.fetch(
+				requestWithSession("https://wordle.mcan.sh" + location, sessionCookie),
+			)
 			let firstSessionCookie = getSessionCookie(firstVisit) || sessionCookie
 			let firstHtml = await firstVisit.text()
 			assertContains(firstHtml, "Invalid email or password")
 
-			let secondVisit = await router.fetch("https://wordle.mcan.sh" + location, {
-				headers: { Cookie: `session=${firstSessionCookie}` },
-			})
+			let secondVisit = await router.fetch(
+				requestWithSession("https://wordle.mcan.sh" + location, firstSessionCookie),
+			)
 			let secondHtml = await secondVisit.text()
 			assertNotContains(secondHtml, "Invalid email or password")
 		})
