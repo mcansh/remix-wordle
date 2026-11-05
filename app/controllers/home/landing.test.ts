@@ -65,6 +65,15 @@ describe("logged-out landing page", () => {
 		assertContains(html, 'href="/register"')
 		assertContains(html, "Sign up")
 		assertNotContains(html, "Submit Guess")
+
+		let csp = response.headers.get("Content-Security-Policy") ?? ""
+		expect(csp.length).toBeGreaterThan(0)
+		let nonce = /'nonce-([^']+)'/.exec(csp)?.[1]
+		expect(typeof nonce).toBe("string")
+		assertContains(csp, "default-src 'none'")
+		assertContains(csp, `script-src 'self' 'nonce-${nonce}'`)
+		assertContains(html, 'type="importmap"')
+		assertContains(html, `nonce="${nonce}"`)
 	})
 
 	it("keeps the production canonical when the request host is not wordle.mcan.sh", async () => {

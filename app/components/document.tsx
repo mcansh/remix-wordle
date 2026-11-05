@@ -1,5 +1,7 @@
 import type { Handle, RemixNode } from "remix/component"
 import { ImportMap } from "remix/component/server"
+import { getContext } from "remix/middleware/async-context"
+import { getCspNonce } from "remix/middleware/csp"
 
 import { scriptEntry, stylesheets } from "#app/assets.ts"
 import { ROBOTS_NOINDEX, SITE_DESCRIPTION, SITE_TITLE } from "#app/constants.ts"
@@ -18,6 +20,7 @@ export function Document(handle: Handle<DocumentProps>) {
 	return () => {
 		let { children, url, head, robots = ROBOTS_NOINDEX, canonical } = handle.props
 		let canonicalHref = canonical ?? url.origin + url.pathname
+		let nonce = getCspNonce(getContext())
 		return (
 			<html lang="en">
 				<head>
@@ -33,11 +36,11 @@ export function Document(handle: Handle<DocumentProps>) {
 					{head ?? <title>{SITE_TITLE}</title>}
 
 					<link rel="canonical" href={canonicalHref} />
-					<ImportMap value={scriptEntry.importMap} />
+					<ImportMap value={scriptEntry.importMap} nonce={nonce} />
 					{scriptEntry.preloads.map((href) => (
-						<link key={href} rel="modulepreload" href={href} />
+						<link key={href} rel="modulepreload" href={href} nonce={nonce} />
 					))}
-					<script async type="module" src={scriptEntry.href} />
+					<script async type="module" src={scriptEntry.href} nonce={nonce} />
 				</head>
 				<body>{children}</body>
 			</html>
