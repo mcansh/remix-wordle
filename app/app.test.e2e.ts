@@ -13,6 +13,12 @@ type Account = {
 	password: string
 }
 
+const FIXTURE_ACCOUNT: Account = {
+	email: "testuser@example.com",
+	username: "testuser",
+	password: "mytestaccountpassword",
+}
+
 const LOSS_GUESSES = ["cigar", "rebut", "awake", "blush", "focal", "evade", "naval", "serve"]
 
 function uniqueAccount(): Account {
@@ -36,7 +42,7 @@ async function register(page: Page, account: Account) {
 	await page.getByRole("button", { name: "Join now" }).click()
 }
 
-async function login(page: Page, account: Pick<Account, "email" | "password">) {
+async function login(page: Page, account: Account) {
 	if (!new URL(page.url()).pathname.endsWith("/login")) {
 		await page.goto("/login")
 	}
@@ -45,12 +51,22 @@ async function login(page: Page, account: Pick<Account, "email" | "password">) {
 	await page.getByRole("button", { name: "Log in" }).click()
 }
 
-async function submitGuess(page: Page, word: string) {
-	let inputs = page.locator("#current-guess input[name='letter']")
-	for (let index = 0; index < word.length; index += 1) {
-		await inputs.nth(index).fill(word[index] ?? "")
+async function submitGuess(page: Page, guess: string) {
+	let letters = [...guess]
+	if (letters.length !== 5) {
+		throw new Error(`A guess is 5 letters, received ${guess}`)
 	}
-	await page.getByRole("button", { name: "Submit Guess" }).click()
+
+	let form = page.locator("#current-guess")
+	let inputs = form.getByLabel(/^letter \d$/)
+	for (let [index, letter] of letters.entries()) {
+		await inputs.nth(index).fill(letter)
+	}
+
+	await Promise.all([
+		page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+		page.getByRole("button", { name: "Submit Guess" }).click(),
+	])
 }
 
 async function readRevealedWord(page: Page) {
@@ -101,10 +117,7 @@ describe("player flows", () => {
 	it("logs in with an existing account", async (t) => {
 		let page = await openApp(t)
 
-		await login(page, {
-			email: "testuser@example.com",
-			password: "mytestaccountpassword",
-		})
+		await login(page, FIXTURE_ACCOUNT)
 		await page.getByRole("button", { name: "Submit Guess" }).waitFor()
 	})
 
