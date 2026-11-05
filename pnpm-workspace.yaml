@@ -49,30 +49,30 @@ catalog:
   "@mcansh/http-helmet": ^0.13.2
   "@mcansh/vite-plugin-svg-sprite": ^0.7.1
   "@mswjs/http-middleware": ^0.10.3
-  "@oxlint/plugins": ^1.81.0
+  "@oxlint/plugins": ^1.91.0
   "@prisma/adapter-pg": ^7.10.1
   "@prisma/client": ^7.10.1
   "@redwoodjs/agent-ci": ^0.18.1
   "@standard-schema/spec": ^1.1.0
   "@tailwindcss/vite": ^4.3.4
   "@total-typescript/tsconfig": ^1.0.4
-  "@types/node": ^24.10.13
+  "@types/node": ^26.6.6
   bcryptjs: ^3.0.3
   better-result: ^2.9.2
-  bullmq: ^5.76.2
+  bullmq: ^5.81.5
   clsx: ^2.1.1
   date-fns: ^4.4.0
-  ioredis: ^5.10.1
+  ioredis: ^6.0.0
   msw: ^2.13.6
-  oxfmt: ^0.72.0
-  oxlint: ^1.81.0
-  oxlint-tsgolint: ^7.0.2001
+  oxfmt: ^0.76.0
+  oxlint: ^1.91.0
+  oxlint-tsgolint: ^7.0.2005
   pitlane: ^1.0.0-alpha.2
   playwright: ^1.64.1
   prisma: ^7.10.1
   remix: ^3.2.0
   tailwindcss: ^4.3.4
-  typescript: ^6.0.3
+  typescript: ^7.0.2
   vite: 8.3.5
   vite-plugin-devtools-json: ^1.1.2
 
