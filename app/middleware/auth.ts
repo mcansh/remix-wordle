@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs"
 import { createCredentialsAuthProvider } from "remix/auth"
 import * as s from "remix/data-schema"
 import * as f from "remix/data-schema/form-data"
+import { getContext } from "remix/middleware/async-context"
 import {
 	auth,
 	createSessionAuthScheme,
@@ -45,8 +46,8 @@ export function loadAuth() {
 }
 
 export const passwordProvider = createCredentialsAuthProvider({
-	parse(context) {
-		let result = s.parse(loginSchema, context.get(FormData))
+	parse() {
+		let result = s.parse(loginSchema, getContext().formData)
 
 		return {
 			email: normalizeEmail(result.email),

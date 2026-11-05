@@ -1,10 +1,7 @@
 import * as s from "remix/data-schema"
 import * as f from "remix/data-schema/form-data"
-import { Auth } from "remix/middleware/auth"
-import type { BadAuth, GoodAuth } from "remix/middleware/auth"
 import { redirect } from "remix/response/redirect"
 import type { Controller } from "remix/router"
-import { Session } from "remix/session"
 
 import { REVEAL_WORD, ROBOTS_INDEX, WORD_LENGTH } from "#app/constants.ts"
 import { getReturnToQuery } from "#app/middleware/auth.ts"
@@ -16,7 +13,6 @@ import {
 	isGameComplete,
 } from "#app/models/game.ts"
 import { routes } from "#app/routes.ts"
-import type { AuthIdentity } from "#app/utils/auth-session.ts"
 import { render } from "#app/utils/render.ts"
 
 import { LandingPage } from "./landing-page.tsx"
@@ -47,15 +43,15 @@ export const guessWordSchema = f.object({
 export const home = {
 	actions: {
 		async action(context) {
-			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
+			let auth = context.auth
 			if (auth.ok === false) {
 				return redirect(
 					routes.auth.login.index.href(undefined, { searchParams: getReturnToQuery(context.url) }),
 				)
 			}
 
-			let session = context.get(Session)!
-			let formData = context.get(FormData)
+			let session = context.session
+			let formData = context.formData
 
 			let data = s.parseSafe(guessWordSchema, formData)
 
@@ -79,14 +75,14 @@ export const home = {
 		},
 
 		async index(context) {
-			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
+			let auth = context.auth
 			if (auth.ok === false) {
 				return render(<LandingPage url={context.url} />, {
 					headers: { "X-Robots-Tag": ROBOTS_INDEX },
 				})
 			}
 
-			let session = context.get(Session)!
+			let session = context.session
 
 			let game = await getTodaysGame(auth.identity.user.id)
 			let board = getFullBoard(game)

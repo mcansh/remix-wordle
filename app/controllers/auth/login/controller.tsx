@@ -2,7 +2,6 @@ import { Result, UnhandledException } from "better-result"
 import { completeAuth, verifyCredentials } from "remix/auth"
 import { redirect } from "remix/response/redirect"
 import type { Controller } from "remix/router"
-import { Session } from "remix/session"
 
 import { Document } from "#app/components/document.tsx"
 import { flashLoginRequestError } from "#app/controllers/auth/flash.ts"
@@ -20,11 +19,11 @@ export const loginController = {
 
 			if (userResult.isErr()) {
 				console.error(userResult.error)
-				return flashLoginRequestError(context.get(Session)!, context.url)
+				return flashLoginRequestError(context.session, context.url)
 			}
 
 			if (userResult.value == null) {
-				let session = context.get(Session)!
+				let session = context.session
 				session.flash("error", "Invalid email or password. Please try again.")
 				return redirect(
 					routes.auth.login.index.href(undefined, { searchParams: getReturnToQuery(context.url) }),
@@ -38,7 +37,7 @@ export const loginController = {
 
 			if (sessionResult.isErr()) {
 				console.error(sessionResult.error)
-				return flashLoginRequestError(context.get(Session)!, context.url)
+				return flashLoginRequestError(context.session, context.url)
 			}
 
 			let session = sessionResult.value
@@ -47,7 +46,7 @@ export const loginController = {
 			return redirect(getPostAuthRedirect(context.url))
 		},
 		index(context) {
-			let session = context.get(Session)!
+			let session = context.session
 			let error = session.get("error")
 			let returnTo = context.url.searchParams.get("returnTo")
 			let formAction = routes.auth.login.action.href(

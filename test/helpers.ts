@@ -2,6 +2,8 @@ import type { Err, Ok, Result } from "better-result"
 import { Cookie, SetCookie } from "remix/headers"
 import type { Router } from "remix/router"
 
+type AppRouter = Pick<Router, "fetch">
+
 /**
  * Extract a specific cookie value from Set-Cookie headers
  */
@@ -62,7 +64,7 @@ export function assertNotContains(html: string, text: string): void {
 /**
  * Login and return the session cookie
  */
-export async function login(router: Router, email: string, password: string): Promise<string> {
+export async function login(router: AppRouter, email: string, password: string): Promise<string> {
 	let loginResponse = await router.fetch("https://wordle.mcan.sh/login", {
 		method: "POST",
 		body: new URLSearchParams({ email, password }),
@@ -80,7 +82,7 @@ export async function login(router: Router, email: string, password: string): Pr
 /**
  * Login as customer and return the session cookie
  */
-export function loginAsCustomer(router: Router): Promise<string> {
+export function loginAsCustomer(router: AppRouter): Promise<string> {
 	return login(router, "customer@example.com", "password123")
 }
 

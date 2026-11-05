@@ -41,4 +41,4 @@ Oxlint and oxfmt config is copied from [mcan.sh](https://github.com/mcansh/mcan.
 - `tools/oxlint/`
 - `oxfmt`, `oxlint`, `oxlint-tsgolint`, and `@oxlint/plugins` versions
 
-This repo also keeps `oxlint-plugins/prefer-import-alias-plugin.ts`, ignores `app/generated/**`, and keeps `useTabs: true` so existing Wordle files stay tab-indented. Anti-slop rules and `typescript/no-non-null-assertion` from mcan.sh stay off here. Remix 3.2 `context.get` is `T | undefined`, so this app uses `!` at those call sites. Tests keep Fetch's lowercase header maps, so `remix-headers/canonical-header-name` is off for `*.test.*` files.
+This repo also keeps `oxlint-plugins/prefer-import-alias-plugin.ts`, ignores `app/generated/**`, and keeps `useTabs: true` so existing Wordle files stay tab-indented. Anti-slop rules and `typescript/no-non-null-assertion` from mcan.sh stay off here. Tests keep Fetch's lowercase header maps, so `remix-headers/canonical-header-name` is off for `*.test.*` files. Middleware values are `context.session`, `context.formData`, and `context.auth` via `RouterTypes` in `app/router.ts`. The CSP nonce stays on `getCspNonce`.

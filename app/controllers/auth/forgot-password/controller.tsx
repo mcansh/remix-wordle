@@ -36,7 +36,7 @@ export const forgotPasswordController = {
 		},
 
 		async action(context) {
-			let formData = context.get(FormData)
+			let formData = context.formData
 
 			let forgotPasswordSchema = f.object({
 				email: f.field(s.defaulted(s.string(), "")),
