@@ -2,7 +2,7 @@ import { expect } from "remix/assert"
 import { renderToString } from "remix/component/server"
 import { describe, it } from "remix/test"
 
-import { GuessForm } from "./form"
+import { GuessForm } from "./form.tsx"
 
 describe("GuessForm", () => {
 	it.skip("renders 5 letter inputs", async () => {

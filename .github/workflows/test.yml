@@ -25,13 +25,20 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v5
 
-      - name: ⎔ Setup VP
-        uses: voidzero-dev/setup-vp@v1
-        with:
-          cache: true
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
 
-      - name: ✅ Type check & lint
-        run: vp check
+      - name: ⎔ Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: ".node-version"
+          cache: pnpm
+
+      - name: 📥 Install
+        run: pnpm install --frozen-lockfile
+
+      - name: ✅ Format, lint, and typecheck
+        run: pnpm check
 
   test:
     name: 🧪 Test
@@ -42,17 +49,23 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v5
 
-      - name: ⚡️ Setup vp Vite+
-        uses: voidzero-dev/setup-vp@v1
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: ⎔ Setup Node
+        uses: actions/setup-node@v5
         with:
-          cache: true
           node-version-file: ".node-version"
+          cache: pnpm
+
+      - name: 📥 Install
+        run: pnpm install --frozen-lockfile
 
       - name: 🎭 Install Playwright Chromium
-        run: vp exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: 🧪 Run Tests
-        run: vp run test
+        run: pnpm test
 
   build:
     name: 🛠️ Build
@@ -63,10 +76,17 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v5
 
-      - name: ⎔ Setup VP
-        uses: voidzero-dev/setup-vp@v1
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: ⎔ Setup Node
+        uses: actions/setup-node@v5
         with:
-          cache: true
+          node-version-file: ".node-version"
+          cache: pnpm
+
+      - name: 📥 Install
+        run: pnpm install --frozen-lockfile
 
       - name: 🛠️ Build
-        run: vp build
+        run: pnpm build

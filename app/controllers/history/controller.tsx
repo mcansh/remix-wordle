@@ -1,4 +1,5 @@
-import { Auth, type BadAuth, type GoodAuth } from "remix/middleware/auth"
+import { Auth } from "remix/middleware/auth"
+import type { BadAuth, GoodAuth } from "remix/middleware/auth"
 import { redirect } from "remix/response/redirect"
 import type { Controller } from "remix/router"
 
@@ -9,13 +10,13 @@ import type { AuthIdentity } from "#app/utils/auth-session.ts"
 import { db } from "#app/utils/db.ts"
 import { render } from "#app/utils/render.ts"
 
-import { HistoricalGame } from "./game"
+import { HistoricalGame } from "./game.tsx"
 import {
 	createHistoricalGameListItem,
 	HISTORICAL_GAME_SELECT,
 	HistoricalGameList,
-} from "./history-page"
-import { GameNotFound } from "./not-found-page"
+} from "./history-page.tsx"
+import { GameNotFound } from "./not-found-page.tsx"
 
 export const history = {
 	middleware: [requireAuth],

@@ -1,6 +1,7 @@
 import * as s from "remix/data-schema"
 import * as f from "remix/data-schema/form-data"
-import { Auth, type BadAuth, type GoodAuth } from "remix/middleware/auth"
+import { Auth } from "remix/middleware/auth"
+import type { BadAuth, GoodAuth } from "remix/middleware/auth"
 import { redirect } from "remix/response/redirect"
 import type { Controller } from "remix/router"
 import { Session } from "remix/session"
@@ -18,8 +19,8 @@ import { routes } from "#app/routes.ts"
 import type { AuthIdentity } from "#app/utils/auth-session.ts"
 import { render } from "#app/utils/render.ts"
 
-import { LandingPage } from "./landing-page"
-import { Page } from "./page"
+import { LandingPage } from "./landing-page.tsx"
+import { Page } from "./page.tsx"
 
 export function validLength(length: number): s.Check<Array<string>> {
 	return {
@@ -37,9 +38,7 @@ export const guessWordSchema = f.object({
 		s
 			.array(s.string())
 			.pipe(validLength(WORD_LENGTH))
-			.transform((value) => {
-				return value.map((letter) => letter.toLowerCase())
-			}),
+			.transform((value) => value.map((letter) => letter.toLowerCase())),
 		{ name: "letter" },
 	),
 	cheat: f.field(s.optional(s.string()).transform((value) => value === "true")),

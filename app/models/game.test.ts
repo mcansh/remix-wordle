@@ -6,13 +6,15 @@ import { GameStatus, Prisma } from "#app/generated/prisma/client.ts"
 import { assertErr, assertOk } from "#test/helpers.ts"
 import { gameDb, resetDbMocks } from "#test/mocks/db.ts"
 
-import { createGuess, createGuessErrorMessage, type FullGame, getGameById } from "./game"
+import { createGuess, createGuessErrorMessage, getGameById } from "./game.ts"
+import type { FullGame } from "./game.ts"
 
-function buildGame(overrides: Partial<FullGame> = {}): FullGame {
+function buildGame(overrides: Partial<FullGame> = {}) {
 	return {
 		id: "game-1",
 		createdAt: new Date("2026-05-08T00:00:00.000Z"),
 		updatedAt: new Date("2026-05-08T00:00:00.000Z"),
+		userId: "user-1",
 		guesses: [],
 		status: GameStatus.IN_PROGRESS,
 		word: "apple",
@@ -94,11 +96,7 @@ describe("createGuess", () => {
 		let result = await createGuess("user-1", "apple")
 
 		assertOk(result)
-		expect(gameDb.update).toHaveBeenCalledWith(
-			expect.objectContaining({
-				data: expect.objectContaining({ status: GameStatus.WON }),
-			}),
-		)
+		expect(gameDb.update.mock.calls[0]?.arguments[0]?.data.status).toBe(GameStatus.WON)
 	})
 
 	it("returns ok and marks game in progress for non-final miss", async () => {
@@ -110,11 +108,7 @@ describe("createGuess", () => {
 		let result = await createGuess("user-1", "candy")
 
 		assertOk(result)
-		expect(gameDb.update).toHaveBeenCalledWith(
-			expect.objectContaining({
-				data: expect.objectContaining({ status: GameStatus.IN_PROGRESS }),
-			}),
-		)
+		expect(gameDb.update.mock.calls[0]?.arguments[0]?.data.status).toBe(GameStatus.IN_PROGRESS)
 	})
 
 	it("returns ok and marks game complete on final non-winning guess", async () => {
@@ -135,11 +129,7 @@ describe("createGuess", () => {
 		let result = await createGuess("user-1", "grape")
 
 		assertOk(result)
-		expect(gameDb.update).toHaveBeenCalledWith(
-			expect.objectContaining({
-				data: expect.objectContaining({ status: GameStatus.COMPLETE }),
-			}),
-		)
+		expect(gameDb.update.mock.calls[0]?.arguments[0]?.data.status).toBe(GameStatus.COMPLETE)
 	})
 })
 

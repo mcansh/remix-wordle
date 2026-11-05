@@ -1,4 +1,5 @@
-import { createAssetResolver, type ScriptEntry } from "pitlane/assets"
+import { createAssetResolver } from "pitlane/assets"
+import type { ScriptEntry } from "pitlane/assets"
 import manifest from "pitlane/assets/manifest"
 
 export const assets = createAssetResolver(manifest)

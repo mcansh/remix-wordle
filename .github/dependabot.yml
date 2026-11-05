@@ -36,3 +36,5 @@ updates:
         patterns:
           - "oxlint"
           - "oxfmt"
+          - "oxlint-tsgolint"
+          - "@oxlint/*"

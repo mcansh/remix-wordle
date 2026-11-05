@@ -4,14 +4,14 @@ import * as f from "remix/data-schema/form-data"
 import type { Controller } from "remix/router"
 import { Session } from "remix/session"
 
-import { flashResetPasswordError } from "#app/controllers/auth/flash.ts"
 import { Document } from "#app/components/document.tsx"
+import { flashResetPasswordError } from "#app/controllers/auth/flash.ts"
 import { resetPassword } from "#app/models/user.ts"
-import { routes } from "#app/routes.ts"
+import type { routes } from "#app/routes.ts"
 import { render } from "#app/utils/render.ts"
 
-import { ResetPasswordConfirmed } from "./confirmed-page"
-import { ResetPasswordForm } from "./reset-page"
+import { ResetPasswordConfirmed } from "./confirmed-page.tsx"
+import { ResetPasswordForm } from "./reset-page.tsx"
 
 export const resetPasswordController = {
 	actions: {

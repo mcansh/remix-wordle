@@ -6,7 +6,7 @@ import { on } from "remix/component"
 import { LETTER_INPUTS } from "#app/constants.ts"
 import { routes } from "#app/routes.ts"
 
-import { LetterInput } from "./letter-input"
+import { LetterInput } from "./letter-input.tsx"
 
 type GuessFormProps = {
 	currentGuess: number

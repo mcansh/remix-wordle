@@ -147,7 +147,7 @@ describe("HTML document indexing", () => {
 		let response = await appRouter.fetch("https://wordle.mcan.sh/login")
 
 		expect(response.status).toBe(200)
-		expect(response.headers.get("content-type")).toMatch(/text\/html/i)
+		expect(response.headers.get("Content-Type")).toMatch(/text\/html/i)
 		expect(response.headers.get("X-Robots-Tag")).toBe(ROBOTS_NOINDEX)
 
 		let html = await response.text()

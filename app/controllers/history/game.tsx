@@ -30,38 +30,33 @@ export function HistoricalGame(handle: Handle<{ url: URL; game: GameBoard; showM
 
 					<main>
 						<div class="space-y-4">
-							{game.guesses.map((guess, guessIndex) => {
-								return (
-									<div key={`guess-number-${guessIndex}`} class="grid grid-cols-5 gap-4">
-										{guess.letters.map((letter) => {
-											return (
-												<input
-													key={`guess-${guessIndex}-letter-${letter.id}`}
-													readOnly
-													class={clsx(
-														"inline-block aspect-square w-full border-4 text-center text-xl uppercase",
-														{
-															"border-green-500 bg-green-500 text-white":
-																letter.state === LetterState.Match,
-															"border-red-500 bg-red-500 text-white":
-																letter.state === LetterState.Miss,
-															"border-yellow-500 bg-yellow-500 text-white":
-																letter.state === LetterState.Present,
-															"border-gray-400 text-white": letter.state === LetterState.Blank,
-														},
-													)}
-													value={letter.letter}
-													type="text"
-													pattern="[a-zA-Z]{1}"
-													maxLength={1}
-													name="letter"
-													aria-label={`letter ${guessIndex + 1}`}
-												/>
-											)
-										})}
-									</div>
-								)
-							})}
+							{game.guesses.map((guess, guessIndex) => (
+								<div key={`guess-number-${guessIndex}`} class="grid grid-cols-5 gap-4">
+									{guess.letters.map((letter) => (
+										<input
+											key={`guess-${guessIndex}-letter-${letter.id}`}
+											readOnly
+											class={clsx(
+												"inline-block aspect-square w-full border-4 text-center text-xl uppercase",
+												{
+													"border-green-500 bg-green-500 text-white":
+														letter.state === LetterState.Match,
+													"border-red-500 bg-red-500 text-white": letter.state === LetterState.Miss,
+													"border-yellow-500 bg-yellow-500 text-white":
+														letter.state === LetterState.Present,
+													"border-gray-400 text-white": letter.state === LetterState.Blank,
+												},
+											)}
+											value={letter.letter}
+											type="text"
+											pattern="[a-zA-Z]{1}"
+											maxLength={1}
+											name="letter"
+											aria-label={`letter ${guessIndex + 1}`}
+										/>
+									))}
+								</div>
+							))}
 
 							<Keyboard board={game.keyboardWithStatus} />
 						</div>

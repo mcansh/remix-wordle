@@ -1,9 +1,9 @@
 import { expect } from "remix/assert"
 import { describe, it } from "remix/test"
 
-import { boardToEmoji } from "./board-to-emoji"
-import type { ComputedGuess } from "./game"
-import { LetterState } from "./game"
+import { boardToEmoji } from "./board-to-emoji.ts"
+import type { ComputedGuess } from "./game.ts"
+import { LetterState } from "./game.ts"
 
 describe("boardToEmoji", () => {
 	it("converts all Match states to green squares", () => {

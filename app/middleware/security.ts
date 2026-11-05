@@ -1,4 +1,5 @@
-import { createSecureHeaders, mergeHeaders, type CreateSecureHeaders } from "@mcansh/http-helmet"
+import { createSecureHeaders, mergeHeaders } from "@mcansh/http-helmet"
+import type { CreateSecureHeaders } from "@mcansh/http-helmet"
 import type { Middleware } from "remix/router"
 
 export type SecurityHeadersMiddleware = CreateSecureHeaders & {

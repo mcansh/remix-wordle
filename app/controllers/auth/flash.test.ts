@@ -1,7 +1,7 @@
 import { expect } from "remix/assert"
 import { describe, it, mock } from "remix/test"
 
-import { flashLoginRequestError, flashRegisterError, flashResetPasswordError } from "./flash"
+import { flashLoginRequestError, flashRegisterError, flashResetPasswordError } from "./flash.ts"
 
 function makeSession() {
 	let flash = mock.fn()

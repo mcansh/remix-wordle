@@ -1,7 +1,7 @@
 import type { Action } from "remix/router"
 
 import { SITE_ORIGIN } from "#app/constants.ts"
-import { routes } from "#app/routes.ts"
+import type { routes } from "#app/routes.ts"
 
 export const ROBOTS_TXT = `User-agent: *
 Allow: /

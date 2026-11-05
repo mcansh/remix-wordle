@@ -9,13 +9,15 @@
 		"#*": "./*"
 	},
 	"scripts": {
-		"build": "vp build",
-		"dev": "vp dev",
+		"build": "vite build",
+		"check": "oxfmt --check && oxlint && tsc --noEmit",
+		"dev": "vite dev",
+		"format": "oxfmt",
+		"lint": "oxlint --fix",
+		"preview": "vite preview",
 		"start": "node ./server.ts",
-		"lint": "vp lint",
-		"format": "vp fmt",
 		"test": "NODE_OPTIONS=\"${NODE_OPTIONS:+$NODE_OPTIONS }--import ./test/register-node-hooks.mjs\" remix test",
-		"typecheck": "tsc"
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@mcansh/http-helmet": "catalog:",
@@ -40,13 +42,15 @@
 		"@total-typescript/tsconfig": "catalog:",
 		"@types/node": "catalog:",
 		"msw": "catalog:",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
+		"oxlint-tsgolint": "catalog:",
 		"playwright": "catalog:",
 		"prisma": "catalog:",
 		"tailwindcss": "catalog:",
 		"typescript": "catalog:",
-		"vite": "npm:@voidzero-dev/vite-plus-core@1.5.0",
-		"vite-plugin-devtools-json": "catalog:",
-		"vite-plus": "catalog:"
+		"vite": "catalog:",
+		"vite-plugin-devtools-json": "catalog:"
 	},
 	"packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
 }

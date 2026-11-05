@@ -29,5 +29,12 @@ export async function resolve(specifier, context, nextResolve) {
 		return { url: dbMock, shortCircuit: true }
 	}
 
+	if (resolved.url.split("?")[0].endsWith(".json")) {
+		return {
+			...resolved,
+			importAttributes: { ...resolved.importAttributes, type: "json" },
+		}
+	}
+
 	return resolved
 }

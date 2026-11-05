@@ -6,5 +6,6 @@
 		"strict": true,
 		"types": ["node", "vite/client"],
 		"allowImportingTsExtensions": true
-	}
+	},
+	"exclude": ["dist", "tools/oxlint"]
 }

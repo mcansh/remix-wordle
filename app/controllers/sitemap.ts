@@ -1,7 +1,7 @@
 import type { Action } from "remix/router"
 
 import { SITE_URL } from "#app/constants.ts"
-import { routes } from "#app/routes.ts"
+import type { routes } from "#app/routes.ts"
 
 export const SITEMAP_XML = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

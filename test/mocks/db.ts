@@ -73,14 +73,18 @@ function createMock<T extends (...args: Array<never>) => unknown>(impl: T) {
 }
 
 export const userDb = {
-	findFirst: createMock(async (args: { where?: Record<string, unknown>; omit?: Record<string, boolean> } = {}) => {
-		let user = users.find((row) => matchesWhere(row, args.where))
-		return user ? applyOmit(user, args.omit) : null
-	}),
-	findUnique: createMock(async (args: { where?: Record<string, unknown>; omit?: Record<string, boolean> } = {}) => {
-		let user = users.find((row) => matchesWhere(row, args.where))
-		return user ? applyOmit(user, args.omit) : null
-	}),
+	findFirst: createMock(
+		async (args: { where?: Record<string, unknown>; omit?: Record<string, boolean> } = {}) => {
+			let user = users.find((row) => matchesWhere(row, args.where))
+			return user ? applyOmit(user, args.omit) : null
+		},
+	),
+	findUnique: createMock(
+		async (args: { where?: Record<string, unknown>; omit?: Record<string, boolean> } = {}) => {
+			let user = users.find((row) => matchesWhere(row, args.where))
+			return user ? applyOmit(user, args.omit) : null
+		},
+	),
 	create: createMock(async (args: { data: Omit<UserRecord, "id" | "createdAt" | "updatedAt"> }) => {
 		let user: UserRecord = {
 			id: `user-${users.length + 1}`,
@@ -95,15 +99,17 @@ export const userDb = {
 }
 
 export const gameDb = {
-	findFirst: createMock(async (args: { where?: Record<string, unknown> } = {}) => {
-		return games.find((row) => matchesWhere(row, args.where)) ?? null
-	}),
-	findUnique: createMock(async (args: { where?: Record<string, unknown> } = {}) => {
-		return games.find((row) => matchesWhere(row, args.where)) ?? null
-	}),
-	findMany: createMock(async (args: { where?: Record<string, unknown> } = {}) => {
-		return games.filter((row) => matchesWhere(row, args.where))
-	}),
+	findFirst: createMock(
+		async (args: { where?: Record<string, unknown> } = {}) =>
+			games.find((row) => matchesWhere(row, args.where)) ?? null,
+	),
+	findUnique: createMock(
+		async (args: { where?: Record<string, unknown> } = {}) =>
+			games.find((row) => matchesWhere(row, args.where)) ?? null,
+	),
+	findMany: createMock(async (args: { where?: Record<string, unknown> } = {}) =>
+		games.filter((row) => matchesWhere(row, args.where)),
+	),
 	create: createMock(async (args: { data: { userId: string; word: string; status: string } }) => {
 		let game: GameRecord = {
 			id: `game-${games.length + 1}`,

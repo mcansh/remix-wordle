@@ -3,11 +3,6 @@
 	"test": {
 		"setup": "./test/setup.ts",
 		"type": ["server", "browser"],
-		"exclude": [
-			"node_modules/**",
-			"dist/**",
-			"app/generated/**",
-			".agents/**"
-		]
+		"exclude": ["node_modules/**", "dist/**", "app/generated/**", ".agents/**", "tools/oxlint/**"]
 	}
 }

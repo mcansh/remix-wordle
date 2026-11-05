@@ -1,9 +1,10 @@
 import type { Handle, RemixNode } from "remix/component"
 import { ImportMap } from "remix/component/server"
 
-import appStylesHref from "#app/app.css?url"
 import { scriptEntry, stylesheets } from "#app/assets.ts"
 import { ROBOTS_NOINDEX, SITE_DESCRIPTION, SITE_TITLE } from "#app/constants.ts"
+
+import appStylesHref from "#app/app.css?url"
 
 type DocumentProps = {
 	children: RemixNode
@@ -32,16 +33,13 @@ export function Document(handle: Handle<DocumentProps>) {
 					{head ?? <title>{SITE_TITLE}</title>}
 
 					<link rel="canonical" href={canonicalHref} />
-				</head>
-				<body>
-					{children}
-
 					<ImportMap value={scriptEntry.importMap} />
 					{scriptEntry.preloads.map((href) => (
 						<link key={href} rel="modulepreload" href={href} />
 					))}
 					<script async type="module" src={scriptEntry.href} />
-				</body>
+				</head>
+				<body>{children}</body>
 			</html>
 		)
 	}

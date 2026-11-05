@@ -3,7 +3,7 @@ import { createRedisSessionStorage } from "remix/session-storage/redis"
 
 import { env } from "#app/env.ts"
 
-import { redis } from "./db"
+import { redis } from "./db.ts"
 
 export const sessionCookie = createCookie("session", {
 	secrets: [env.SESSION_SECRET],

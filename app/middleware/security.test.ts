@@ -59,7 +59,7 @@ describe("securityHeaders", () => {
 		assertResponse(result)
 
 		expect(Object.fromEntries(result.headers.entries())).toEqual({
-			"Content-Type": "text/plain;charset=UTF-8",
+			"content-type": "text/plain;charset=UTF-8",
 		})
 	})
 
@@ -104,9 +104,7 @@ describe("securityHeaders", () => {
 			],
 		})
 
-		router.map("*", (context) => {
-			return new Response(`ok:${context.url.pathname}`)
-		})
+		router.map("*", (context) => new Response(`ok:${context.url.pathname}`))
 
 		let get = await router.fetch(new Request("http://localhost"))
 

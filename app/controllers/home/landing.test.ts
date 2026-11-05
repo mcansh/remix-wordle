@@ -33,7 +33,7 @@ describe("logged-out landing page", () => {
 		let response = await router.fetch("https://wordle.mcan.sh/")
 
 		expect(response.status).toBe(200)
-		expect(response.headers.get("content-type")).toMatch(/text\/html/i)
+		expect(response.headers.get("Content-Type")).toMatch(/text\/html/i)
 		expect(response.headers.get("X-Robots-Tag")).toBe(ROBOTS_INDEX)
 
 		let html = await response.text()
@@ -162,7 +162,7 @@ describe("robots.txt and sitemap.xml", () => {
 		let response = await router.fetch("https://wordle.mcan.sh/robots.txt")
 
 		expect(response.status).toBe(200)
-		expect(response.headers.get("content-type")).toMatch(/text\/plain/i)
+		expect(response.headers.get("Content-Type")).toMatch(/text\/plain/i)
 
 		let body = await response.text()
 		expect(body).toBe(ROBOTS_TXT)
@@ -177,7 +177,7 @@ describe("robots.txt and sitemap.xml", () => {
 		let response = await router.fetch("https://wordle.mcan.sh/sitemap.xml")
 
 		expect(response.status).toBe(200)
-		expect(response.headers.get("content-type")).toMatch(/xml/i)
+		expect(response.headers.get("Content-Type")).toMatch(/xml/i)
 
 		let body = await response.text()
 		expect(body).toBe(SITEMAP_XML)
