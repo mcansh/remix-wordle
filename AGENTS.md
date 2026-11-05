@@ -23,7 +23,13 @@ pnpm check
 
 This app uses Remix 3.2 and the `pitlane` umbrella. Import Vite and asset helpers from `pitlane/*` so `node_modules/pitlane/INDEX.md` stays the versioned index for the installed release.
 
-Official agent skills live at `.agents/skills/remix` and `.agents/skills/pitlane`.
+Official agent skills:
+
+```sh
+npx skills add https://github.com/remix-run/remix --skill remix
+```
+
+That installs `.agents/skills/remix`. Pitlane's published app skill is also named `remix` (`npx skills add https://github.com/pitlane-tools/pitlane --skill remix`) and would overwrite the official one, so it is not installed here. Pitlane contributor skills were not added. `node_modules/pitlane/INDEX.md` is the versioned Pitlane index. Repo-local `remix-ui` and `remix-project-layout` stay.
 
 ## Lint and format
 
