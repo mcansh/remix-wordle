@@ -3,7 +3,7 @@ import * as http from "node:http"
 import { createRequestListener } from "remix/node-fetch-server"
 
 // @ts-ignore - no types for this
-import ssr from "./dist/ssr/entry.server.js"
+import ssr from "./dist/ssr/index.js"
 
 const server = http.createServer(
 	createRequestListener(async (request) => {
