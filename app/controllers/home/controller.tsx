@@ -5,7 +5,7 @@ import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
 import { Session } from "remix/session"
 
-import { REVEAL_WORD, WORD_LENGTH } from "#app/constants.ts"
+import { REVEAL_WORD, ROBOTS_INDEX, WORD_LENGTH } from "#app/constants.ts"
 import { getReturnToQuery } from "#app/middleware/auth.ts"
 import {
 	createGuess,
@@ -76,7 +76,9 @@ export const home = {
 		async index(context) {
 			let auth = context.get(Auth) as GoodAuth<AuthIdentity> | BadAuth
 			if (auth.ok === false) {
-				return render(<LandingPage url={context.url} />)
+				return render(<LandingPage url={context.url} />, {
+					headers: { "X-Robots-Tag": ROBOTS_INDEX },
+				})
 			}
 
 			let session = context.get(Session)

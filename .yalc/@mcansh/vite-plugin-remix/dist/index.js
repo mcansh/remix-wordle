@@ -1,3 +1,5 @@
+import path from "node:path";
+import { pathToFileURL } from "node:url";
 import fullstack from "@hiogawa/vite-plugin-fullstack";
 import ts from "dedent";
 import MagicString from "magic-string";
@@ -87,12 +89,13 @@ function remix({
       name: "remix-preview-server",
       async configurePreviewServer(server) {
         const ssrOutDir = server.config.environments.ssr?.build?.outDir ?? "dist/ssr";
-        const entryPath = `${ssrOutDir}/index.js`;
+        const entryFile = path.isAbsolute(ssrOutDir) ? path.join(ssrOutDir, "index.js") : path.resolve(server.config.root, ssrOutDir, "index.js");
+        const entryUrl = pathToFileURL(entryFile).href;
         let mod;
         try {
           mod = await import(
             /* @vite-ignore */
-            entryPath
+            entryUrl
           );
         } catch {
           return;

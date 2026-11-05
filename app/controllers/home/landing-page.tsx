@@ -24,7 +24,6 @@ export function LandingPage(handle: Handle<{ url: URL }>) {
 				head={
 					<>
 						<title>{LANDING_TITLE}</title>
-						<meta name="description" content={SITE_DESCRIPTION} />
 						<meta property="og:type" content="website" />
 						<meta property="og:site_name" content={SITE_TITLE} />
 						<meta property="og:title" content={LANDING_TITLE} />
@@ -63,7 +62,7 @@ export function LandingPage(handle: Handle<{ url: URL }>) {
 					</p>
 					<div class="flex w-full flex-col gap-3 sm:flex-row">
 						<a
-							class="w-full rounded bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600 focus:bg-blue-400"
+							class="w-full rounded bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700 focus:bg-blue-700"
 							href={routes.auth.login.index.href()}
 						>
 							Log in

@@ -116,7 +116,7 @@ describe("logged-out landing page", () => {
 
 		expect(response.status).toBe(200)
 		expect(response.headers.get("content-type")).toMatch(/text\/html/i)
-		expect(response.headers.get("X-Robots-Tag")).toBeNull()
+		expect(response.headers.get("X-Robots-Tag")).toBe(ROBOTS_INDEX)
 
 		let html = await response.text()
 		assertContains(html, `<title>${LANDING_TITLE}</title>`)
@@ -164,7 +164,7 @@ describe("app and account routes stay noindex", () => {
 	it("adds noindex to the login page", async () => {
 		let response = await router.fetch("https://wordle.mcan.sh/login")
 		expect(response.status).toBe(200)
-		expect(response.headers.get("X-Robots-Tag")).toBeNull()
+		expect(response.headers.get("X-Robots-Tag")).toBe(ROBOTS_NOINDEX)
 
 		let html = await response.text()
 		assertContains(html, `<title>Login - Remix Wordle</title>`)
@@ -228,6 +228,7 @@ describe("logged-in home stays the game", () => {
 		let response = await router.fetch(requestWithSession("https://wordle.mcan.sh/", sessionCookie!))
 
 		expect(response.status).toBe(200)
+		expect(response.headers.get("X-Robots-Tag")).toBe(ROBOTS_NOINDEX)
 		let html = await response.text()
 		assertContains(html, "Submit Guess")
 		assertContains(html, `<title>Remix Wordle</title>`)

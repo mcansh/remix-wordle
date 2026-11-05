@@ -10,9 +10,7 @@ export const SITE_IMAGE_URL = `${SITE_ORIGIN}/apple-touch-icon.png`
 export const SITE_DESCRIPTION =
 	"Play Remix Wordle, a daily Wordle-style game built with Remix. Guess the five-letter word in six tries. Letters mark as green, yellow, or red after each guess."
 export const LANDING_TITLE = "Remix Wordle — Play a daily five-letter word game"
-/** Public marketing HTML (the logged-out landing page). */
 export const ROBOTS_INDEX = "index, follow"
-/** App and account HTML. Do not apply this site-wide; the landing page opts into ROBOTS_INDEX. */
 export const ROBOTS_NOINDEX = "noindex, nofollow"
 
 export const SITE_JSON_LD = JSON.stringify({

@@ -15,6 +15,7 @@ import { home } from "./controllers/home/controller.tsx"
 import { robots } from "./controllers/robots.ts"
 import { sitemap } from "./controllers/sitemap.ts"
 import { loadAuth } from "./middleware/auth.ts"
+import { htmlRobotsTag } from "./middleware/robots.ts"
 import { securityHeaders } from "./middleware/security.ts"
 import { routes } from "./routes.ts"
 import { sessionCookie, sessionStorage } from "./utils/session.ts"
@@ -57,6 +58,7 @@ middleware.push(
 		"Referrer-Policy": "strict-origin-when-cross-origin",
 	}),
 )
+middleware.push(htmlRobotsTag())
 middleware.push(loadAuth())
 
 export const router = createRouter({ middleware })
