@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "skills": {
+    "remix": {
+      "source": "remix-run/remix",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/remix/SKILL.md",
+      "computedHash": "56aad49331285a2bd92ca421b6064f21a3d645f3ca107e8ee6b25d3fd418faa0",
+      "installMode": "copy"
+    }
+  }
+}
