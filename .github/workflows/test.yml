@@ -48,8 +48,11 @@ jobs:
           cache: true
           node-version-file: ".node-version"
 
+      - name: 🎭 Install Playwright Chromium
+        run: vp exec playwright install --with-deps chromium
+
       - name: 🧪 Run Tests
-        run: vp test
+        run: vp run test
 
   build:
     name: 🛠️ Build

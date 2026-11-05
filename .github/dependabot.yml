@@ -20,10 +20,10 @@ updates:
         patterns:
           - "@remix-run/*"
           - "remix"
-      "vitest":
+      "pitlane":
         patterns:
-          - "@vitest/*"
-          - "vitest"
+          - "pitlane"
+          - "@pitlane/*"
       "prisma":
         patterns:
           - "@prisma/*"

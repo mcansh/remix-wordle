@@ -1,6 +1,7 @@
 import { SELF } from "@mcansh/http-helmet"
-import { createRouter } from "remix/fetch-router"
-import { describe, expect, it, vi } from "vitest"
+import { expect } from "remix/assert"
+import { createRouter } from "remix/router"
+import { describe, it, mock } from "remix/test"
 
 import { securityHeaders } from "./security.ts"
 
@@ -24,7 +25,7 @@ function createMockContext(
 }
 
 function createNext(responseBody = "OK") {
-	return vi.fn(() => Promise.resolve(new Response(responseBody)))
+	return mock.fn(() => Promise.resolve(new Response(responseBody)))
 }
 
 type TestContext = ReturnType<typeof createMockContext>

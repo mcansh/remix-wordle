@@ -1,5 +1,5 @@
 import { mergeHeaders } from "@mcansh/http-helmet"
-import type { Middleware } from "remix/fetch-router"
+import type { Middleware } from "remix/router"
 
 import { ROBOTS_NOINDEX } from "#app/constants.ts"
 

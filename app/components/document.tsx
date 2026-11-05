@@ -1,28 +1,21 @@
-import "@mcansh/vite-plugin-remix/types"
-import type { RemixNode } from "remix/ui"
-
-import { ROBOTS_NOINDEX, SITE_DESCRIPTION, SITE_TITLE } from "#app/constants.ts"
-import clientAssets from "#app/entry.browser.ts?assets=client"
-import serverAssets from "#app/entry.server.ts?assets=ssr"
+import type { Handle, RemixNode } from "remix/component"
+import { ImportMap } from "remix/component/server"
 
 import appStylesHref from "#app/app.css?url"
+import { scriptEntry, stylesheets } from "#app/assets.ts"
+import { ROBOTS_NOINDEX, SITE_DESCRIPTION, SITE_TITLE } from "#app/constants.ts"
 
-const assets = clientAssets.merge(serverAssets)
+type DocumentProps = {
+	children: RemixNode
+	url: URL
+	head?: RemixNode
+	robots?: string
+	canonical?: string
+}
 
-export function Document() {
-	return ({
-		children,
-		url,
-		head,
-		robots = ROBOTS_NOINDEX,
-		canonical,
-	}: {
-		children: RemixNode
-		head?: RemixNode
-		url: URL
-		robots?: string
-		canonical?: string
-	}) => {
+export function Document(handle: Handle<DocumentProps>) {
+	return () => {
+		let { children, url, head, robots = ROBOTS_NOINDEX, canonical } = handle.props
 		let canonicalHref = canonical ?? url.origin + url.pathname
 		return (
 			<html lang="en">
@@ -32,8 +25,8 @@ export function Document() {
 					<meta name="robots" content={robots} />
 					<meta name="description" content={SITE_DESCRIPTION} />
 					<link rel="stylesheet" href={appStylesHref} />
-					{assets.css.map((attrs) => (
-						<link key={attrs.href} {...attrs} rel="stylesheet" />
+					{stylesheets.map((href) => (
+						<link key={href} rel="stylesheet" href={href} />
 					))}
 
 					{head ?? <title>{SITE_TITLE}</title>}
@@ -43,10 +36,11 @@ export function Document() {
 				<body>
 					{children}
 
-					{assets.js.map((attrs) => (
-						<link key={attrs.href} {...attrs} rel="modulepreload" />
+					<ImportMap value={scriptEntry.importMap} />
+					{scriptEntry.preloads.map((href) => (
+						<link key={href} rel="modulepreload" href={href} />
 					))}
-					<script async type="module" src={clientAssets.entry} />
+					<script async type="module" src={scriptEntry.href} />
 				</body>
 			</html>
 		)

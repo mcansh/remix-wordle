@@ -1,6 +1,6 @@
 import * as s from "remix/data-schema"
 import * as f from "remix/data-schema/form-data"
-import type { Controller } from "remix/fetch-router"
+import type { Controller } from "remix/router"
 
 import { Document } from "#app/components/document.tsx"
 import { createPasswordResetToken } from "#app/models/user.ts"

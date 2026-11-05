@@ -8,7 +8,7 @@ type FlashSession = Pick<Session, "flash">
 
 export function flashLoginRequestError(session: FlashSession, url: URL) {
 	session.flash("error", "We could not complete that sign-in request.")
-	return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(url)))
+	return redirect(routes.auth.login.index.href(undefined, { searchParams: getReturnToQuery(url) }))
 }
 
 export function flashRegisterError(session: FlashSession, message: string) {

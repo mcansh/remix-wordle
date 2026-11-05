@@ -1,4 +1,4 @@
-import type { BuildAction } from "remix/fetch-router"
+import type { Action } from "remix/router"
 
 import { routes } from "#app/routes.ts"
 import { db } from "#app/utils/db.ts"
@@ -24,4 +24,4 @@ export const health = {
 			return new Response("ERROR", { status: 500 })
 		}
 	},
-} satisfies BuildAction<"GET", typeof routes.health>
+} satisfies Action<typeof routes.health>

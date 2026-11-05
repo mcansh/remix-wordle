@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vite-plus/test"
+import { expect } from "remix/assert"
+import { describe, it } from "remix/test"
 
 import { assertErr, assertOk } from "#test/helpers.ts"
 

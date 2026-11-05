@@ -1,8 +1,8 @@
 "use client"
 
 import clsx from "clsx"
-import type { Handle } from "remix/ui"
-import { on } from "remix/ui"
+import type { Handle } from "remix/component"
+import { on } from "remix/component"
 
 import checkIconUrl from "#app/icons/check.svg"
 import xIconUrl from "#app/icons/x.svg"
@@ -20,9 +20,10 @@ type GameOverModalProps = {
 	word: string
 }
 
-export function GameOverModal(handle: Handle) {
+export function GameOverModal(handle: Handle<GameOverModalProps>) {
 	let copied = false
-	return ({ currentGuess, guesses, totalGuesses, winner, word }: GameOverModalProps) => {
+	return () => {
+		let { currentGuess, guesses, totalGuesses, winner, word } = handle.props
 		return (
 			<div class="relative z-10" role="dialog" aria-modal="true">
 				<div class="fixed inset-0 bg-gray-500/75 transition-opacity" />

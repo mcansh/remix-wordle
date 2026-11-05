@@ -1,12 +1,12 @@
 import bcrypt from "bcryptjs"
 import { createCredentialsAuthProvider } from "remix/auth"
+import * as s from "remix/data-schema"
+import * as f from "remix/data-schema/form-data"
 import {
 	auth,
 	createSessionAuthScheme,
 	requireAuth as requireAuthenticated,
-} from "remix/auth-middleware"
-import * as s from "remix/data-schema"
-import * as f from "remix/data-schema/form-data"
+} from "remix/middleware/auth"
 import { redirect } from "remix/response/redirect"
 
 import { routes } from "#app/routes.ts"

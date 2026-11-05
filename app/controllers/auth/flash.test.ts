@@ -1,9 +1,10 @@
-import { describe, expect, it, vi } from "vite-plus/test"
+import { expect } from "remix/assert"
+import { describe, it, mock } from "remix/test"
 
 import { flashLoginRequestError, flashRegisterError, flashResetPasswordError } from "./flash"
 
 function makeSession() {
-	let flash = vi.fn()
+	let flash = mock.fn()
 	let session = { flash }
 	return { session, flash }
 }

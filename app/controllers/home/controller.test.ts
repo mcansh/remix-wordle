@@ -1,102 +1,11 @@
+import { expect } from "remix/assert"
 import { parse, parseSafe } from "remix/data-schema"
-import { describe, expect, it, vi } from "vite-plus/test"
+import { describe, it } from "remix/test"
 
-import type { FullGame } from "#app/models/game.ts"
 import { router } from "#app/router.ts"
 import { assertContains, loginAsCustomer, requestWithSession } from "#test/helpers.ts"
 
 import { guessWordSchema } from "./controller.tsx"
-
-vi.mock("#app/entry.browser.ts?assets=client", () => {
-	let assets = {
-		entry: "/assets/client.js",
-		js: [],
-		css: [],
-		merge() {
-			return assets
-		},
-	}
-	return { default: assets }
-})
-vi.mock("#app/entry.server.ts?assets=ssr", () => {
-	let assets = {
-		entry: "/assets/ssr.js",
-		js: [],
-		css: [],
-		merge() {
-			return assets
-		},
-	}
-	return { default: assets }
-})
-
-vi.mock("#app/utils/db.ts", () => ({
-	redis: {
-		get: vi.fn().mockResolvedValue(null),
-		set: vi.fn().mockResolvedValue("OK"),
-		del: vi.fn().mockResolvedValue(1),
-	},
-}))
-
-vi.mock("#app/models/game.ts", async (importActual) => {
-	let actual = await importActual<typeof import("#app/models/game.ts")>()
-
-	return {
-		...actual,
-		createGame: vi.fn().mockImplementation(async () => {
-			return {
-				id: "game-123",
-				word: "apple",
-				status: "IN_PROGRESS",
-				createdAt: new Date(),
-				updatedAt: new Date(),
-				guesses: [],
-			} satisfies FullGame
-		}),
-		getTodaysGame: vi.fn().mockImplementation(async () => {
-			return {
-				id: "game-123",
-				word: "apple",
-				status: "IN_PROGRESS",
-				createdAt: new Date(),
-				updatedAt: new Date(),
-				guesses: [],
-			} satisfies FullGame
-		}),
-	}
-})
-
-vi.mock("#app/models/user.ts", async (importActual) => {
-	let actual = await importActual<typeof import("#app/models/user.ts")>()
-
-	return {
-		...actual,
-		authenticateUser: vi.fn().mockImplementation(async (email: string, password: string) => {
-			if (email === "customer@example.com" && password === "password123") {
-				return {
-					id: "user-123",
-					email,
-					username: "testuser",
-					password: "hashed-password", // In real case, this would be hashed
-				}
-			}
-
-			return null
-		}),
-		getUserById: vi.fn().mockImplementation(async (id: string) => {
-			if (id === "user-123") {
-				return {
-					id: "user-123",
-					email: "customer@example.com",
-					username: "testuser",
-					password: "hashed-password", // In real case, this would be hashed
-				}
-			}
-
-			return null
-		}),
-	}
-})
 
 describe.skip("marketing handlers", () => {
 	it("GET / returns home page", async () => {
@@ -150,7 +59,10 @@ describe("guessWord", () => {
 
 		let result = parseSafe(guessWordSchema, formData)
 
-		expect(result).toEqual({ success: false, issues: expect.any(Array) })
+		expect(result.success).toBe(false)
+		if (result.success === false) {
+			expect(Array.isArray(result.issues)).toBe(true)
+		}
 	})
 
 	it("fails to submit a guess with too many letters", async () => {
@@ -164,7 +76,10 @@ describe("guessWord", () => {
 
 		let result = parseSafe(guessWordSchema, formData)
 
-		expect(result).toEqual({ success: false, issues: expect.any(Array) })
+		expect(result.success).toBe(false)
+		if (result.success === false) {
+			expect(Array.isArray(result.issues)).toBe(true)
+		}
 	})
 
 	it("fails to submit a guess with too few letters", async () => {
@@ -176,7 +91,10 @@ describe("guessWord", () => {
 
 		let result = parseSafe(guessWordSchema, formData)
 
-		expect(result).toEqual({ success: false, issues: expect.any(Array) })
+		expect(result.success).toBe(false)
+		if (result.success === false) {
+			expect(Array.isArray(result.issues)).toBe(true)
+		}
 	})
 
 	it("fails to submit a guess with no form data", async () => {
@@ -184,6 +102,9 @@ describe("guessWord", () => {
 
 		let result = parseSafe(guessWordSchema, formData)
 
-		expect(result).toEqual({ success: false, issues: expect.any(Array) })
+		expect(result.success).toBe(false)
+		if (result.success === false) {
+			expect(Array.isArray(result.issues)).toBe(true)
+		}
 	})
 })

@@ -1,9 +1,15 @@
 import { clsx } from "clsx"
+import type { Handle } from "remix/component"
 
 import type { keyboardWithStatus } from "#app/utils/game.ts"
 
-export function Keyboard() {
-	return ({ board }: { board: ReturnType<typeof keyboardWithStatus> }) => {
+type KeyboardProps = {
+	board: ReturnType<typeof keyboardWithStatus>
+}
+
+export function Keyboard(handle: Handle<KeyboardProps>) {
+	return () => {
+		let { board } = handle.props
 		return (
 			<div class="mx-auto max-w-md pt-10">
 				{board.map((row, index) => {

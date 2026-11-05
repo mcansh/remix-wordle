@@ -1,4 +1,5 @@
-import { expect, it } from "vite-plus/test"
+import { expect } from "remix/assert"
+import { it } from "remix/test"
 
 import { safeRedirect } from "./redirect"
 

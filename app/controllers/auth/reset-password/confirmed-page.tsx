@@ -1,6 +1,8 @@
+import type { Handle } from "remix/component"
+
 import { routes } from "#app/routes.ts"
 
-export function ResetPasswordConfirmed() {
+export function ResetPasswordConfirmed(_handle: Handle) {
 	return () => {
 		return (
 			<div class="card" style="max-width: 500px; margin: 2rem auto;">

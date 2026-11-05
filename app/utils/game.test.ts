@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vite-plus/test"
+import { expect } from "remix/assert"
+import { describe, it } from "remix/test"
 
 import type { ComputedGuess } from "./game"
 import {

@@ -1,22 +1,22 @@
 "use client"
 
-import { on } from "remix/ui"
+import type { Handle } from "remix/component"
+import { on } from "remix/component"
 
 import { LETTER_INPUTS } from "#app/constants.ts"
 import { routes } from "#app/routes.ts"
 
 import { LetterInput } from "./letter-input"
 
-export function GuessForm() {
-	return ({
-		currentGuess,
-		cheat,
-		error,
-	}: {
-		currentGuess: number
-		error?: string
-		cheat?: boolean
-	}) => {
+type GuessFormProps = {
+	currentGuess: number
+	error?: string
+	cheat?: boolean
+}
+
+export function GuessForm(handle: Handle<GuessFormProps>) {
+	return () => {
+		let { currentGuess, cheat, error } = handle.props
 		return (
 			<form
 				method="POST"

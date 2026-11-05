@@ -84,5 +84,15 @@ For GitHub Actions, consider using [`voidzero-dev/setup-vp`](https://github.com/
 ## Review Checklist for Agents
 
 - [ ] Run `vp install` after pulling remote changes and before getting started.
-- [ ] Run `vp check` and `vp test` to validate changes.
+- [ ] Run `vp check` and `vp run test` to validate changes.
+
 <!--VITE PLUS END-->
+
+## Remix and Pitlane
+
+This app uses Remix 3.2 and the `pitlane` umbrella. Import Vite and asset helpers from `pitlane/*` so `node_modules/pitlane/INDEX.md` stays the versioned index for the installed release.
+
+Run the app test suite with `vp run test`, not `vp test`. `vp test` always starts Vite+'s bundled Vitest. The `test` script is `remix test` plus Node custom hooks that remap `#app/utils/db.ts`, `bcryptjs`, and Vite asset suffixes (`.css`, `.svg`, `?url`, `?assets=`).
+
+Official agent skills live at `.agents/skills/remix` and `.agents/skills/pitlane`.
+

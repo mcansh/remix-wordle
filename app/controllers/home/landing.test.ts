@@ -1,8 +1,8 @@
-/** @vitest-environment node */
 import { readFileSync } from "node:fs"
 import path from "node:path"
 
-import { describe, expect, it, vi } from "vite-plus/test"
+import { expect } from "remix/assert"
+import { describe, it } from "remix/test"
 
 import {
 	LANDING_TITLE,
@@ -16,7 +16,6 @@ import {
 } from "#app/constants.ts"
 import { ROBOTS_TXT } from "#app/controllers/robots.ts"
 import { SITEMAP_XML } from "#app/controllers/sitemap.ts"
-import type { FullGame } from "#app/models/game.ts"
 import { router } from "#app/router.ts"
 import {
 	assertContains,
@@ -24,87 +23,6 @@ import {
 	getSessionCookie,
 	requestWithSession,
 } from "#test/helpers.ts"
-
-vi.mock("#app/entry.browser.ts?assets=client", () => {
-	let assets = {
-		entry: "/assets/client.js",
-		js: [],
-		css: [],
-		merge() {
-			return assets
-		},
-	}
-	return { default: assets }
-})
-vi.mock("#app/entry.server.ts?assets=ssr", () => {
-	let assets = {
-		entry: "/assets/ssr.js",
-		js: [],
-		css: [],
-		merge() {
-			return assets
-		},
-	}
-	return { default: assets }
-})
-vi.mock("bcryptjs", () => ({
-	default: {
-		compare: vi.fn().mockImplementation(async (plain: string, hashed: string) => {
-			return hashed === `hashed-${plain}`
-		}),
-		hash: vi.fn().mockImplementation(async (plain: string) => `hashed-${plain}`),
-	},
-}))
-vi.mock("#app/utils/db.ts", () => {
-	let store = new Map<string, string>()
-	return {
-		redis: {
-			get: vi.fn(async (key: string) => store.get(key) ?? null),
-			set: vi.fn(async (key: string, value: string) => {
-				store.set(key, value)
-				return "OK"
-			}),
-			del: vi.fn(async (key: string) => {
-				store.delete(key)
-				return 1
-			}),
-		},
-		db: {
-			user: {
-				findFirst: vi
-					.fn()
-					.mockImplementation(async ({ where }: { where: Record<string, unknown> }) => {
-						if (where.email === "testuser@example.com" || where.id === "user-123") {
-							return {
-								id: "user-123",
-								email: "testuser@example.com",
-								username: "testuser",
-								password: "hashed-mytestaccountpassword",
-							}
-						}
-						return null
-					}),
-			},
-		},
-	}
-})
-vi.mock("#app/models/game.ts", async (importActual) => {
-	let actual = await importActual<typeof import("#app/models/game.ts")>()
-
-	return {
-		...actual,
-		getTodaysGame: vi.fn().mockImplementation(async () => {
-			return {
-				id: "game-123",
-				word: "apple",
-				status: "IN_PROGRESS",
-				createdAt: new Date(),
-				updatedAt: new Date(),
-				guesses: [],
-			} satisfies FullGame
-		}),
-	}
-})
 
 function publicFile(name: string) {
 	return readFileSync(path.join(process.cwd(), "public", name), "utf8")

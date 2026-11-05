@@ -1,4 +1,4 @@
-import type { BuildAction } from "remix/fetch-router"
+import type { Action } from "remix/router"
 
 import { SITE_URL } from "#app/constants.ts"
 import { routes } from "#app/routes.ts"
@@ -20,4 +20,4 @@ export const sitemap = {
 			headers: { "Content-Type": "application/xml; charset=utf-8" },
 		})
 	},
-} satisfies BuildAction<"GET", typeof routes.sitemap>
+} satisfies Action<typeof routes.sitemap>

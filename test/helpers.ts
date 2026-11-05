@@ -1,6 +1,6 @@
 import type { Err, Ok, Result } from "better-result"
-import type { Router } from "remix/fetch-router"
 import { Cookie, SetCookie } from "remix/headers"
+import type { Router } from "remix/router"
 
 /**
  * Extract a specific cookie value from Set-Cookie headers
