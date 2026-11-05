@@ -11,7 +11,7 @@
 	"scripts": {
 		"build": "vp build",
 		"dev": "vp dev",
-		"start": "node ./server.ts",
+		"start": "node --import ./instrument.server.ts ./server.ts",
 		"lint": "vp lint",
 		"format": "vp fmt",
 		"test": "vp test",
@@ -21,6 +21,7 @@
 		"@mcansh/http-helmet": "catalog:",
 		"@prisma/adapter-pg": "catalog:",
 		"@prisma/client": "catalog:",
+		"@sentry/node": "catalog:",
 		"@standard-schema/spec": "catalog:",
 		"bcryptjs": "catalog:",
 		"better-result": "catalog:",
