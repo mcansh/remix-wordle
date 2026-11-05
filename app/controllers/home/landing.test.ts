@@ -164,6 +164,38 @@ describe("logged-in home stays the game", () => {
 		assertNotContains(html, "How to play")
 		assertNotContains(html, "Sign up")
 	})
+
+	it("still renders the board after a logged-in guess", async () => {
+		let loginResponse = await router.fetch("https://wordle.mcan.sh/login", {
+			method: "POST",
+			body: new URLSearchParams({
+				email: "testuser@example.com",
+				password: "mytestaccountpassword",
+			}),
+			redirect: "manual",
+		})
+		let sessionCookie = getSessionCookie(loginResponse)
+		expect(sessionCookie).toBeTruthy()
+
+		let formData = new FormData()
+		for (let letter of ["a", "p", "p", "l", "e"]) {
+			formData.append("letter", letter)
+		}
+
+		let guessResponse = await router.fetch(
+			requestWithSession("https://wordle.mcan.sh/", sessionCookie!, {
+				method: "POST",
+				body: formData,
+				redirect: "manual",
+			}),
+		)
+		expect(guessResponse.status).toBe(302)
+
+		let response = await router.fetch(requestWithSession("https://wordle.mcan.sh/", sessionCookie!))
+		expect(response.status).toBe(200)
+		let html = await response.text()
+		assertContains(html, "Submit Guess")
+	})
 })
 
 describe("robots.txt and sitemap.xml", () => {

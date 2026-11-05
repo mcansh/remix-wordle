@@ -68,6 +68,15 @@ function applyOmit<T extends Record<string, unknown>>(
 	return copy
 }
 
+function nestedCreates(value: unknown): Array<{ guess?: string }> {
+	if (value == null || typeof value !== "object" || !("create" in value)) {
+		return []
+	}
+	let created = (value as { create?: { guess?: string } | Array<{ guess?: string }> }).create
+	if (created == null) return []
+	return Array.isArray(created) ? created : [created]
+}
+
 function createMock<T extends (...args: Array<never>) => unknown>(impl: T) {
 	return mock.fn(impl)
 }
@@ -125,7 +134,16 @@ export const gameDb = {
 	}),
 	update: createMock(async (args: { where: { id: string }; data: Record<string, unknown> }) => {
 		let game = games.find((row) => row.id === args.where.id)
-		if (game) Object.assign(game, args.data)
+		if (!game) return game
+
+		let { guesses, ...scalars } = args.data
+		Object.assign(game, scalars)
+		let created = nestedCreates(guesses)
+		for (let row of created) {
+			if (typeof row.guess === "string") {
+				game.guesses.push({ guess: row.guess })
+			}
+		}
 		return game
 	}),
 }
