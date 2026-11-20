@@ -115,9 +115,7 @@ export function keyboardWithStatus(guesses: Array<{ letters: Array<ComputedGuess
 		}, new Map<string, LetterState>()),
 	)
 
-	return KEYBOARD.map((row) => {
-		return row.map((letter) => {
-			return { letter, state: states.get(letter) || LetterState.Blank }
-		})
-	})
+	return KEYBOARD.map((row) =>
+		row.map((letter) => ({ letter, state: states.get(letter) || LetterState.Blank })),
+	)
 }

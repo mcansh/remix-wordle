@@ -1,6 +1,6 @@
 import * as s from "remix/data-schema"
 import * as f from "remix/data-schema/form-data"
-import type { Controller } from "remix/fetch-router"
+import type { Controller } from "remix/router"
 
 import { Document } from "#app/components/document.tsx"
 import { createPasswordResetToken } from "#app/models/user.ts"
@@ -36,7 +36,7 @@ export const forgotPasswordController = {
 		},
 
 		async action(context) {
-			let formData = context.get(FormData)
+			let formData = context.formData
 
 			let forgotPasswordSchema = f.object({
 				email: f.field(s.defaulted(s.string(), "")),

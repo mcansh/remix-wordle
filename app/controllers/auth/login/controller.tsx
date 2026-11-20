@@ -1,11 +1,10 @@
 import { Result, UnhandledException } from "better-result"
 import { completeAuth, verifyCredentials } from "remix/auth"
-import type { Controller } from "remix/fetch-router"
 import { redirect } from "remix/response/redirect"
-import { Session } from "remix/session"
+import type { Controller } from "remix/router"
 
-import { flashLoginRequestError } from "#/app/controllers/auth/flash.ts"
 import { Document } from "#app/components/document.tsx"
+import { flashLoginRequestError } from "#app/controllers/auth/flash.ts"
 import { getPostAuthRedirect, getReturnToQuery, passwordProvider } from "#app/middleware/auth.ts"
 import { routes } from "#app/routes.ts"
 import { render } from "#app/utils/render.ts"
@@ -20,13 +19,15 @@ export const loginController = {
 
 			if (userResult.isErr()) {
 				console.error(userResult.error)
-				return flashLoginRequestError(context.get(Session), context.url)
+				return flashLoginRequestError(context.session, context.url)
 			}
 
 			if (userResult.value == null) {
-				let session = context.get(Session)
+				let session = context.session
 				session.flash("error", "Invalid email or password. Please try again.")
-				return redirect(routes.auth.login.index.href(undefined, getReturnToQuery(context.url)))
+				return redirect(
+					routes.auth.login.index.href(undefined, { searchParams: getReturnToQuery(context.url) }),
+				)
 			}
 
 			let sessionResult = Result.try({
@@ -36,7 +37,7 @@ export const loginController = {
 
 			if (sessionResult.isErr()) {
 				console.error(sessionResult.error)
-				return flashLoginRequestError(context.get(Session), context.url)
+				return flashLoginRequestError(context.session, context.url)
 			}
 
 			let session = sessionResult.value
@@ -45,11 +46,13 @@ export const loginController = {
 			return redirect(getPostAuthRedirect(context.url))
 		},
 		index(context) {
-			let session = context.get(Session)
+			let session = context.session
 			let error = session.get("error")
-			let formAction = routes.auth.login.action.href(undefined, {
-				returnTo: context.url.searchParams.get("returnTo"),
-			})
+			let returnTo = context.url.searchParams.get("returnTo")
+			let formAction = routes.auth.login.action.href(
+				undefined,
+				returnTo ? { searchParams: { returnTo } } : undefined,
+			)
 
 			return render(
 				<Document url={context.url} head={<title>Login - Remix Wordle</title>}>

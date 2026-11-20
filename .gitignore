@@ -3,8 +3,6 @@ node_modules
 /.cache
 **/build/**
 **/dist/**
-!.yalc/@mcansh/vite-plugin-remix/dist/
-!.yalc/@mcansh/vite-plugin-remix/dist/**
 .env
 .DS_Store
 **/coverage/**

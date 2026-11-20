@@ -1,4 +1,4 @@
-import type { Handle } from "remix/ui"
+import type { Handle } from "remix/component"
 
 import { Document } from "#app/components/document.tsx"
 import { GuessForm } from "#app/components/form.tsx"
@@ -7,18 +7,17 @@ import { Keyboard } from "#app/components/keyboard.tsx"
 import { TOTAL_GUESSES } from "#app/constants.ts"
 import type { GameBoard } from "#app/models/game.ts"
 
-export function Page(handle: Handle<{ url: URL }>) {
-	return ({
-		showModal,
-		showWord,
-		board,
-		error,
-	}: {
+export function Page(
+	handle: Handle<{
+		url: URL
 		showModal: boolean
 		showWord?: string
 		board: GameBoard
 		error?: string
-	}) => {
+	}>,
+) {
+	return () => {
+		let { showModal, showWord, board, error } = handle.props
 		return (
 			<Document url={handle.props.url} head={<title>Remix Wordle</title>}>
 				{showModal ? (
@@ -51,23 +50,21 @@ export function Page(handle: Handle<{ url: URL }>) {
 
 								return (
 									<div key={`guess-number-${guessIndex}`} class="grid grid-cols-5 gap-4">
-										{guess.letters.map((letter) => {
-											return (
-												<input
-													key={`guess-${guessIndex}-letter-${letter.id}`}
-													readOnly
-													data-state={letter.state}
-													class={`inline-block aspect-square w-full border-4 text-center text-xl text-white uppercase data-[state=Blank]:border-gray-400 data-[state=Match]:border-green-500 data-[state=Match]:bg-green-500 data-[state=Miss]:border-red-500 data-[state=Miss]:bg-red-500 data-[state=Present]:border-yellow-500 data-[state=Present]:bg-yellow-500`}
-													value={letter.letter}
-													type="text"
-													pattern="[a-zA-Z]{1}"
-													maxLength={1}
-													tabIndex={-1}
-													name="letter"
-													aria-label={`letter ${guessIndex + 1}`}
-												/>
-											)
-										})}
+										{guess.letters.map((letter) => (
+											<input
+												key={`guess-${guessIndex}-letter-${letter.id}`}
+												readOnly
+												data-state={letter.state}
+												class={`inline-block aspect-square w-full border-4 text-center text-xl text-white uppercase data-[state=Blank]:border-gray-400 data-[state=Match]:border-green-500 data-[state=Match]:bg-green-500 data-[state=Miss]:border-red-500 data-[state=Miss]:bg-red-500 data-[state=Present]:border-yellow-500 data-[state=Present]:bg-yellow-500`}
+												value={letter.letter}
+												type="text"
+												pattern="[a-zA-Z]{1}"
+												maxLength={1}
+												tabIndex={-1}
+												name="letter"
+												aria-label={`letter ${guessIndex + 1}`}
+											/>
+										))}
 									</div>
 								)
 							})}

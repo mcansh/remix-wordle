@@ -1,5 +1,5 @@
 import { clsx } from "clsx"
-import type { Handle } from "remix/ui"
+import type { Handle } from "remix/component"
 
 import { Document } from "#app/components/document.tsx"
 import type { Prisma } from "#app/generated/prisma/client.ts"
@@ -34,8 +34,14 @@ export function createHistoricalGameListItem(game: HistoricalGame) {
 	}
 }
 
-export function HistoricalGameList(handle: Handle<{ url: URL }>) {
-	return ({ games }: { games: Array<ReturnType<typeof createHistoricalGameListItem>> }) => {
+export function HistoricalGameList(
+	handle: Handle<{
+		url: URL
+		games: Array<ReturnType<typeof createHistoricalGameListItem>>
+	}>,
+) {
+	return () => {
+		let { games } = handle.props
 		return (
 			<Document url={handle.props.url} head={<title>Remix Wordle Game History</title>}>
 				<div class="px-4 pt-8 sm:px-6 lg:px-8">

@@ -1,8 +1,8 @@
-/** @vitest-environment node */
 import { readFileSync } from "node:fs"
 import path from "node:path"
 
-import { describe, expect, it, vi } from "vite-plus/test"
+import { expect } from "remix/assert"
+import { describe, it } from "remix/test"
 
 import {
 	LANDING_TITLE,
@@ -16,7 +16,6 @@ import {
 } from "#app/constants.ts"
 import { ROBOTS_TXT } from "#app/controllers/robots.ts"
 import { SITEMAP_XML } from "#app/controllers/sitemap.ts"
-import type { FullGame } from "#app/models/game.ts"
 import { router } from "#app/router.ts"
 import {
 	assertContains,
@@ -24,87 +23,6 @@ import {
 	getSessionCookie,
 	requestWithSession,
 } from "#test/helpers.ts"
-
-vi.mock("#app/entry.browser.ts?assets=client", () => {
-	let assets = {
-		entry: "/assets/client.js",
-		js: [],
-		css: [],
-		merge() {
-			return assets
-		},
-	}
-	return { default: assets }
-})
-vi.mock("#app/entry.server.ts?assets=ssr", () => {
-	let assets = {
-		entry: "/assets/ssr.js",
-		js: [],
-		css: [],
-		merge() {
-			return assets
-		},
-	}
-	return { default: assets }
-})
-vi.mock("bcryptjs", () => ({
-	default: {
-		compare: vi.fn().mockImplementation(async (plain: string, hashed: string) => {
-			return hashed === `hashed-${plain}`
-		}),
-		hash: vi.fn().mockImplementation(async (plain: string) => `hashed-${plain}`),
-	},
-}))
-vi.mock("#app/utils/db.ts", () => {
-	let store = new Map<string, string>()
-	return {
-		redis: {
-			get: vi.fn(async (key: string) => store.get(key) ?? null),
-			set: vi.fn(async (key: string, value: string) => {
-				store.set(key, value)
-				return "OK"
-			}),
-			del: vi.fn(async (key: string) => {
-				store.delete(key)
-				return 1
-			}),
-		},
-		db: {
-			user: {
-				findFirst: vi
-					.fn()
-					.mockImplementation(async ({ where }: { where: Record<string, unknown> }) => {
-						if (where.email === "testuser@example.com" || where.id === "user-123") {
-							return {
-								id: "user-123",
-								email: "testuser@example.com",
-								username: "testuser",
-								password: "hashed-mytestaccountpassword",
-							}
-						}
-						return null
-					}),
-			},
-		},
-	}
-})
-vi.mock("#app/models/game.ts", async (importActual) => {
-	let actual = await importActual<typeof import("#app/models/game.ts")>()
-
-	return {
-		...actual,
-		getTodaysGame: vi.fn().mockImplementation(async () => {
-			return {
-				id: "game-123",
-				word: "apple",
-				status: "IN_PROGRESS",
-				createdAt: new Date(),
-				updatedAt: new Date(),
-				guesses: [],
-			} satisfies FullGame
-		}),
-	}
-})
 
 function publicFile(name: string) {
 	return readFileSync(path.join(process.cwd(), "public", name), "utf8")
@@ -115,7 +33,7 @@ describe("logged-out landing page", () => {
 		let response = await router.fetch("https://wordle.mcan.sh/")
 
 		expect(response.status).toBe(200)
-		expect(response.headers.get("content-type")).toMatch(/text\/html/i)
+		expect(response.headers.get("Content-Type")).toMatch(/text\/html/i)
 		expect(response.headers.get("X-Robots-Tag")).toBe(ROBOTS_INDEX)
 
 		let html = await response.text()
@@ -147,6 +65,15 @@ describe("logged-out landing page", () => {
 		assertContains(html, 'href="/register"')
 		assertContains(html, "Sign up")
 		assertNotContains(html, "Submit Guess")
+
+		let csp = response.headers.get("Content-Security-Policy") ?? ""
+		expect(csp.length).toBeGreaterThan(0)
+		let nonce = /'nonce-([^']+)'/.exec(csp)?.[1]
+		expect(typeof nonce).toBe("string")
+		assertContains(csp, "default-src 'none'")
+		assertContains(csp, `script-src 'self' 'nonce-${nonce}'`)
+		assertContains(html, 'type="importmap"')
+		assertContains(html, `nonce="${nonce}"`)
 	})
 
 	it("keeps the production canonical when the request host is not wordle.mcan.sh", async () => {
@@ -237,6 +164,38 @@ describe("logged-in home stays the game", () => {
 		assertNotContains(html, "How to play")
 		assertNotContains(html, "Sign up")
 	})
+
+	it("still renders the board after a logged-in guess", async () => {
+		let loginResponse = await router.fetch("https://wordle.mcan.sh/login", {
+			method: "POST",
+			body: new URLSearchParams({
+				email: "testuser@example.com",
+				password: "mytestaccountpassword",
+			}),
+			redirect: "manual",
+		})
+		let sessionCookie = getSessionCookie(loginResponse)
+		expect(sessionCookie).toBeTruthy()
+
+		let formData = new FormData()
+		for (let letter of ["a", "p", "p", "l", "e"]) {
+			formData.append("letter", letter)
+		}
+
+		let guessResponse = await router.fetch(
+			requestWithSession("https://wordle.mcan.sh/", sessionCookie!, {
+				method: "POST",
+				body: formData,
+				redirect: "manual",
+			}),
+		)
+		expect(guessResponse.status).toBe(302)
+
+		let response = await router.fetch(requestWithSession("https://wordle.mcan.sh/", sessionCookie!))
+		expect(response.status).toBe(200)
+		let html = await response.text()
+		assertContains(html, "Submit Guess")
+	})
 })
 
 describe("robots.txt and sitemap.xml", () => {
@@ -244,7 +203,7 @@ describe("robots.txt and sitemap.xml", () => {
 		let response = await router.fetch("https://wordle.mcan.sh/robots.txt")
 
 		expect(response.status).toBe(200)
-		expect(response.headers.get("content-type")).toMatch(/text\/plain/i)
+		expect(response.headers.get("Content-Type")).toMatch(/text\/plain/i)
 
 		let body = await response.text()
 		expect(body).toBe(ROBOTS_TXT)
@@ -259,7 +218,7 @@ describe("robots.txt and sitemap.xml", () => {
 		let response = await router.fetch("https://wordle.mcan.sh/sitemap.xml")
 
 		expect(response.status).toBe(200)
-		expect(response.headers.get("content-type")).toMatch(/xml/i)
+		expect(response.headers.get("Content-Type")).toMatch(/xml/i)
 
 		let body = await response.text()
 		expect(body).toBe(SITEMAP_XML)

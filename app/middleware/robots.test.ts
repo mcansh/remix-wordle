@@ -1,5 +1,6 @@
-import { createRouter } from "remix/fetch-router"
-import { describe, expect, it, vi } from "vite-plus/test"
+import { expect } from "remix/assert"
+import { createRouter } from "remix/router"
+import { describe, it, mock } from "remix/test"
 
 import { ROBOTS_NOINDEX, SITE_DESCRIPTION } from "#app/constants.ts"
 import { router as appRouter } from "#app/router.ts"
@@ -7,43 +8,8 @@ import { assertContains } from "#test/helpers.ts"
 
 import { htmlRobotsTag, isHtmlContentType } from "./robots.ts"
 
-vi.mock("#app/entry.browser.ts?assets=client", () => {
-	let assets = {
-		entry: "/assets/client.js",
-		js: [],
-		css: [],
-		merge() {
-			return assets
-		},
-	}
-	return { default: assets }
-})
-vi.mock("#app/entry.server.ts?assets=ssr", () => {
-	let assets = {
-		entry: "/assets/ssr.js",
-		js: [],
-		css: [],
-		merge() {
-			return assets
-		},
-	}
-	return { default: assets }
-})
-vi.mock("#app/utils/db.ts", () => ({
-	redis: {
-		get: vi.fn().mockResolvedValue(null),
-		set: vi.fn().mockResolvedValue("OK"),
-		del: vi.fn().mockResolvedValue(1),
-	},
-	db: {
-		user: {
-			findFirst: vi.fn(),
-		},
-	},
-}))
-
 function createNext(response: Response) {
-	return vi.fn(() => Promise.resolve(response))
+	return mock.fn(() => Promise.resolve(response))
 }
 
 type RobotsMiddleware = ReturnType<typeof htmlRobotsTag>
@@ -181,7 +147,7 @@ describe("HTML document indexing", () => {
 		let response = await appRouter.fetch("https://wordle.mcan.sh/login")
 
 		expect(response.status).toBe(200)
-		expect(response.headers.get("content-type")).toMatch(/text\/html/i)
+		expect(response.headers.get("Content-Type")).toMatch(/text\/html/i)
 		expect(response.headers.get("X-Robots-Tag")).toBe(ROBOTS_NOINDEX)
 
 		let html = await response.text()

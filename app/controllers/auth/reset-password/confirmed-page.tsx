@@ -1,18 +1,18 @@
+import type { Handle } from "remix/component"
+
 import { routes } from "#app/routes.ts"
 
-export function ResetPasswordConfirmed() {
-	return () => {
-		return (
-			<div class="card" style="max-width: 500px; margin: 2rem auto;">
-				<div class="alert alert-success">
-					Password reset successfully! You can now login with your new password.
-				</div>
-				<p>
-					<a href={routes.auth.login.index.href()} class="btn">
-						Login
-					</a>
-				</p>
+export function ResetPasswordConfirmed(_handle: Handle) {
+	return () => (
+		<div class="card" style="max-width: 500px; margin: 2rem auto;">
+			<div class="alert alert-success">
+				Password reset successfully! You can now login with your new password.
 			</div>
-		)
-	}
+			<p>
+				<a href={routes.auth.login.index.href()} class="btn">
+					Login
+				</a>
+			</p>
+		</div>
+	)
 }

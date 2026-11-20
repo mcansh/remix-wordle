@@ -20,10 +20,10 @@ updates:
         patterns:
           - "@remix-run/*"
           - "remix"
-      "vitest":
+      "pitlane":
         patterns:
-          - "@vitest/*"
-          - "vitest"
+          - "pitlane"
+          - "@pitlane/*"
       "prisma":
         patterns:
           - "@prisma/*"
@@ -36,3 +36,5 @@ updates:
         patterns:
           - "oxlint"
           - "oxfmt"
+          - "oxlint-tsgolint"
+          - "@oxlint/*"

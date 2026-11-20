@@ -1,21 +1,18 @@
 import bcrypt from "bcryptjs"
 import { createCredentialsAuthProvider } from "remix/auth"
+import * as s from "remix/data-schema"
+import * as f from "remix/data-schema/form-data"
+import { getContext } from "remix/middleware/async-context"
 import {
 	auth,
 	createSessionAuthScheme,
 	requireAuth as requireAuthenticated,
-} from "remix/auth-middleware"
-import * as s from "remix/data-schema"
-import * as f from "remix/data-schema/form-data"
+} from "remix/middleware/auth"
 import { redirect } from "remix/response/redirect"
 
 import { routes } from "#app/routes.ts"
-import {
-	normalizeEmail,
-	parseAuthSession,
-	type AuthIdentity,
-	type AuthSession,
-} from "#app/utils/auth-session.ts"
+import { normalizeEmail, parseAuthSession } from "#app/utils/auth-session.ts"
+import type { AuthIdentity, AuthSession } from "#app/utils/auth-session.ts"
 import { db } from "#app/utils/db.ts"
 
 const loginSchema = f.object({
@@ -49,8 +46,8 @@ export function loadAuth() {
 }
 
 export const passwordProvider = createCredentialsAuthProvider({
-	parse(context) {
-		let result = s.parse(loginSchema, context.get(FormData))
+	parse() {
+		let result = s.parse(loginSchema, getContext().formData)
 
 		return {
 			email: normalizeEmail(result.email),

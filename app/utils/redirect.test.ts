@@ -1,6 +1,7 @@
-import { expect, it } from "vite-plus/test"
+import { expect } from "remix/assert"
+import { it } from "remix/test"
 
-import { safeRedirect } from "./redirect"
+import { safeRedirect } from "./redirect.ts"
 
 it("safeRedirect returns default for null", () => {
 	expect(safeRedirect(null)).toBe("/")
