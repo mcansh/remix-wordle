@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: ⎔ Setup VP
         uses: voidzero-dev/setup-vp@v1
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: ⚡️ Setup vp Vite+
         uses: voidzero-dev/setup-vp@v1
@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: ⎔ Setup VP
         uses: voidzero-dev/setup-vp@v1
